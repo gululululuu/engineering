@@ -1,0 +1,70 @@
+{
+  "data": {
+    "first":[{
+      "username": "first",
+      "password": "123",
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6ImZpcnN0IiwiaWF0IjoxNTE2MjM5MDIyfQ.JjbgD5XBSJBHAUudu_FrsG_1chGipuXMVlrQsMVN9tE",
+      "identity": "collegeLeader"
+    },{
+      "username": "first2",
+      "password": "123",
+      "token": "112",
+      "identity": "collegeLeader"
+    }],
+    "second":[{
+      "username": "second",
+      "password": "123",
+      "token": "121",
+      "identity": "dean"
+    },{
+      "username": "second2",
+      "password": "123",
+      "token": "122",
+      "identity": "dean"
+    }],
+    "third":[{
+      "username": "third",
+      "password": "123",
+      "token": "131",
+      "identity": "inspector"
+    },{
+      "username": "third2",
+      "password": "123",
+      "token": "132",
+      "identity": "inspector"
+    }],
+    "fourth":[{
+      "username": "fourth",
+      "password": "123",
+      "token": "141",
+      "identity": "secretary"
+    },{
+      "username": "fourth2",
+      "password": "123",
+      "token": "142",
+      "identity": "secretary"
+    }],
+    "fifth":[{
+      "username": "fifth",
+      "password": "123",
+      "token": "151",
+      "identity": "teacher"
+    },{
+      "username": "fifth2",
+      "password": "123",
+      "token": "152",
+      "identity": "teacher"
+    }],
+    "student":[{
+      "username": "student",
+      "password": "123",
+      "token": "161",
+      "identity": "student"
+    },{
+      "username": "student2",
+      "password": "123",
+      "token": "162",
+      "identity": "student"
+    }]
+  }
+}

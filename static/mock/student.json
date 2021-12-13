@@ -1,0 +1,21 @@
+{
+  "data" : {
+    "StudentList": [
+      {
+        "username": "student",
+        "name": "张昭阳",
+        "phone": "18312938921",
+        "addr": "长春市",
+        "contactAddr": "吉林省长春市二道区解放大路2000号",
+        "id" : 1
+      }, {
+        "username": "student2",
+        "name": "刘俊义",
+        "phone": "15521829054",
+        "addr": "长春市",
+        "contactAddr": "吉林省长春市二道区解放大路2000号",
+        "id" : 2
+      }
+    ]
+  }
+}
