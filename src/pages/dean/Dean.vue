@@ -1,6 +1,5 @@
 <template>
   <div>
-    我是教导主任
     <Navigation></Navigation>
     <Backgroud></Backgroud>
   </div>

@@ -1,7 +1,7 @@
 <template>
   <div class="backgroud">
     <p class="texts">欢迎使用<br />&emsp;&emsp;&emsp;本系统!</p>
-    <img class="bgImg" src="../assets/backgroundImage.jpg"/>
+    <img class="bgImg" src="../assets/img/backgroundImage.jpg"/>
   </div>
 </template>
 

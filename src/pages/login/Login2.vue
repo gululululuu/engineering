@@ -5,7 +5,7 @@
       <div class="loginContent">
         <el-form :model="loginForm" ref="loginForm" :rules="loginRules">
           <div class="loginHead">
-            <p class="loginFont">课程评估系统</p>
+            <p class="loginFont">奖学金评估系统</p>
             <img src="../../assets/img/login.png" class="loginLogo"/>
           </div>
           <el-form-item prop="identity">
@@ -43,22 +43,16 @@ export default {
       loginIdentity: ['first', 'second', 'third', 'fourth', 'fifth', 'student'],
       options: [{
         value: '1',
-        label: '院领导'
+        label: '管理员'
       }, {
         value: '2',
-        label: '系主任'
+        label: '老师'
       }, {
         value: '3',
         label: '督学'
       }, {
         value: '4',
         label: '教学秘书'
-      }, {
-        value: '5',
-        label: '讲师'
-      }, {
-        value: '6',
-        label: '学生'
       }],
       loginForm: {
         username: '',

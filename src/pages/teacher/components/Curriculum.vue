@@ -6,7 +6,7 @@
     </div>
     <div class='Left'>
       <div class='back'>
-        <img src='../../../assets/back.png' class='backImg' @click='backHome()'/>
+        <img src='../../../assets/img/back.png' class='backImg' @click='backHome()'/>
         <p class='backFonts' @click='backHome()'>返回首页</p>
       </div>
       <div class='inputBox'>
@@ -15,15 +15,19 @@
       </div>
     </div>
     <div class='Right'>
-      <div v-show='isMyInfo' class='MyInfo'>
+      <div v-show='isMyInfo'>
         <div class="rightUpload">
-          <Upload></Upload>
-          <Upload></Upload>
+          <div v-if="isUpload" @click='toUpload()' class="upload">
+            <Upload></Upload>
+          </div>
+          <div v-else>
+            <ScatterDiagram></ScatterDiagram>
+          </div>
         </div>
       </div>
-      <div v-show="isToAdd" class="MyInfo">
+      <div v-show="isToAdd">
         <div class="rightUpload">
-          <Upload></Upload>
+          <AddCourse></AddCourse>
         </div>
       </div>
       <p v-show="isActive" class='rightFonts'>请在左侧选择您要进行的操作~</p>
@@ -33,17 +37,22 @@
 
 <script>
 import Upload from '../../../components/Upload.vue'
+import ScatterDiagram from '../../../components/ScatterDiagram.vue'
+import AddCourse from './AddCourse.vue'
 export default {
   name: 'Curriculum',
   data () {
     return {
       isActive: true,
       isMyInfo: false,
-      isToAdd: false
+      isToAdd: false,
+      isUpload: true
     }
   },
   components: {
-    Upload
+    Upload,
+    ScatterDiagram,
+    AddCourse
   },
   methods: {
     backStu () {
@@ -61,6 +70,9 @@ export default {
       this.isToAdd = true
       this.isActive = false
       this.isMyInfo = false
+    },
+    toUpload () {
+      this.isUpload = false
     }
   }
 }
@@ -70,7 +82,6 @@ export default {
   .Center
     width : 100%
     height : 580px
-    // border : 1px solid red
     .head
       position : fixed
       top : 0
@@ -99,14 +110,12 @@ export default {
       height : 500px
       border : 1px solid #8CC5FF
       background-color : #CCCCCC
-      // border-radius : 10px
       float : left
       margin-right : 20px
       .back
         width : 100%
         height : 30px
         cursor : pointer
-        // background-color : #CCCCCC
         border-radius : 10px
         .backImg
           width : 25px

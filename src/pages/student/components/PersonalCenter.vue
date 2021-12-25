@@ -6,7 +6,7 @@
     </div>
     <div class='Left'>
       <div class='back'>
-        <img src='../../../assets/back.png' class='backImg' @click='backHome()'/>
+        <img src='../../../assets/img/back.png' class='backImg' @click='backHome()'/>
         <p class='backFonts' @click='backHome()'>返回首页</p>
       </div>
       <div class='inputBox'>
@@ -52,9 +52,6 @@ require('echarts/lib/chart/pie')
 // echarts.use([GridComponent])
 export default {
   name: 'PersonalCenter',
-  // components: {
-  //   TreeSelect
-  // },
   data () {
     return {
       isMyInfo: false,

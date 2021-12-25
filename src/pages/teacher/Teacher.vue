@@ -16,12 +16,6 @@ export default {
     Upload,
     Navigation,
     Backgroud
-  },
-  methods: {
-    getMyExcelData (data) {
-      // data 为读取的excel数据，在这里进行处理该数据
-      console.log(data)
-    }
   }
 }
 </script>
