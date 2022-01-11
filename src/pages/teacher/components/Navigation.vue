@@ -21,7 +21,7 @@
           <p>问卷调查</p>
         </li>
       </router-link>
-      <router-link custom v-slot="{ navigate }" to="/personalCenter">
+      <router-link custom v-slot="{ navigate }" to="/teacherPersonalCenter">
         <li @click="navigate" @keypress.enter="navigate" role="link" class="personalCenter">
           <p>个人中心</p>
         </li>

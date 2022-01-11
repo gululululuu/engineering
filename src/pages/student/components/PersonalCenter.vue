@@ -2,6 +2,7 @@
   <div class='Center'>
     <div class='head'>
       <p class='headFonts'>学生专区</p>
+      <p class="headOut" @click="backLogin()">注销</p>
       <p class='headMe' @click='backStu()'>我的</p>
     </div>
     <div class='Left'>
@@ -44,6 +45,7 @@
 <script>
 // import TreeSelect from './TreeSelect.vue'
 // import { GridComponent } from 'echarts/components'
+import { mapMutations } from 'vuex'
 let echarts = require('echarts/lib/echarts')
 require('echarts/lib/chart/pie')
 // require('echarts/lib/component/tooltip')
@@ -83,6 +85,7 @@ export default {
     }
   },
   methods: {
+    ...mapMutations(['delLogin']),
     getUserInfo () {
       var _this = this
       this.$http.get('../../static/mock/student.json').then((res) => {
@@ -97,6 +100,12 @@ export default {
           console.log(this.info)
         }
       })
+    },
+    backLogin () {
+      this.$router.push('/login')
+      this.delLogin()
+      localStorage.removeItem('username')
+      localStorage.removeItem('success')
     },
     backHome () {
       this.$router.push('/')
@@ -139,6 +148,13 @@ export default {
         left : 18px
         top : 6px
         margin : 0
+      .headOut
+        font-family : '宋体'
+        position : fixed
+        right : 80px
+        top : 6px
+        margin : 0
+        cursor : pointer
       .headMe
         font-family : '宋体'
         position : fixed

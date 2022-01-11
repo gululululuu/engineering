@@ -1,60 +1,58 @@
 <template>
-  <div>
-    <div class='Center'>
-      <div class='head'>
-        <p class='headFonts'>评估中心</p>
-        <p class="headOut" @click="backLogin()">注销</p>
-        <p class='headMe' @click='backCollege()'>我的</p>
+  <div class='Center'>
+    <div class='head'>
+      <p class='headFonts'>成绩专区</p>
+      <p class="headOut" @click="backLogin()">注销</p>
+      <p class='headMe' @click='backStu()'>我的</p>
+    </div>
+    <div class='Left'>
+      <div class='back'>
+        <img src='../../../assets/img/back.png' class='backImg' @click='backHome()'/>
+        <p class='backFonts' @click='backHome()'>返回首页</p>
       </div>
-      <div class='Left'>
-        <div class='back'>
-          <img src='../../../assets/img/back.png' class='backImg' @click='backHome()'/>
-          <p class='backFonts' @click='backHome()'>返回首页</p>
-        </div>
-        <div class='inputBox'>
-          <button class='investigation' @click='toMyInfo()'><p class='invesFonts'>奖学金评定</p></button>
-        </div>
+      <div class='inputBox'>
+        <button class='investigation' @click='toMyInfo()'><p class='invesFonts'>上传成绩</p></button>
       </div>
-      <div class='Right'>
-        <div v-if='isMyInfo' class='MyInfo'>
-          <div class='basicInfo'>
-            <div style="text-align: center; padding-bottom: 5px;"><Upload></Upload></div>
-            <div class='basicHead'>
-              <p class='info'>奖学金名单</p>
-            </div>
-          </div>
-        </div>
-        <p v-else class='rightFonts'>请在左侧选择您要进行的操作~</p>
+    </div>
+    <div class='Right'>
+      <div v-show='isMyInfo' class='MyInfo'>
+        <Upload></Upload>
       </div>
+      <p v-show='isActive' class='rightFonts'>请在左侧选择您要进行的操作~</p>
     </div>
   </div>
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
 import Upload from '../../../components/Upload.vue'
 export default {
-  name: 'Evaluation',
+  name: 'ScoreManage',
   components: {
     Upload
   },
   data () {
     return {
+      isActive: true,
       isMyInfo: false
     }
   },
   methods: {
+    ...mapMutations(['delLogin']),
     backLogin () {
       this.$router.push('/login')
-      localStorage.clear()
+      this.delLogin()
+      localStorage.removeItem('username')
     },
     backHome () {
       this.$router.push('/')
     },
-    backCollege () {
-      this.$router.push('/collegeLeader')
+    backStu () {
+      this.$router.push('/teacher')
     },
     toMyInfo () {
       this.isMyInfo = true
+      this.isActive = false
     }
   }
 }
@@ -90,6 +88,7 @@ export default {
         right : 32px
         top: 6px
         margin : 0
+        cursor : pointer
         cursor : pointer
     .Left
       position : absolute
@@ -138,44 +137,10 @@ export default {
       height : 500px
       background-color : #F0F7FF
       .MyInfo
-        position : absolute
-        width : 100%
-        height : 500px
-        .basicInfo
-          width : 100%
-          height : 500px
-          position : absolute
-          .basicHead
-            width : 100%
-            height : 30px
-            line-height : 30px
-            background-color : #D1DBE5
-          .content
-            text-align : center
-            .contentInfo
-              list-style : none
-              label
-                float : left
-        .otherInfo
-          width : 60%
-          position : absolute
-          right : 0
+        text-align : center
+        line-height : 500px
       .rightFonts
         text-align : center
         line-height : 500px
         color : #DCDDE0
-      .info
-        width : 100%
-        position : absolute
-        height : 30px
-        margin : 0
-        display : inline
-        text-align : center
-        font-family : '宋体'
-        font-size : 16px
-      .otherBox
-        width : 80%
-        height : 200px
-        position : absolute
-        top : 30px
 </style>

@@ -3,7 +3,7 @@
     <div class='head'>
       <p class='headFonts'>个人中心</p>
       <p class="headOut" @click="backLogin()">注销</p>
-      <p class='headMe' @click='backCollege()'>我的</p>
+      <p class='headMe' @click='backStu()'>我的</p>
     </div>
     <div class='Left'>
       <div class='back'>
@@ -21,44 +21,23 @@
             <p class='info'>基本信息</p>
           </div>
           <div class='content'>
-            <el-descriptions class="margin-top" :column="3" border>
-                <el-descriptions-item>
-                  <template slot="label">
-                    <i class="el-icon-user"></i>
-                    用户名
-                  </template>
-                  {{ info.name }}
-                </el-descriptions-item>
-                <el-descriptions-item>
-                  <template slot="label">
-                    <i class="el-icon-mobile-phone"></i>
-                    手机号
-                  </template>
-                  {{info.phone}}
-                </el-descriptions-item>
-                <el-descriptions-item>
-                  <template slot="label">
-                    <i class="el-icon-location-outline"></i>
-                    居住地
-                  </template>
-                  {{info.addr}}
-                </el-descriptions-item>
-                <el-descriptions-item>
-                  <template slot="label">
-                    <i class="el-icon-tickets"></i>
-                    备注
-                  </template>
-                  <el-tag size="small">学校</el-tag>
-                </el-descriptions-item>
-                <el-descriptions-item>
-                  <template slot="label">
-                    <i class="el-icon-office-building"></i>
-                    联系地址
-                  </template>
-                  {{info.contactAddr}}
-                </el-descriptions-item>
-              </el-descriptions>
+            <el-descriptions direction="vertical" :column="4" border>
+              <el-descriptions-item label="姓名">{{ info.name }}</el-descriptions-item>
+              <el-descriptions-item label="手机号">{{ info.phone }}</el-descriptions-item>
+              <el-descriptions-item label="居住地" :span="2">{{ info.addr }}</el-descriptions-item>
+              <el-descriptions-item label="性别">{{ info.sex }}</el-descriptions-item>
+              <el-descriptions-item label="职称">{{ info.title }}</el-descriptions-item>
+              <el-descriptions-item label="出生年月" :span="2">{{ info.birth }}</el-descriptions-item>
+              <el-descriptions-item label="备注">
+                <el-tag size="small">学校</el-tag>
+              </el-descriptions-item>
+              <el-descriptions-item label="联系地址">{{ info.contactAddr }}</el-descriptions-item>
+            </el-descriptions>
           </div>
+        </div>
+        <div class='otherInfo'>
+          <p class='info'>往年教授课程学生人数</p>
+          <div id="myChart" class='otherBox'></div>
         </div>
       </div>
       <p v-else class='rightFonts'>请在左侧选择您要进行的操作~</p>
@@ -67,48 +46,90 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
+import ExportExcel from './ExportExcel.vue'
+let echarts = require('echarts/lib/echarts')
+require('echarts/lib/chart/pie')
 export default {
-  name: 'CollegePersonalCenter',
+  name: 'TeacherPersonalCenter',
+  components: {
+    ExportExcel
+  },
   data () {
     return {
       isMyInfo: false,
       info: {
         name: '',
-        id: '',
         phone: '',
         addr: '',
+        sex: '',
+        title: '',
+        birth: '',
         contactAddr: ''
+      },
+      MyInfo: {
+        name: '12',
+        sId: '12'
+      },
+      option: {
+        series: [{
+          type: 'pie',
+          data: [{
+            value: 335,
+            name: '计算机组成原理'
+          }, {
+            value: 234,
+            name: '计算机系统结构'
+          }, {
+            value: 1548,
+            name: '计算机网络'
+          }]
+        }]
       }
     }
   },
   methods: {
+    ...mapMutations(['delLogin']),
     getUserInfo () {
       var _this = this
-      this.$http.get('../../../../static/mock/collegeLeader.json').then((res) => {
+      this.$http.get('../../static/mock/teacher.json').then((res) => {
         res = res.data
         if (res.data) {
           const data = res.data
-          data.LeaderList.forEach(function (item, index) {
+          data.TeacherList.forEach(function (item, index) {
             if (item.username === localStorage.username) {
               _this.info = item
             }
           })
+          console.log(this.info)
         }
       })
     },
     backLogin () {
       this.$router.push('/login')
-      localStorage.clear()
+      this.delLogin()
+      localStorage.removeItem('username')
     },
     backHome () {
       this.$router.push('/')
     },
-    backCollege () {
-      this.$router.push('/collegeLeader')
+    backStu () {
+      this.$router.push('/teacher')
     },
     toMyInfo () {
       this.isMyInfo = true
       this.getUserInfo()
+      setTimeout(() => {
+        this.drawEchartData()
+      }, 300)
+    },
+    drawEchartData () {
+      // Object.defineProperty(document.getElementById('myChart'), 'clientWidth', { get: function () { return 300 } })
+      // Object.defineProperty(document.getElementById('myChart'), 'clientHeight', { get: function () { return 300 } })
+      // 基于准备好的dom，初始化echarts实例
+      let myChart = echarts.init(document.getElementById('myChart'))
+      // 绘制图表
+      myChart.setOption(this.option)
     }
   }
 }
@@ -196,14 +217,14 @@ export default {
         width : 100%
         height : 500px
         .basicInfo
-          width : 100%
+          width : 40%
           height : 500px
           position : absolute
+          left : 100px
+          top : 5%
           .basicHead
             width : 100%
             height : 30px
-            line-height : 30px
-            background-color : #D1DBE5
           .content
             text-align : center
             .contentInfo
@@ -212,6 +233,7 @@ export default {
                 float : left
         .otherInfo
           width : 60%
+          top : 5%
           position : absolute
           right : 0
       .rightFonts
@@ -228,8 +250,9 @@ export default {
         font-family : '宋体'
         font-size : 16px
       .otherBox
-        width : 80%
+        width : 450px
         height : 200px
         position : absolute
+        right : 120px
         top : 30px
 </style>

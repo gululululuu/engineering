@@ -16,9 +16,12 @@ const Secretary = () => import('@/pages/secretary/Secretary.vue')
 const Teacher = () => import('@/pages/teacher/Teacher.vue')
 const Curriculum = () => import('@/pages/teacher/components/Curriculum.vue')
 const Student = () => import('@/pages/student/Student.vue')
-const ScoreManage = () => import('@/pages/student/components/ScoreManage.vue')
-const PersonalCenter = () => import('@/pages/student/components/PersonalCenter.vue')
-
+const QueryScore = () => import('@/pages/student/components/ScoreManage.vue')
+const StudentPersonalCenter = () => import('@/pages/student/components/PersonalCenter.vue')
+const TeacherPersonalCenter = () => import('@/pages/teacher/components/PersonalCenter.vue')
+const ScoreManage = () => import('@/pages/teacher/components/ScoreManage.vue')
+const Investigation = () => import('@/pages/teacher/components/Investigation.vue')
+const InvestigationStu = () => import('@/pages/student/components/Investigation.vue')
 const router = new Router({
   routes: [
     {
@@ -67,6 +70,21 @@ const router = new Router({
       component: Teacher
     },
     {
+      path: '/score',
+      name: 'ScoreManage',
+      component: ScoreManage
+    },
+    {
+      path: '/investigation',
+      name: 'Investigation',
+      component: Investigation
+    },
+    {
+      path: '/teacherPersonalCenter',
+      name: 'TeacherPersonalCenter',
+      component: TeacherPersonalCenter
+    },
+    {
       path: '/curriculum',
       name: 'Curriculum',
       component: Curriculum
@@ -77,14 +95,19 @@ const router = new Router({
       component: Student
     },
     {
+      path: '/investigationStu',
+      name: 'InvestigationStu',
+      component: InvestigationStu
+    },
+    {
       path: '/scoreManage',
-      name: 'ScoreManage',
-      component: ScoreManage
+      name: 'QueryScore',
+      component: QueryScore
     },
     {
       path: '/studentPersonalCenter',
-      name: 'PersonalCenter',
-      component: PersonalCenter
+      name: 'StudentPersonalCenter',
+      component: StudentPersonalCenter
     }
   ],
   scrollBehavior (to, from, savedPosition) {

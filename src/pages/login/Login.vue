@@ -148,13 +148,11 @@ export default {
           var identity = item.identity
           console.log(identity)
           _this.$router.push({path: '/' + identity})
-          break
-        } else {
-          console.log('登录失败')
-          _this.$message.error('用户名或密码错误')
-          break
+          return 0
         }
       }
+      console.log('登录失败')
+      _this.$message.error('用户名或密码错误')
     },
     handleLogin (res) {
       this.$refs.loginForm.validate((valid) => {

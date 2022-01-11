@@ -13,7 +13,7 @@ const store = new Vuex.Store({
       state.Authorization = Authorization
       localStorage.setItem('Authorization', Authorization.token)
     },
-    // 注册删除用户token信息
+    // 注销删除用户token信息
     delLogin (state) {
       state.token = ''
       localStorage.removeItem('Authorization')

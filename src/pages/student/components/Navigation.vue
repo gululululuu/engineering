@@ -11,7 +11,7 @@
           <p>成绩管理</p>
         </li>
       </router-link>
-      <router-link custom v-slot="{ navigate }" to="/investigation">
+      <router-link custom v-slot="{ navigate }" to="/investigationStu">
         <li @click="navigate" @keypress.enter="navigate" role="link">
           <p>问卷调查</p>
         </li>

@@ -1,33 +1,41 @@
 <template>
   <div class="addCourse">
-    <table class="table">
-      <tr class="headTr">
-        <th colspan="2">请在下表填写新增课程信息，填写完毕点击<p class="submitFont">提交</p>按钮进行提交审核</th>
-      </tr>
-      <tr>
-        <td>课程名称</td>
-        <td><el-input v-model="courseName"></el-input></td>
-      </tr>
-      <tr>
-        <td>课程编号</td>
-        <td><el-input v-model="courseId"></el-input></td>
-      </tr>
-      <tr>
-        <td>课程学分</td>
-        <td><el-input v-model="courseCredit"></el-input></td>
-      </tr>
-      <tr>
-        <td>课程学时</td>
-        <td><el-input v-model="courseTime"></el-input></td>
-      </tr>
-      <tr>
-        <td>申请人</td>
-        <td><el-input v-model="applicant"></el-input></td>
-      </tr>
-      <tr>
-        <td colspan="2" class="sumbit" @click="addCourse()"><el-button>提交</el-button></td>
-      </tr>
-    </table>
+    <div class="half">
+      <el-form :label-position='labelPosition' label-width='80px' :rules='rules' :model='CourseInfo' size='mini'>
+        <el-form-item label='教学学期' prop='courseTerm'>
+          <el-select v-model='CourseInfo.courseTerm' placeholder='请选择教学学期'>
+            <el-option label='2020-2021 年度 第 一 学期' value='2020-2021 年度 第 一 学期'></el-option>
+            <el-option label='2020-2021 年度 第 二 学期' value='2020-2021 年度 第 二 学期'></el-option>
+            <el-option label='2019-2020 年度 第 一 学期' value='2019-2020 年度 第 一 学期'></el-option>
+            <el-option label='2019-2020 年度 第 二 学期' value='2019-2020 年度 第 二 学期'></el-option>
+            <el-option label='2018-2019 年度 第 一 学期' value='2018-2019 年度 第 一 学期'></el-option>
+            <el-option label='2018-2019 年度 第 二 学期' value='2018-2019 年度 第 二 学期'></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label='课程名称' prop='courseName'>
+          <el-input v-model='CourseInfo.courseName'></el-input>
+        </el-form-item>
+        <el-form-item label='课程编码' prop='courseId'>
+          <el-input v-model='CourseInfo.courseId'></el-input>
+        </el-form-item>
+      </el-form>
+    </div>
+    <div class="anotherHalf">
+      <el-form :label-position='labelPosition' label-width='80px' :rules='rules' :model='CourseInfo' size='mini'>
+        <el-form-item label='学分' prop='courseCredit'>
+          <el-input v-model='CourseInfo.courseCredit'></el-input>
+        </el-form-item>
+        <el-form-item label='学时' prop='coursePeriod'>
+          <el-input v-model='CourseInfo.coursePeriod'></el-input>
+        </el-form-item>
+        <el-form-item label='申请人' prop='applicant'>
+          <el-input v-model='CourseInfo.applicant'></el-input>
+        </el-form-item>
+        <el-form-item label-position='right' label-width='199px'>
+          <el-button size='mini' @click='addCourse()'>提交</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
   </div>
 </template>
 
@@ -36,16 +44,47 @@ export default {
   name: 'AddCourse',
   data () {
     return {
-      courseName: '',
-      courseId: '',
-      courseCredit: '',
-      courseTime: '',
-      applicant: ''
+      labelPosition: 'right',
+      rules: {
+        courseTerm: [
+          { required: true, message: '请选择活动区域', trigger: 'blur' }
+        ],
+        courseName: [
+          { required: true, message: '请输入课程名称', trigger: 'blur' }
+        ],
+        courseId: [
+          { required: true, message: '请输入课程编码', trigger: 'blur' }
+        ],
+        courseCredit: [
+          { required: true, message: '请输入课程学分', trigger: 'blur' }
+        ],
+        coursePeriod: [
+          { required: true, message: '请输入课程学时', trigger: 'blur' }
+        ],
+        applicant: [
+          { required: true, message: '请输入申请人', trigger: 'blur' }
+        ]
+      },
+      CourseInfo: {
+        courseTerm: '',
+        courseName: '',
+        courseId: '',
+        courseCredit: '',
+        coursePeriod: '',
+        applicant: ''
+      }
     }
   },
   methods: {
     addCourse () {
-      console.log(this.courseName)
+      localStorage.setItem('CourseInfo', JSON.stringify(this.CourseInfo))
+      console.log(localStorage.getItem('CourseInfo'))
+      this.CourseInfo.courseTerm = ''
+      this.CourseInfo.courseName = ''
+      this.CourseInfo.courseId = ''
+      this.CourseInfo.courseCredit = ''
+      this.CourseInfo.coursePeriod = ''
+      this.CourseInfo.applicant = ''
     }
   }
 }
@@ -53,32 +92,15 @@ export default {
 
 <style lang="stylus" scoped>
   .addCourse
-    margin : 0
-    padding : 0
-    width : 100%
+    position : absolute
+    left : 22%
+    top : 10%
+    width : 550px
     height : 500px
-    .table
-      background-color : #F2F2f2
+    .half
       position : absolute
-      left : 30%
-      top : 10%
-      width : 500px
-      height : 300px
-      th
-        line-height : 50px
-        width : 100px
-        overflow : hidden
-        border-bottom : 3px solid white
-      .submitFont
-        font-family : '宋体'
-        font-weight : bold
-        font-size : 20px
-        color : blue
-        display : inline
-      .sumbit
-        text-align : right
-      td
-        line-height : 50px
-        width : 100px
-        overflow : hidden
+      left : 0
+    .anotherHalf
+      position : absolute
+      right : 0
 </style>

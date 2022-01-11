@@ -1,8 +1,8 @@
 <template>
   <div class='Center'>
     <div class='head'>
-      <p class='headFonts'>课程专区</p>
-      <p class='headOut' @click='backLogin()'>注销</p>
+      <p class='headFonts'>成绩专区</p>
+      <p class="headOut" @click="backLogin()">注销</p>
       <p class='headMe' @click='backStu()'>我的</p>
     </div>
     <div class='Left'>
@@ -11,23 +11,11 @@
         <p class='backFonts' @click='backHome()'>返回首页</p>
       </div>
       <div class='inputBox'>
-        <button class='leftButton' @click='toMyInfo()'><p class='buttonFonts'>课程评估</p></button>
-        <button class='leftButton' @click='toMyReport()'><p class='buttonFonts'>生成报告</p></button>
-        <button class='leftButton' @click='toAdd()'><p class='buttonFonts'>添加课程</p></button>
+        <button class='investigation' @click='toMyInfo()'><p class='invesFonts'>填写问卷</p></button>
       </div>
     </div>
     <div class='Right'>
-      <div v-show='isMyInfo'>
-        <div class='rightUpload'>
-          <div v-if='isUpload' @click='toUpload()' class='upload'>
-            <Upload></Upload>
-          </div>
-          <div v-else>
-            <ScatterDiagram></ScatterDiagram>
-          </div>
-        </div>
-      </div>
-      <div v-show='isMyReport'>
+      <div v-show='isMyInfo' class='MyInfo'>
         <div class='rightForm'>
           <div class="half">
             <el-form :label-position='labelPosition' label-width='80px' :rules='rules' :model='formData' size='mini'>
@@ -41,52 +29,42 @@
                   <el-option label='2018-2019 年度 第 二 学期' value='2018-2019 年度 第 二 学期'></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label='课程名称' prop='name'>
-                <el-input v-model='formData.name'></el-input>
+            </el-form>
+            <el-form :label-position='labelPosition' label-width='80px' :rules='rules' :model='stuData' size='mini'>
+              <el-form-item label='学生姓名' prop='stuName'>
+                <el-input v-model='stuData.stuName'></el-input>
               </el-form-item>
-              <el-form-item label='课程编码' prop='id'>
-                <el-input v-model='formData.id'></el-input>
+              <el-form-item label='目标一' prop='one'>
+                <el-input v-model='stuData.one'></el-input>
               </el-form-item>
-              <el-form-item label='学分' prop='credit'>
-                <el-input v-model='formData.credit'></el-input>
-              </el-form-item>
-              <el-form-item label='学生班级' prop='class'>
-                <el-input v-model='formData.class'></el-input>
+              <el-form-item label='目标三' prop='three'>
+                <el-input v-model='stuData.three'></el-input>
               </el-form-item>
             </el-form>
           </div>
           <div class="anotherHalf">
             <el-form :label-position='labelPosition' label-width='80px' :rules='rules' :model='formData' size='mini'>
-              <el-form-item label='课程平台' prop='platform'>
-                <el-input v-model='formData.platform'></el-input>
+              <el-form-item label='课程名称' prop='name'>
+                <el-input v-model='formData.name'></el-input>
               </el-form-item>
-              <el-form-item label='课程属性' prop='attribute'>
-                <el-select v-model='formData.attribute' placeholder='请选择课程属性'>
-                  <el-option label='必修' value='必修'></el-option>
-                  <el-option label='选修' value='选修'></el-option>
-                </el-select>
+            </el-form>
+            <el-form :label-position='labelPosition' label-width='80px' :rules='rules' :model='stuData' size='mini'>
+              <el-form-item label='学号' prop='credit'>
+                <el-input v-model='stuData.credit'></el-input>
               </el-form-item>
-              <el-form-item label='学时' prop='period'>
-                <el-input v-model='formData.period'></el-input>
+              <el-form-item label='目标二' prop='two'>
+                <el-input v-model='stuData.two'></el-input>
               </el-form-item>
-              <el-form-item label='考核方式' prop='examination'>
-                <el-select v-model='formData.examination' placeholder='请选择考核方式'>
-                  <el-option label='开卷' value='开卷'></el-option>
-                  <el-option label='闭卷' value='闭卷'></el-option>
-                  <el-option label='半开卷' value='半开卷'></el-option>
-                </el-select>
+              <el-form-item label='目标四' prop='four'>
+                <el-input v-model='stuData.four'></el-input>
               </el-form-item>
-              <el-form-item label-position='right' label-width='80px'>
-                <el-button size='mini' @click='submit()'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;提交&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
-                <ExportExcel v-bind:formData='formData'></ExportExcel>
+              <el-form-item>
+                <el-button size='mini' @click='submit()'>提交</el-button>
+                <el-button size='mini' @click='clear()'>下一个</el-button>
+                <ExportInvestigation v-bind:students='students'></ExportInvestigation>
               </el-form-item>
             </el-form>
           </div>
-        </div>
-      </div>
-      <div v-show='isToAdd'>
-        <div class='rightUpload'>
-          <AddCourse></AddCourse>
         </div>
       </div>
       <p v-show='isActive' class='rightFonts'>请在左侧选择您要进行的操作~</p>
@@ -96,108 +74,103 @@
 
 <script>
 import { mapMutations } from 'vuex'
-import Upload from '../../../components/Upload.vue'
-import ScatterDiagram from '../../../components/ScatterDiagram.vue'
-import AddCourse from './AddCourse.vue'
-import ExportExcel from './ExportExcel.vue'
+import ExportInvestigation from './ExportInvestigation.vue'
 export default {
-  name: 'Curriculum',
+  name: 'ScoreManage',
+  components: {
+    ExportInvestigation
+  },
   data () {
     return {
       isActive: true,
       isMyInfo: false,
-      isMyReport: false,
-      isToAdd: false,
-      isUpload: true,
       labelPosition: 'right',
       rules: {
         term: [
-          { required: true, message: '请选择活动区域', trigger: 'blur' }
+          { required: true, message: '请选择教学学期', trigger: 'blur' }
         ],
         name: [
           { required: true, message: '请输入课程名称', trigger: 'blur' }
         ],
-        id: [
-          { required: true, message: '请输入课程编码', trigger: 'blur' }
+        stuName: [
+          { required: true, message: '请输入学生姓名', trigger: 'blur' }
         ],
         credit: [
-          { required: true, message: '请输入课程学分', trigger: 'blur' }
+          { required: true, message: '请输入学生学号', trigger: 'blur' }
         ],
-        class: [
-          { required: true, message: '请输入授课班级', trigger: 'blur' }
+        one: [
+          { required: true, message: '请输入该学生目标一的达成度', trigger: 'blur' }
         ],
-        platform: [
-          { required: true, message: '请输入课程平台', trigger: 'blur' }
+        two: [
+          { required: true, message: '请输入该学生目标二的达成度', trigger: 'blur' }
         ],
-        attribute: [
-          { required: true, message: '请选择课程属性', trigger: 'blur' }
+        three: [
+          { required: true, message: '请输入该学生目标三的达成度', trigger: 'blur' }
         ],
-        period: [
-          { required: true, message: '请输入课程学时', trigger: 'blur' }
-        ],
-        examination: [
-          { required: true, message: '请选择考核方式', trigger: 'blur' }
+        four: [
+          { required: true, message: '请输入该学生目标四的达成度', trigger: 'blur' }
         ]
       },
       formData: {
         term: '',
-        name: '',
-        id: '',
+        name: ''
+      },
+      stuData: {
+        stuName: '',
         credit: '',
-        class: '',
-        platform: '',
-        attribute: '',
-        period: '',
-        examination: ''
-      }
+        one: '',
+        two: '',
+        three: '',
+        four: ''
+      },
+      students: []
     }
-  },
-  components: {
-    Upload,
-    ScatterDiagram,
-    AddCourse,
-    ExportExcel
   },
   methods: {
     ...mapMutations(['delLogin']),
-    submit () {
-      try {
-        this.$message.success('上传成功！')
-      } catch (e) {
-        this.$message.warning('上传错误，请联系管理员！')
-      }
-    },
     backLogin () {
       this.$router.push('/login')
       this.delLogin()
       localStorage.removeItem('username')
-    },
-    backStu () {
-      this.$router.push('/teacher')
+      this.initStudents()
     },
     backHome () {
       this.$router.push('/')
     },
+    backStu () {
+      this.$router.push('/teacher')
+    },
     toMyInfo () {
       this.isMyInfo = true
       this.isActive = false
-      this.isToAdd = false
-      this.isMyReport = false
     },
-    toMyReport () {
-      this.isMyReport = true
-      this.isActive = false
-      this.isMyInfo = false
-      this.isToAdd = false
+    initStudents () {
+      let students = []
+      localStorage.setItem('students', students)
     },
-    toAdd () {
-      this.isToAdd = true
-      this.isActive = false
-      this.isMyInfo = false
-      this.isMyReport = false
+    submit () {
+      console.log(this.stuData)
+      let data = {
+        stuName: this.stuData.stuName,
+        credit: this.stuData.credit,
+        one: this.stuData.one,
+        two: this.stuData.two,
+        three: this.stuData.three,
+        four: this.stuData.four
+      }
+      this.students.push(data)
+      console.log(this.students)
+      this.$message.success('提交成功，可点击下一个继续提交')
     },
-    toUpload () {
-      this.isUpload = false
+    clear () {
+      setTimeout(() => {
+        this.stuData.stuName = ''
+        this.stuData.credit = ''
+        this.stuData.one = ''
+        this.stuData.two = ''
+        this.stuData.three = ''
+        this.stuData.four = ''
+      }, 200)
     }
   }
 }
@@ -214,17 +187,16 @@ export default {
       width : 100%
       height : 30px
       background-color : skyblue
-      .headOut
-        font-family : '宋体'
-        position : fixed
-        right : 80px
-        top : 6px
-        margin : 0
-        cursor : pointer
       .headFonts
         font-family : '宋体'
         position : fixed
         left : 18px
+        top : 6px
+        margin : 0
+      .headOut
+        font-family : '宋体'
+        position : fixed
+        right : 80px
         top : 6px
         margin : 0
         cursor : pointer
@@ -234,6 +206,7 @@ export default {
         right : 32px
         top: 6px
         margin : 0
+        cursor : pointer
         cursor : pointer
     .Left
       position : absolute
@@ -263,14 +236,14 @@ export default {
       .inputBox
         width : 100%
         margin-top : 5%
-        .leftButton
+        .investigation
           width : 100%
           cursor : pointer
           border-radius : 5px
           background-color : skyblue
           border : 1px solid #CCCCCC
           margin-top : 5%
-          .buttonFonts
+          .invesFonts
             font-family : '宋体'
             font-size : 16px
             margin : 10px
@@ -288,7 +261,7 @@ export default {
         position : absolute
         top : 10%
         left : 22%
-        width : 550px
+        width : 600px
         height : 500px
         margin : 0
         .half
@@ -297,6 +270,9 @@ export default {
         .anotherHalf
           position : absolute
           right : 0
+        .pagination
+          position : absolute
+          bottom : 0
       .rightFonts
         text-align : center
         line-height : 500px

@@ -205,12 +205,10 @@ export default {
       // 基于准备好的dom，初始化echarts实例
       let myChart = echarts.init(document.getElementById(idName))
       // 绘制图表
-      console.log(option)
       myChart.setOption(option)
     },
     getAverage (res) {
       var total = 0
-      console.log(res)
       for (var i = 0; i < res.length; i++) {
         total = total + res[i]
       }

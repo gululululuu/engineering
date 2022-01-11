@@ -25,12 +25,14 @@ export default {
       weight: [0.6, 0.2, 0.2],
       row: 47,
       column: 4,
+      index: 0,
       examination: [],
       inClass: [],
       test: [],
       homework: [],
       teacher: [],
-      student: []
+      student: [],
+      result: []
     }
   },
   methods: {
@@ -50,6 +52,7 @@ export default {
       const fileReader = new FileReader()
       fileReader.onload = (ev) => {
         try {
+          this.$message.success('上传成功！')
           const data = ev.target.result
           const workbook = XLSX.read(data, {
             type: 'binary'
@@ -66,14 +69,17 @@ export default {
             2 -- 实验
             3 -- 教师评价
             4 -- 学生评价
+            5 -- 试卷
           */
           let sheetName = ''
           let content = {}
           // var achievementResult = []
           _this.outputs = []
+          this.initResult()
           for (let sheetIndex = 0; sheetIndex < 5; sheetIndex++) {
             sheetName = workbook.SheetNames[sheetIndex]
             content = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName])
+            console.log(content)
             this.getInClassOrHomeTest(content, sheetIndex)
             // console.log(achievementResult)
           }
@@ -82,12 +88,11 @@ export default {
           // console.log(content)
           this.getExaminationAchievement(content)
           // console.log(achievementResult)
+          this.uploadScore()
           sheetName = workbook.SheetNames[6]
           content = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName])
           this.coefficients = this.getCoefficient(content)
           _this.outputs.push(this.getDiagramData())
-          console.log(1)
-          console.log(_this.outputs)
           var arr1 = []
           var arr2 = []
           var arr3 = []
@@ -110,6 +115,7 @@ export default {
       }
       fileReader.readAsBinaryString(files[0])
     },
+    // 画散点图
     getDiagramData () {
       var result = this.getArray()
       for (var i = 0; i < this.row; i++) {
@@ -140,6 +146,10 @@ export default {
       // 起始学生的序号
       let stuIndex = 3
       score = _this.getScore(ws, score, rules, stuIndex)
+      if (sheetIndex < 3) {
+        var total = _this.getTotal(score)
+        _this.getResult(total, sheetIndex)
+      }
       var ruleScore = [0, 0, 0, 0]
       let ruleIndex = this.getFullMarkIndex(ws)
       ruleScore = this.getRuleScores(ws, rules, ruleScore, ruleIndex)
@@ -168,7 +178,7 @@ export default {
       // 声明存放学生在每个目标下成绩的数组
       var score = _this.getArray()
       // 处理数据
-      let total = 0
+      let sum = 0
       // 将excel表转换为json数据后，目标规则 1所在位置
       let ruleIndex = 4
       // 将excel表转换为json数据后，学生 1所在位置
@@ -176,15 +186,44 @@ export default {
       // 记录每个学生的所有目标的分数
       for (var i = 0; i < _this.row; i++) {
         for (var j = 0; j < _this.column; j++) {
-          score[i][j] = this.getSum(ws[ruleIndex], ws[studentIndex], total)
+          score[i][j] = this.getSum(ws[ruleIndex], ws[studentIndex], sum)
           ruleIndex = ((ruleIndex + 1) % 4) + 4
         }
         studentIndex++
       }
+      var total = this.getTotal(score)
+      this.getResult(total, 3)
       let fullMarkIndex = this.getFullMarkIndex(ws)
       var ruleScore = this.getRuleScore(ws, ruleIndex, fullMarkIndex)
       this.examination = this.getPersonalAchievement(this.examination, score, ruleScore)
       return this.getAchievement(score, ruleScore)
+    },
+    initResult () {
+      this.result = this.getArray()
+      console.log('成绩单初始化成功!')
+    },
+    getResult (total, index) {
+      for (var i = 0; i < this.row; i++) {
+        this.result[i][index] = total[i]
+      }
+    },
+    getTotal (score) {
+      var total = []
+      for (var i = 0; i < this.row; i++) {
+        var temp = 0
+        for (var j = 0; j < this.column; j++) {
+          temp = temp + score[i][j]
+        }
+        total[i] = temp
+      }
+      return total
+    },
+    uploadScore () {
+      let res = []
+      for (let i = 0; i < this.result.length; i++) {
+        res[i] = this.result[i].map(value => ({value}))
+      }
+      localStorage.setItem('score', JSON.stringify(res))
     },
     getCoefficient (content) {
       var res = this.getArray()

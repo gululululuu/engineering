@@ -1,0 +1,27 @@
+{
+  "data" : {
+    "TeacherList": [
+      {
+        "username": "fifth",
+        "name": "陈书",
+        "phone": "15583124212",
+        "addr": "长春市",
+        "sex": "男",
+        "title": "讲师",
+        "birth": "1989年10月",
+        "contactAddr": "吉林省长春市绿园区上海路3000号",
+        "id" : 1
+      }, {
+        "username": "fifth2",
+        "name": "金然",
+        "phone": "13928329342",
+        "addr": "长春市",
+        "sex": "女",
+        "title": "副教授",
+        "birth": "1976年8月",
+        "contactAddr": "吉林省长春市二道区解放大路2000号",
+        "id" : 2
+      }
+    ]
+  }
+}

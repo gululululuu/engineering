@@ -1,0 +1,33 @@
+{
+  "data" : {
+    "StudentList": [
+      {
+        "username": "student",
+        "name": "张昭阳",
+        "sex": "男",
+        "score": {
+          "name" : "",
+          "total" : "",
+          "inClass" : "",
+          "home": "",
+          "test": "",
+          "exam": ""
+        },
+        "id" : 1001
+      }, {
+        "username": "student2",
+        "name": "刘俊义",
+        "sex": "男",
+        "score": {
+          "name" : "",
+          "total" : "",
+          "inClass" : "",
+          "home": "",
+          "test": "",
+          "exam": ""
+        },
+        "id" : 1002
+      }
+    ]
+  }
+}
