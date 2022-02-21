@@ -6,13 +6,13 @@
 import { dataConversionUtil } from '../../../assets/js/exportToExcel.js'
 export default {
   name: 'Excel',
-  props: ['students'],
   methods: {
     loadExcel () {
       try {
         let datas = []
         console.log(this.students)
-        let students = this.students
+        console.log(localStorage.getItem('students'))
+        let students = JSON.parse(localStorage.getItem('students'))
         students.map(item => {
           let data = {
             credit: item.credit,
@@ -29,7 +29,7 @@ export default {
         datas.forEach((item, index) => {
           dataList.push([item.credit, item.name, item.item1, item.item2, item.item3, item.item4])
         })
-        dataConversionUtil.investigationToExcel('教师评价', tableHeader, dataList)
+        dataConversionUtil.investigationToExcel('学生自我评价', tableHeader, dataList)
         this.$message.success('导出成功！')
         // this.clear()
       } catch (e) {
@@ -39,7 +39,7 @@ export default {
     },
     getTableHeader () {
       var tableHeader = []
-      tableHeader.push(['教师评价'])
+      tableHeader.push(['学生自我评价'])
       tableHeader.push(['学生学号', '学生姓名', '课程目标'])
       tableHeader.push([null, null, '目标1', '目标2', '目标3', '目标4'])
       tableHeader.push([null, '满分', '1', '1', '1', '1'])

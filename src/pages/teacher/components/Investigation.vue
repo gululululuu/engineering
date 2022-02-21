@@ -2,7 +2,7 @@
   <div class='Center'>
     <div class='head'>
       <p class='headFonts'>成绩专区</p>
-      <p class="headOut" @click="backLogin()">注销</p>
+      <p class='headOut' @click='backLogin()'>注销</p>
       <p class='headMe' @click='backStu()'>我的</p>
     </div>
     <div class='Left'>
@@ -12,12 +12,13 @@
       </div>
       <div class='inputBox'>
         <button class='investigation' @click='toMyInfo()'><p class='invesFonts'>填写问卷</p></button>
+        <button class='investigation' @click='toMyResult()'><p class='invesFonts'>导出结果</p></button>
       </div>
     </div>
     <div class='Right'>
-      <div v-show='isMyInfo' class='MyInfo'>
+      <div v-show='isMyInfo'>
         <div class='rightForm'>
-          <div class="half">
+          <div class='half'>
             <el-form :label-position='labelPosition' label-width='80px' :rules='rules' :model='formData' size='mini'>
               <el-form-item label='教学学期' prop='term'>
                 <el-select v-model='formData.term' placeholder='请选择教学学期'>
@@ -32,31 +33,31 @@
             </el-form>
             <el-form :label-position='labelPosition' label-width='80px' :rules='rules' :model='stuData' size='mini'>
               <el-form-item label='学生姓名' prop='stuName'>
-                <el-input v-model='stuData.stuName'></el-input>
+                <el-input v-model='stuData.stuName' placeholder='请输入该学生的姓名'></el-input>
               </el-form-item>
               <el-form-item label='目标一' prop='one'>
-                <el-input v-model='stuData.one'></el-input>
+                <el-input v-model='stuData.one' placeholder='请输入该学生目标一的达成度'></el-input>
               </el-form-item>
               <el-form-item label='目标三' prop='three'>
-                <el-input v-model='stuData.three'></el-input>
+                <el-input v-model='stuData.three' placeholder='请输入该学生目标三的达成度'></el-input>
               </el-form-item>
             </el-form>
           </div>
-          <div class="anotherHalf">
+          <div class='anotherHalf'>
             <el-form :label-position='labelPosition' label-width='80px' :rules='rules' :model='formData' size='mini'>
               <el-form-item label='课程名称' prop='name'>
-                <el-input v-model='formData.name'></el-input>
+                <el-input v-model='formData.name' placeholder='请输入课程名称'></el-input>
               </el-form-item>
             </el-form>
             <el-form :label-position='labelPosition' label-width='80px' :rules='rules' :model='stuData' size='mini'>
               <el-form-item label='学号' prop='credit'>
-                <el-input v-model='stuData.credit'></el-input>
+                <el-input v-model='stuData.credit' placeholder='请输入该学生的学号'></el-input>
               </el-form-item>
               <el-form-item label='目标二' prop='two'>
-                <el-input v-model='stuData.two'></el-input>
+                <el-input v-model='stuData.two' placeholder='请输入该学生目标二的达成度'></el-input>
               </el-form-item>
               <el-form-item label='目标四' prop='four'>
-                <el-input v-model='stuData.four'></el-input>
+                <el-input v-model='stuData.four' placeholder='请输入该学生目标四的达成度'></el-input>
               </el-form-item>
               <el-form-item>
                 <el-button size='mini' @click='submit()'>提交</el-button>
@@ -67,6 +68,15 @@
           </div>
         </div>
       </div>
+      <div v-show='isMyResult' class='MyResult'>
+        <el-steps :active="active" finish-status="success" process-status="wait" space="400px">
+          <el-step title="步骤 1" description="请确认您是否完成问卷调查"></el-step>
+          <el-step title="步骤 2" description="请确认学生们是否完成问卷调查"></el-step>
+          <el-step title="步骤 3" description="请确认您是否要导出结果为EXCEL表格"></el-step>
+        </el-steps>
+        <el-button size='mini' @click="next()" style="margin-top: 22px;">下一步</el-button>
+        <ExportStudentInvestigation v-if='isDone'></ExportStudentInvestigation>
+      </div>
       <p v-show='isActive' class='rightFonts'>请在左侧选择您要进行的操作~</p>
     </div>
   </div>
@@ -75,16 +85,21 @@
 <script>
 import { mapMutations } from 'vuex'
 import ExportInvestigation from './ExportInvestigation.vue'
+import ExportStudentInvestigation from './ExportStudentInvestigation.vue'
 export default {
   name: 'ScoreManage',
   components: {
-    ExportInvestigation
+    ExportInvestigation,
+    ExportStudentInvestigation
   },
   data () {
     return {
       isActive: true,
       isMyInfo: false,
+      isMyResult: false,
+      isDone: false,
       labelPosition: 'right',
+      active: 0,
       rules: {
         term: [
           { required: true, message: '请选择教学学期', trigger: 'blur' }
@@ -140,13 +155,31 @@ export default {
     backStu () {
       this.$router.push('/teacher')
     },
+    next () {
+      if (this.active++ > 1) {
+        this.isDone = true
+      }
+    },
     toMyInfo () {
       this.isMyInfo = true
       this.isActive = false
+      this.isMyResult = false
+      this.initTeachers()
+    },
+    toMyResult () {
+      this.isMyResult = true
+      this.isMyInfo = false
+      this.isActive = false
+      this.active = 0
+      this.isDone = false
     },
     initStudents () {
       let students = []
-      localStorage.setItem('students', students)
+      localStorage.setItem('students', JSON.stringify(students))
+    },
+    initTeachers () {
+      let teachers = []
+      localStorage.setItem('teachers', JSON.stringify(teachers))
     },
     submit () {
       console.log(this.stuData)
@@ -158,8 +191,12 @@ export default {
         three: this.stuData.three,
         four: this.stuData.four
       }
-      this.students.push(data)
-      console.log(this.students)
+      console.log(localStorage.getItem('teachers'))
+      let stuData = JSON.parse(localStorage.getItem('teachers'))
+      stuData.push(data)
+      localStorage.setItem('teachers', JSON.stringify(stuData))
+      console.log(123)
+      console.log(JSON.parse(localStorage.getItem('teachers')))
       this.$message.success('提交成功，可点击下一个继续提交')
     },
     clear () {
@@ -254,9 +291,11 @@ export default {
       width : 88%
       height : 500px
       background-color : #F0F7FF
-      .rightUpload
-        text-align : center
-        line-height : 500px
+      .MyResult
+        position : absolute
+        top : 10%
+        left : 22%
+        width : 850px
       .rightForm
         position : absolute
         top : 10%

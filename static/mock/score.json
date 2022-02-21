@@ -2,7 +2,7 @@
   "data" : {
     "StudentList": [
       {
-        "username": "student",
+        "username": "61001",
         "name": "张昭阳",
         "sex": "男",
         "score": {
@@ -13,9 +13,9 @@
           "test": "",
           "exam": ""
         },
-        "id" : 1001
+        "id" : 61001
       }, {
-        "username": "student2",
+        "username": "61002",
         "name": "刘俊义",
         "sex": "男",
         "score": {
@@ -26,7 +26,7 @@
           "test": "",
           "exam": ""
         },
-        "id" : 1002
+        "id" : 61002
       }
     ]
   }

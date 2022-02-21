@@ -6,12 +6,12 @@
           <p>主页</p>
         </li>
       </router-link>
-      <router-link custom v-slot="{ navigate }" to="/evaluation">
+      <router-link custom v-slot="{ navigate }" to="/evaluationSecretary">
         <li @click="navigate" @keypress.enter="navigate" role="link">
           <p>课程评估</p>
         </li>
       </router-link>
-      <router-link custom v-slot="{ navigate }" to="/personalCenter">
+      <router-link custom v-slot="{ navigate }" to="/personalCenterSecretary">
         <li @click="navigate" @keypress.enter="navigate" role="link" class="personalCenter">
           <p>个人中心</p>
         </li>

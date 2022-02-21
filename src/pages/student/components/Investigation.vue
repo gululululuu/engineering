@@ -32,31 +32,31 @@
             </el-form>
             <el-form :label-position='labelPosition' label-width='80px' :rules='rules' :model='stuData' size='mini'>
               <el-form-item label='学生姓名' prop='stuName'>
-                <el-input v-model='stuData.stuName'></el-input>
+                <el-input v-model='stuData.stuName' placeholder='请输入您的姓名'></el-input>
               </el-form-item>
               <el-form-item label='目标一' prop='one'>
-                <el-input v-model='stuData.one'></el-input>
+                <el-input v-model='stuData.one' placeholder='请输入自己的目标一达成度'></el-input>
               </el-form-item>
               <el-form-item label='目标三' prop='three'>
-                <el-input v-model='stuData.three'></el-input>
+                <el-input v-model='stuData.three' placeholder='请输入自己的目标三达成度'></el-input>
               </el-form-item>
             </el-form>
           </div>
           <div class="anotherHalf">
             <el-form :label-position='labelPosition' label-width='80px' :rules='rules' :model='formData' size='mini'>
               <el-form-item label='课程名称' prop='name'>
-                <el-input v-model='formData.name'></el-input>
+                <el-input v-model='formData.name' placeholder='请输入课程名称'></el-input>
               </el-form-item>
             </el-form>
             <el-form :label-position='labelPosition' label-width='80px' :rules='rules' :model='stuData' size='mini'>
               <el-form-item label='学号' prop='credit'>
-                <el-input v-model='stuData.credit'></el-input>
+                <el-input v-model='stuData.credit' placeholder='请输入您的学号'></el-input>
               </el-form-item>
               <el-form-item label='目标二' prop='two'>
-                <el-input v-model='stuData.two'></el-input>
+                <el-input v-model='stuData.two' placeholder='请输入自己的目标二达成度'></el-input>
               </el-form-item>
               <el-form-item label='目标四' prop='four'>
-                <el-input v-model='stuData.four'></el-input>
+                <el-input v-model='stuData.four' placeholder='请输入自己的目标四达成度'></el-input>
               </el-form-item>
               <el-form-item>
                 <el-button size='mini' @click='submit()'>提交</el-button>
@@ -72,12 +72,8 @@
 
 <script>
 import { mapMutations } from 'vuex'
-import ExportInvestigation from './ExportInvestigation.vue'
 export default {
   name: 'ScoreManage',
-  components: {
-    ExportInvestigation
-  },
   data () {
     return {
       isActive: true,
@@ -160,6 +156,7 @@ export default {
         three: this.stuData.three,
         four: this.stuData.four
       }
+      console.log(localStorage.getItem('students'))
       let stuData = JSON.parse(localStorage.getItem('students'))
       stuData.push(data)
       localStorage.setItem('students', JSON.stringify(stuData))

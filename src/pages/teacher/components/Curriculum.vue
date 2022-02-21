@@ -12,20 +12,30 @@
       </div>
       <div class='inputBox'>
         <button class='leftButton' @click='toMyInfo()'><p class='buttonFonts'>课程评估</p></button>
+        <button class='leftButton' @click='toMyAnalysis()'><p class='buttonFonts'>达成分析</p></button>
         <button class='leftButton' @click='toMyReport()'><p class='buttonFonts'>生成报告</p></button>
         <button class='leftButton' @click='toAdd()'><p class='buttonFonts'>添加课程</p></button>
       </div>
     </div>
     <div class='Right'>
       <div v-show='isMyInfo'>
-        <div class='rightUpload'>
-          <div v-if='isUpload' @click='toUpload()' class='upload'>
+        <div v-show="isInfo" class='rightUpload'>
+          <el-steps :active="active" finish-status="success" process-status="wait" space="400px">
+            <el-step title="步骤 1" description="请确认您是否完成问卷调查"></el-step>
+            <el-step title="步骤 2" description="请确认学生们是否完成问卷调查"></el-step>
+            <el-step title="步骤 3" description="请确认您是否要上传成绩"></el-step>
+          </el-steps>
+          <el-button size='mini' @click="next()" style="margin-top: 22px;">下一步</el-button>
+          <div v-show='isUpload' @click='toUpload()' class='upload'>
             <Upload></Upload>
           </div>
-          <div v-else>
-            <ScatterDiagram></ScatterDiagram>
-          </div>
         </div>
+        <div v-show="isDiagram" class="rightInfo">
+          <ScatterDiagram></ScatterDiagram>
+        </div>
+      </div>
+      <div v-show="isMyAnalysis">
+        <Analysis></Analysis>
       </div>
       <div v-show='isMyReport'>
         <div class='rightForm'>
@@ -42,23 +52,23 @@
                 </el-select>
               </el-form-item>
               <el-form-item label='课程名称' prop='name'>
-                <el-input v-model='formData.name'></el-input>
+                <el-input v-model='formData.name' placeholder='请输入课程名称'></el-input>
               </el-form-item>
               <el-form-item label='课程编码' prop='id'>
-                <el-input v-model='formData.id'></el-input>
+                <el-input v-model='formData.id' placeholder='请输入课程编码'></el-input>
               </el-form-item>
               <el-form-item label='学分' prop='credit'>
-                <el-input v-model='formData.credit'></el-input>
+                <el-input v-model='formData.credit' placeholder='请输入课程学分'></el-input>
               </el-form-item>
               <el-form-item label='学生班级' prop='class'>
-                <el-input v-model='formData.class'></el-input>
+                <el-input v-model='formData.class' placeholder='请输入学生班级'></el-input>
               </el-form-item>
             </el-form>
           </div>
           <div class="anotherHalf">
             <el-form :label-position='labelPosition' label-width='80px' :rules='rules' :model='formData' size='mini'>
               <el-form-item label='课程平台' prop='platform'>
-                <el-input v-model='formData.platform'></el-input>
+                <el-input v-model='formData.platform' placeholder='请输入课程平台'></el-input>
               </el-form-item>
               <el-form-item label='课程属性' prop='attribute'>
                 <el-select v-model='formData.attribute' placeholder='请选择课程属性'>
@@ -67,7 +77,7 @@
                 </el-select>
               </el-form-item>
               <el-form-item label='学时' prop='period'>
-                <el-input v-model='formData.period'></el-input>
+                <el-input v-model='formData.period' placeholder='请输入课程学时'></el-input>
               </el-form-item>
               <el-form-item label='考核方式' prop='examination'>
                 <el-select v-model='formData.examination' placeholder='请选择考核方式'>
@@ -77,17 +87,15 @@
                 </el-select>
               </el-form-item>
               <el-form-item label-position='right' label-width='80px'>
-                <el-button size='mini' @click='submit()'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;提交&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
-                <ExportExcel v-bind:formData='formData'></ExportExcel>
+                <el-button size='mini' @click='submit()'>提交</el-button>
+                <ExportExcel v-bind:formData='formData' style="margin-left: 46px;"></ExportExcel>
               </el-form-item>
             </el-form>
           </div>
         </div>
       </div>
       <div v-show='isToAdd'>
-        <div class='rightUpload'>
-          <AddCourse></AddCourse>
-        </div>
+        <AddCourse></AddCourse>
       </div>
       <p v-show='isActive' class='rightFonts'>请在左侧选择您要进行的操作~</p>
     </div>
@@ -100,19 +108,24 @@ import Upload from '../../../components/Upload.vue'
 import ScatterDiagram from '../../../components/ScatterDiagram.vue'
 import AddCourse from './AddCourse.vue'
 import ExportExcel from './ExportExcel.vue'
+import Analysis from './Analysis.vue'
 export default {
   name: 'Curriculum',
   data () {
     return {
       isActive: true,
       isMyInfo: false,
+      isMyAnalysis: false,
       isMyReport: false,
       isToAdd: false,
-      isUpload: true,
+      isUpload: false,
+      isDiagram: false,
+      isInfo: false,
+      active: 0,
       labelPosition: 'right',
       rules: {
         term: [
-          { required: true, message: '请选择活动区域', trigger: 'blur' }
+          { required: true, message: '请选择上课日期', trigger: 'blur' }
         ],
         name: [
           { required: true, message: '请输入课程名称', trigger: 'blur' }
@@ -156,7 +169,8 @@ export default {
     Upload,
     ScatterDiagram,
     AddCourse,
-    ExportExcel
+    ExportExcel,
+    Analysis
   },
   methods: {
     ...mapMutations(['delLogin']),
@@ -180,6 +194,18 @@ export default {
     },
     toMyInfo () {
       this.isMyInfo = true
+      this.isInfo = true
+      this.isUpload = false
+      this.isDiagram = false
+      this.isActive = false
+      this.isMyAnalysis = false
+      this.isToAdd = false
+      this.isMyReport = false
+      this.active = 0
+    },
+    toMyAnalysis () {
+      this.isMyAnalysis = true
+      this.isMyInfo = false
       this.isActive = false
       this.isToAdd = false
       this.isMyReport = false
@@ -187,17 +213,25 @@ export default {
     toMyReport () {
       this.isMyReport = true
       this.isActive = false
+      this.isMyAnalysis = false
       this.isMyInfo = false
       this.isToAdd = false
     },
     toAdd () {
       this.isToAdd = true
       this.isActive = false
+      this.isMyAnalysis = false
       this.isMyInfo = false
       this.isMyReport = false
     },
     toUpload () {
-      this.isUpload = false
+      this.isDiagram = true
+      this.isInfo = false
+    },
+    next () {
+      if (this.active++ > 1) {
+        this.isUpload = true
+      }
     }
   }
 }
@@ -281,9 +315,21 @@ export default {
       width : 88%
       height : 500px
       background-color : #F0F7FF
-      .rightUpload
+      .rightInfo
         text-align : center
         line-height : 500px
+      .rightUpload
+        position : absolute
+        top : 10%
+        left : 22%
+        width : 850px
+        height : 500px
+        .upload
+          position : absolute
+          left : 20%
+          top : 20%
+          width : 137px
+          height : 22px
       .rightForm
         position : absolute
         top : 10%

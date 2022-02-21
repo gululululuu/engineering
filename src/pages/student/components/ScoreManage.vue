@@ -158,11 +158,12 @@ export default {
     },
     getTotal (item) {
       let score = JSON.parse(localStorage.getItem('score'))
-      item.score.inClass = score[0][0].value
-      item.score.home = score[0][1].value
-      item.score.test = score[0][2].value
-      item.score.exam = score[0][3].value
-      item.score.total = (score[0][0].value * 0.1 + score[0][1].value * 0.2 + score[0][2].value * 0.1 + score[0][3].value * 0.6).toFixed(0)
+      let index = localStorage.getItem('username') - 61001
+      item.score.inClass = score[index][0].value
+      item.score.home = score[index][1].value
+      item.score.test = score[index][2].value
+      item.score.exam = score[index][3].value
+      item.score.total = (item.score.inClass * 0.1 + item.score.home * 0.2 + item.score.test * 0.1 + item.score.exam * 0.6).toFixed(0)
       return item
     },
     getFormDataName () {

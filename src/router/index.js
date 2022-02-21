@@ -9,7 +9,7 @@ Vue.use(ElementUI)
 const Login = () => import('@/pages/login/Login.vue')
 const CollegeLeader = () => import('@/pages/collegeLeader/CollegeLeader.vue')
 const CollegePersonalCenter = () => import('@/pages/collegeLeader/components/PersonalCenter.vue')
-const Evaluation = () => import('@/pages/collegeLeader/components/Evaluation.vue')
+const EvaluationCollegeLeader = () => import('@/pages/collegeLeader/components/Evaluation.vue')
 const Dean = () => import('@/pages/dean/Dean.vue')
 const Inspector = () => import('@/pages/inspector/Inspector.vue')
 const Secretary = () => import('@/pages/secretary/Secretary.vue')
@@ -22,6 +22,13 @@ const TeacherPersonalCenter = () => import('@/pages/teacher/components/PersonalC
 const ScoreManage = () => import('@/pages/teacher/components/ScoreManage.vue')
 const Investigation = () => import('@/pages/teacher/components/Investigation.vue')
 const InvestigationStu = () => import('@/pages/student/components/Investigation.vue')
+const EvaluationDean = () => import('@/pages/dean/components/Evaluation.vue')
+const PersonalCenterDean = () => import('@/pages/dean/components/PersonalCenter.vue')
+const EvaluationInspector = () => import('@/pages/inspector/components/Evaluation.vue')
+const PersonalCenterInspector = () => import('@/pages/inspector/components/PersonalCenter.vue')
+const EvaluationSecretary = () => import('@/pages/secretary/components/Evaluation.vue')
+const PersonalCenterSecretary = () => import('@/pages/secretary/components/PersonalCenter.vue')
+
 const router = new Router({
   routes: [
     {
@@ -45,9 +52,9 @@ const router = new Router({
       component: CollegePersonalCenter
     },
     {
-      path: '/evaluation',
-      name: 'Evaluation',
-      component: Evaluation
+      path: '/evaluationCollegeLeader',
+      name: 'EvaluationCollegeLeader',
+      component: EvaluationCollegeLeader
     },
     {
       path: '/dean',
@@ -55,14 +62,44 @@ const router = new Router({
       component: Dean
     },
     {
+      path: '/evaluationDean',
+      name: 'EvaluationDean',
+      component: EvaluationDean
+    },
+    {
+      path: '/personalCenterDean',
+      name: 'PersonalCenterDean',
+      component: PersonalCenterDean
+    },
+    {
       path: '/inspector',
       name: 'Inspector',
       component: Inspector
     },
     {
+      path: '/evaluationInspector',
+      name: 'EvaluationInspector',
+      component: EvaluationInspector
+    },
+    {
+      path: '/personalCenterInspector',
+      name: 'PersonalCenterInspector',
+      component: PersonalCenterInspector
+    },
+    {
       path: '/secretary',
       name: 'Secretary',
       component: Secretary
+    },
+    {
+      path: '/evaluationSecretary',
+      name: 'EvaluationSecretary',
+      component: EvaluationSecretary
+    },
+    {
+      path: '/personalCenterSecretary',
+      name: 'PersonalCenterSecretary',
+      component: PersonalCenterSecretary
     },
     {
       path: '/teacher',

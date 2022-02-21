@@ -143,6 +143,106 @@ dataConversionUtil.investigationToExcel = function (fileName, tableHeader, dataL
     }), fileName + '.xlsx')
 }
 
+dataConversionUtil.exportToExcel = function (fileName, tableHeader, dataList, sheet = fileName) {
+  // excel的表头和数据
+  let aoa = []
+  // aoa的数据格式：[[],[],[],[]]   数组的第一个子数组可以指定为表头  根据情况而定
+  aoa = tableHeader.concat(dataList)
+  let workSheet = XLSX.utils.aoa_to_sheet(aoa)
+  workSheet['!merges'] = [
+    // 设置单元格合并
+    {s: {r: 0, c: 0}, e: {r: 1, c: 13}},
+    {s: {r: 2, c: 0}, e: {r: 2, c: 2}},
+    {s: {r: 2, c: 3}, e: {r: 2, c: 6}},
+    {s: {r: 2, c: 7}, e: {r: 2, c: 8}},
+    {s: {r: 2, c: 9}, e: {r: 2, c: 12}},
+    {s: {r: 3, c: 0}, e: {r: 3, c: 2}},
+    {s: {r: 3, c: 3}, e: {r: 3, c: 6}},
+    {s: {r: 3, c: 7}, e: {r: 3, c: 8}},
+    {s: {r: 3, c: 9}, e: {r: 3, c: 12}},
+    {s: {r: 4, c: 0}, e: {r: 4, c: 2}},
+    {s: {r: 4, c: 3}, e: {r: 4, c: 6}},
+    {s: {r: 4, c: 7}, e: {r: 4, c: 8}},
+    {s: {r: 4, c: 9}, e: {r: 4, c: 12}},
+    {s: {r: 5, c: 0}, e: {r: 5, c: 1}},
+    {s: {r: 6, c: 0}, e: {r: 6, c: 1}},
+    {s: {r: 7, c: 0}, e: {r: 7, c: 1}},
+    {s: {r: 8, c: 0}, e: {r: 8, c: 1}},
+    {s: {r: 9, c: 0}, e: {r: 9, c: 1}},
+    {s: {r: 10, c: 0}, e: {r: 10, c: 1}},
+    {s: {r: 11, c: 0}, e: {r: 11, c: 1}},
+    {s: {r: 12, c: 0}, e: {r: 12, c: 1}},
+    {s: {r: 13, c: 0}, e: {r: 13, c: 1}},
+    {s: {r: 14, c: 0}, e: {r: 14, c: 1}},
+    {s: {r: 15, c: 0}, e: {r: 15, c: 1}},
+    {s: {r: 16, c: 0}, e: {r: 16, c: 1}},
+    {s: {r: 17, c: 0}, e: {r: 17, c: 10}},
+    {s: {r: 18, c: 0}, e: {r: 18, c: 1}},
+    {s: {r: 19, c: 0}, e: {r: 19, c: 1}},
+    {s: {r: 20, c: 0}, e: {r: 20, c: 1}},
+    {s: {r: 21, c: 0}, e: {r: 21, c: 1}},
+    {s: {r: 22, c: 0}, e: {r: 22, c: 13}},
+    {s: {r: 23, c: 0}, e: {r: 24, c: 1}},
+    {s: {r: 23, c: 2}, e: {r: 24, c: 4}},
+    {s: {r: 23, c: 5}, e: {r: 24, c: 13}},
+    {s: {r: 25, c: 0}, e: {r: 25, c: 1}},
+    {s: {r: 25, c: 2}, e: {r: 25, c: 4}},
+    {s: {r: 25, c: 5}, e: {r: 25, c: 13}},
+    {s: {r: 26, c: 0}, e: {r: 26, c: 1}},
+    {s: {r: 26, c: 2}, e: {r: 26, c: 4}},
+    {s: {r: 26, c: 5}, e: {r: 26, c: 13}},
+    {s: {r: 27, c: 0}, e: {r: 27, c: 1}},
+    {s: {r: 27, c: 2}, e: {r: 27, c: 4}},
+    {s: {r: 27, c: 5}, e: {r: 27, c: 13}},
+    {s: {r: 28, c: 0}, e: {r: 28, c: 1}},
+    {s: {r: 28, c: 2}, e: {r: 28, c: 4}},
+    {s: {r: 28, c: 5}, e: {r: 28, c: 13}},
+    {s: {r: 29, c: 0}, e: {r: 29, c: 1}},
+    {s: {r: 29, c: 2}, e: {r: 29, c: 10}}
+  ]
+  // 单元格宽度
+  let width = []
+  // 单元格高度
+  let height = []
+  // 设置单元格属性
+  Object.keys(workSheet).forEach((key) => {
+    if (key.indexOf('!') < 0) {
+      workSheet[key].s = {
+        font: {
+          name: '宋体',
+          sz: 12
+        },
+        alignment: {
+          horizontal: 'center',
+          vertical: 'center',
+          wrapText: true
+        }
+      }
+    }
+    width.push({ wpx: 100 })
+    height.push({ hpx: 20 })
+  })
+  workSheet['!cols'] = width
+  workSheet['!rows'] = height
+  console.log(workSheet)
+  let workBook = XLSX.utils.book_new()
+  // 把数据写到工作簿中
+  XLSX.utils.book_append_sheet(workBook, workSheet, sheet)
+  // 如果一个工作工作簿中有多个工作表，可以修改参数类型并遍历添加，期中workBook是同一个，workSheet和sheet根据自己的需求添加，
+  // 比如在此处添加第二个工作表叫‘第二张表’，把数据封装好后，数据格式同上,假如数据叫workSheet2，执行下面代码，工作簿就会多一张工作表叫‘第二张表’
+  // XLSX.utils.book_append_sheet(workBook,workSheet2,'第二张表')
+  // 保存
+  console.log(workBook)
+  const wbout = xlsxStyle.write(workBook, {
+    type: 'binary',
+    bookType: 'xlsx'
+  })
+  xlsxSave.saveAs(
+    new Blob([s2ab(wbout)], {
+      type: 'application/octet-stream'
+    }), fileName + '.xlsx')
+}
+
 function s2ab (s) {
   var buf = new ArrayBuffer(s.length)
   var view = new Uint8Array(buf)

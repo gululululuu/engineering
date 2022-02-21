@@ -13,23 +13,23 @@
           </el-select>
         </el-form-item>
         <el-form-item label='课程名称' prop='courseName'>
-          <el-input v-model='CourseInfo.courseName'></el-input>
+          <el-input v-model='CourseInfo.courseName' placeholder='请输入课程名称'></el-input>
         </el-form-item>
         <el-form-item label='课程编码' prop='courseId'>
-          <el-input v-model='CourseInfo.courseId'></el-input>
+          <el-input v-model='CourseInfo.courseId' placeholder='请输入课程编码'></el-input>
         </el-form-item>
       </el-form>
     </div>
     <div class="anotherHalf">
       <el-form :label-position='labelPosition' label-width='80px' :rules='rules' :model='CourseInfo' size='mini'>
         <el-form-item label='学分' prop='courseCredit'>
-          <el-input v-model='CourseInfo.courseCredit'></el-input>
+          <el-input v-model='CourseInfo.courseCredit' placeholder='请输入课程学分'></el-input>
         </el-form-item>
         <el-form-item label='学时' prop='coursePeriod'>
-          <el-input v-model='CourseInfo.coursePeriod'></el-input>
+          <el-input v-model='CourseInfo.coursePeriod' placeholder='请输入课程学时'></el-input>
         </el-form-item>
         <el-form-item label='申请人' prop='applicant'>
-          <el-input v-model='CourseInfo.applicant'></el-input>
+          <el-input v-model='CourseInfo.applicant' placeholder='请输入申请人'></el-input>
         </el-form-item>
         <el-form-item label-position='right' label-width='199px'>
           <el-button size='mini' @click='addCourse()'>提交</el-button>
@@ -47,7 +47,7 @@ export default {
       labelPosition: 'right',
       rules: {
         courseTerm: [
-          { required: true, message: '请选择活动区域', trigger: 'blur' }
+          { required: true, message: '请选择上课日期', trigger: 'blur' }
         ],
         courseName: [
           { required: true, message: '请输入课程名称', trigger: 'blur' }

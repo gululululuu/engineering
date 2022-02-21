@@ -1,6 +1,5 @@
 <template>
   <div>
-    我是督学
     <Navigation></Navigation>
     <Backgroud></Backgroud>
   </div>

@@ -21,8 +21,6 @@ export default {
   data () {
     return {
       outputs: [],
-      coefficients: [],
-      weight: [0.6, 0.2, 0.2],
       row: 47,
       column: 4,
       index: 0,
@@ -41,7 +39,6 @@ export default {
       document.querySelector('.input-file').click()
     },
     exportData (event) {
-      var _this = this
       const files = event.target.files
       if (files.length <= 0) {
         return false
@@ -73,32 +70,30 @@ export default {
           */
           let sheetName = ''
           let content = {}
-          // var achievementResult = []
-          _this.outputs = []
+          this.outputs = []
           this.initResult()
+          this.initAchievement()
           for (let sheetIndex = 0; sheetIndex < 5; sheetIndex++) {
             sheetName = workbook.SheetNames[sheetIndex]
             content = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName])
             console.log(content)
             this.getInClassOrHomeTest(content, sheetIndex)
-            // console.log(achievementResult)
           }
           sheetName = workbook.SheetNames[5]
           content = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName])
-          // console.log(content)
+          console.log(content)
           this.getExaminationAchievement(content)
-          // console.log(achievementResult)
           this.uploadScore()
+          console.log(JSON.parse(localStorage.getItem('achievement')))
           sheetName = workbook.SheetNames[6]
           content = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName])
-          this.coefficients = this.getCoefficient(content)
-          _this.outputs.push(this.getDiagramData())
+          this.outputs.push(this.getDiagramData())
           var arr1 = []
           var arr2 = []
           var arr3 = []
           var arr4 = []
-          var temp = _this.outputs[0]
-          for (var i = 0; i < _this.row; i++) {
+          var temp = this.outputs[0]
+          for (var i = 0; i < this.row; i++) {
             arr1[i] = temp[i][0]
             arr2[i] = temp[i][1]
             arr3[i] = temp[i][2]
@@ -118,20 +113,24 @@ export default {
     // 画散点图
     getDiagramData () {
       var result = this.getArray()
+      let coefficients = JSON.parse(localStorage.getItem('coefficients'))
+      let weight = JSON.parse(localStorage.getItem('weight'))
+      console.log(coefficients)
+      console.log(weight)
       for (var i = 0; i < this.row; i++) {
         for (var j = 0; j < this.column; j++) {
           switch (j) {
             case 0:
-              result[i][j] = parseFloat(((((this.inClass[i][j] + this.homework[i][j] + this.test[i][j]) * this.coefficients[0][0]) + this.examination[i][j] * this.coefficients[3][0]) * this.weight[0] + this.teacher[i][j] * this.weight[1] + this.student[i][j] * this.weight[2]).toFixed(3))
+              result[i][j] = parseFloat(((((this.inClass[i][j] + this.homework[i][j] + this.test[i][j]) * coefficients[0][0]) + this.examination[i][j] * coefficients[3][0]) * weight[0] + this.teacher[i][j] * weight[1] + this.student[i][j] * weight[2]).toFixed(3))
               break
             case 1:
-              result[i][j] = parseFloat(((this.inClass[i][j] * this.coefficients[0][1] + this.homework[i][j] * this.coefficients[1][1] + this.test[i][j] * this.coefficients[2][1] + this.examination[i][j] * this.coefficients[3][1]) * this.weight[0] + this.teacher[i][j] * this.weight[1] + this.student[i][j] * this.weight[2]).toFixed(3))
+              result[i][j] = parseFloat(((this.inClass[i][j] * coefficients[0][1] + this.homework[i][j] * coefficients[1][1] + this.test[i][j] * coefficients[2][1] + this.examination[i][j] * coefficients[3][1]) * weight[0] + this.teacher[i][j] * weight[1] + this.student[i][j] * weight[2]).toFixed(3))
               break
             case 2:
-              result[i][j] = parseFloat(((this.inClass[i][j] * this.coefficients[0][2] + this.homework[i][j] * this.coefficients[1][2] + this.test[i][j] * this.coefficients[2][2] + this.examination[i][j] * this.coefficients[3][2]) * this.weight[0] + this.teacher[i][j] * this.weight[1] + this.student[i][j] * this.weight[2]).toFixed(3))
+              result[i][j] = parseFloat(((this.inClass[i][j] * coefficients[0][2] + this.homework[i][j] * coefficients[1][2] + this.test[i][j] * coefficients[2][2] + this.examination[i][j] * coefficients[3][2]) * weight[0] + this.teacher[i][j] * weight[1] + this.student[i][j] * weight[2]).toFixed(3))
               break
             case 3:
-              result[i][j] = parseFloat(((this.inClass[i][j] * this.coefficients[0][3] + this.homework[i][j] * this.coefficients[1][3] + this.test[i][j] * this.coefficients[2][3] + this.examination[i][j] * this.coefficients[3][3]) * this.weight[0] + this.teacher[i][j] * this.weight[1] + this.student[i][j] * this.weight[2]).toFixed(3))
+              result[i][j] = parseFloat(((this.inClass[i][j] * coefficients[0][3] + this.homework[i][j] * coefficients[1][3] + this.test[i][j] * coefficients[2][3] + this.examination[i][j] * coefficients[3][3]) * weight[0] + this.teacher[i][j] * weight[1] + this.student[i][j] * weight[2]).toFixed(3))
               break
           }
         }
@@ -140,15 +139,14 @@ export default {
     },
     /* 计算随堂测验分数达成度 */
     getInClassOrHomeTest (ws, sheetIndex) {
-      let _this = this
-      var score = _this.getArray()
-      var rules = _this.getRules(ws)
+      var score = this.getArray()
+      var rules = this.getRules(ws)
       // 起始学生的序号
       let stuIndex = 3
-      score = _this.getScore(ws, score, rules, stuIndex)
+      score = this.getScore(ws, score, rules, stuIndex)
       if (sheetIndex < 3) {
-        var total = _this.getTotal(score)
-        _this.getResult(total, sheetIndex)
+        var total = this.getTotal(score)
+        this.getResult(total, sheetIndex)
       }
       var ruleScore = [0, 0, 0, 0]
       let ruleIndex = this.getFullMarkIndex(ws)
@@ -174,29 +172,41 @@ export default {
     },
     /* 计算考试分数达成度 */
     getExaminationAchievement (ws) {
-      let _this = this
       // 声明存放学生在每个目标下成绩的数组
-      var score = _this.getArray()
+      var score = this.getArray()
       // 处理数据
       let sum = 0
       // 将excel表转换为json数据后，目标规则 1所在位置
       let ruleIndex = 4
       // 将excel表转换为json数据后，学生 1所在位置
       let studentIndex = 8
+      var total = this.getExamScore(ws, studentIndex)
+      this.getResult(total, 3)
       // 记录每个学生的所有目标的分数
-      for (var i = 0; i < _this.row; i++) {
-        for (var j = 0; j < _this.column; j++) {
+      for (var i = 0; i < this.row; i++) {
+        for (var j = 0; j < this.column; j++) {
           score[i][j] = this.getSum(ws[ruleIndex], ws[studentIndex], sum)
           ruleIndex = ((ruleIndex + 1) % 4) + 4
         }
         studentIndex++
       }
-      var total = this.getTotal(score)
-      this.getResult(total, 3)
       let fullMarkIndex = this.getFullMarkIndex(ws)
       var ruleScore = this.getRuleScore(ws, ruleIndex, fullMarkIndex)
       this.examination = this.getPersonalAchievement(this.examination, score, ruleScore)
       return this.getAchievement(score, ruleScore)
+    },
+    // 记录每个学生考试的总分
+    getExamScore (ws, studentIndex) {
+      let total = []
+      // __EMPTY_21 是成绩表中总分所在的列
+      for (var i = 0; i < this.row; i++) {
+        total[i] = ws[studentIndex++].__EMPTY_21
+      }
+      return total
+    },
+    initAchievement () {
+      let achievement = []
+      localStorage.setItem('achievement', JSON.stringify(achievement))
     },
     initResult () {
       this.result = this.getArray()
@@ -225,21 +235,6 @@ export default {
       }
       localStorage.setItem('score', JSON.stringify(res))
     },
-    getCoefficient (content) {
-      var res = this.getArray()
-      var coefficientIndex = 4
-      for (var i = 0; i < 4; i++) {
-        for (var j = 0; j < 4;) {
-          for (let [key, value] of Object.entries(content[coefficientIndex])) {
-            if (key !== '课程目标达成情况评价报告') {
-              res[i][j++] = value
-            }
-          }
-        }
-        coefficientIndex = (coefficientIndex + 1) % 4 + 4
-      }
-      return res
-    },
     /*
       param1 -- 目标规则对象
       param2 -- 学生对象
@@ -257,11 +252,10 @@ export default {
     },
     /* 创建二维数组存放所有学生在每个目标下的成绩 */
     getArray () {
-      let _this = this
       var score = [] // 声明一维数组
-      for (var x = 0; x < _this.row; x++) {
+      for (var x = 0; x < this.row; x++) {
         score[x] = [] // 声明二维数组
-        for (var y = 0; y < _this.column; y++) {
+        for (var y = 0; y < this.column; y++) {
           score[x][y] = 0 // 数组初始化为0
         }
       }
@@ -307,19 +301,24 @@ export default {
       ruleScore -- 每个目标下的总分
     */
     getAchievement (score, ruleScore) {
-      var _this = this
       var achievement = []
       var temp = 0
-      for (var i = 0; i < _this.column; i++) {
-        for (var j = 0; j < _this.row; j++) {
+      let stuNum = 39
+      for (var i = 0; i < this.column; i++) {
+        for (var j = 0; j < stuNum; j++) {
           temp = temp + score[j][i]
         }
         if (ruleScore[i] !== '' || ruleScore[i] !== null) {
-          achievement[i] = (temp / _this.row) / ruleScore[i]
+          achievement[i] = ((temp / stuNum) / ruleScore[i]).toFixed(3)
+          if (isNaN(achievement[i]) || achievement[i] === null) {
+            achievement[i] = 0
+          }
         }
         temp = 0
       }
-      return achievement
+      let data = JSON.parse(localStorage.getItem('achievement'))
+      data.push(achievement)
+      localStorage.setItem('achievement', JSON.stringify(data))
     },
     /* 获取每个目标对应的 key */
     getRules (ws) {

@@ -21,17 +21,54 @@
             <p class='info'>基本信息</p>
           </div>
           <div class='content'>
-            <el-descriptions direction="vertical" :column="4" border>
-              <el-descriptions-item label="姓名">{{ info.name }}</el-descriptions-item>
-              <el-descriptions-item label="手机号">{{ info.phone }}</el-descriptions-item>
-              <el-descriptions-item label="居住地" :span="2">{{ info.addr }}</el-descriptions-item>
-              <el-descriptions-item label="性别">{{ info.sex }}</el-descriptions-item>
-              <el-descriptions-item label="职称">{{ info.title }}</el-descriptions-item>
-              <el-descriptions-item label="出生年月" :span="2">{{ info.birth }}</el-descriptions-item>
-              <el-descriptions-item label="备注">
+            <el-descriptions direction="vertical" :column="3" border>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-user"></i>
+                  姓名
+                </template>{{ info.name }}</el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-postcard"></i>
+                  工号
+                </template>{{ info.id }}</el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-mobile-phone"></i>
+                  手机号
+                </template>{{ info.phone }}</el-descriptions-item>
+              <el-descriptions-item :span="2">
+                <template slot="label">
+                  <i class="el-icon-location-outline"></i>
+                  居住地
+                </template>{{ info.addr }}</el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-male"></i>
+                  性别
+                </template>{{ info.sex }}</el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-medal"></i>
+                  职称
+                </template>{{ info.title }}</el-descriptions-item>
+              <el-descriptions-item :span="2">
+                <template slot="label">
+                  <i class="el-icon-date"></i>
+                  出生年月
+                </template>{{ info.birth }}</el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-tickets"></i>
+                  备注
+                </template>
                 <el-tag size="small">学校</el-tag>
               </el-descriptions-item>
-              <el-descriptions-item label="联系地址">{{ info.contactAddr }}</el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-office-building"></i>
+                  联系地址
+                </template>{{ info.contactAddr }}</el-descriptions-item>
             </el-descriptions>
           </div>
         </div>
@@ -109,6 +146,7 @@ export default {
       this.$router.push('/login')
       this.delLogin()
       localStorage.removeItem('username')
+      localStorage.removeItem('teacherName')
     },
     backHome () {
       this.$router.push('/')

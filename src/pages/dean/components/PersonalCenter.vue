@@ -1,9 +1,9 @@
 <template>
   <div class='Center'>
     <div class='head'>
-      <p class='headFonts'>个人中心</p>
+      <p class='headFonts'>学生专区</p>
       <p class="headOut" @click="backLogin()">注销</p>
-      <p class='headMe' @click='backCollege()'>我的</p>
+      <p class='headMe' @click='backInspector()'>我的</p>
     </div>
     <div class='Left'>
       <div class='back'>
@@ -21,57 +21,57 @@
             <p class='info'>基本信息</p>
           </div>
           <div class='content'>
-            <el-descriptions direction="vertical" v-loading="loading" class="margin-top" :column="3" border>
-                <el-descriptions-item>
-                  <template slot="label">
-                    <i class="el-icon-user"></i>
-                    用户名
-                  </template>
-                  {{ info.name }}
-                </el-descriptions-item>
-                <el-descriptions-item>
-                  <template slot="label">
-                    <i class="el-icon-postcard"></i>
-                    工号
-                  </template>
-                  {{ info.id }}
-                </el-descriptions-item>
-                <el-descriptions-item>
-                  <template slot="label">
-                    <i class="el-icon-mobile-phone"></i>
-                    手机号
-                  </template>
-                  {{info.phone}}
-                </el-descriptions-item>
-                <el-descriptions-item>
-                  <template slot="label">
-                    <i class="el-icon-location-outline"></i>
-                    居住地
-                  </template>
-                  {{info.addr}}
-                </el-descriptions-item>
-                <el-descriptions-item>
-                  <template slot="label">
-                    <i class="el-icon-tickets"></i>
-                    备注
-                  </template>
-                  <el-tag size="small">学校</el-tag>
-                </el-descriptions-item>
-                <el-descriptions-item>
-                  <template slot="label">
-                    <i class="el-icon-office-building"></i>
-                    联系地址
-                  </template>
-                  {{info.contactAddr}}
-                </el-descriptions-item>
-                <el-descriptions-item>
-                  <template slot="label">
-                    <i class="el-icon-document"></i>
-                    个人简介
-                  </template>
-                  {{info.introduction}}
-                </el-descriptions-item>
-              </el-descriptions>
+            <el-descriptions direction="vertical" class="margin-top" :column="3" border>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-user"></i>
+                  用户名
+                </template>
+                {{ info.name }}
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-postcard"></i>
+                  工号
+                </template>
+                {{ info.id }}
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-mobile-phone"></i>
+                  手机号
+                </template>
+                {{info.phone}}
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-location-outline"></i>
+                  居住地
+                </template>
+                {{info.addr}}
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-tickets"></i>
+                  备注
+                </template>
+                <el-tag size="small">学校</el-tag>
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-office-building"></i>
+                  联系地址
+                </template>
+                {{info.contactAddr}}
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-document"></i>
+                  个人简介
+                </template>
+                {{info.introduction}}
+              </el-descriptions-item>
+            </el-descriptions>
           </div>
         </div>
       </div>
@@ -81,15 +81,14 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
 export default {
-  name: 'CollegePersonalCenter',
+  name: 'PersonalCenter',
   data () {
     return {
       isMyInfo: false,
-      loading: true,
       info: {
         name: '',
-        id: '',
         phone: '',
         addr: '',
         contactAddr: ''
@@ -97,30 +96,33 @@ export default {
     }
   },
   methods: {
+    ...mapMutations(['delLogin']),
     getUserInfo () {
       var _this = this
-      this.$http.get('../../../../static/mock/collegeLeader.json').then((res) => {
+      this.$http.get('../../../../static/mock/dean.json').then((res) => {
         res = res.data
         if (res.data) {
           const data = res.data
-          data.LeaderList.forEach(function (item, index) {
+          data.DeanList.forEach(function (item, index) {
             if (item.username === localStorage.username) {
               _this.info = item
             }
           })
-          this.loading = false
+          console.log(this.info)
         }
       })
     },
     backLogin () {
       this.$router.push('/login')
-      localStorage.clear()
+      this.delLogin()
+      localStorage.removeItem('username')
+      localStorage.removeItem('success')
     },
     backHome () {
       this.$router.push('/')
     },
-    backCollege () {
-      this.$router.push('/collegeLeader')
+    backInspector () {
+      this.$router.push('/inspector')
     },
     toMyInfo () {
       this.isMyInfo = true
@@ -218,18 +220,8 @@ export default {
           .basicHead
             width : 100%
             height : 30px
-            line-height : 30px
-            background-color : #D1DBE5
           .content
             text-align : center
-            .contentInfo
-              list-style : none
-              label
-                float : left
-        .otherInfo
-          width : 60%
-          position : absolute
-          right : 0
       .rightFonts
         text-align : center
         line-height : 500px
@@ -243,9 +235,4 @@ export default {
         text-align : center
         font-family : '宋体'
         font-size : 16px
-      .otherBox
-        width : 80%
-        height : 200px
-        position : absolute
-        top : 30px
 </style>
