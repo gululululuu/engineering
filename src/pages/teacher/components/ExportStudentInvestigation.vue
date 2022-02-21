@@ -10,7 +10,6 @@ export default {
     loadExcel () {
       try {
         let datas = []
-        console.log(this.students)
         console.log(localStorage.getItem('students'))
         let students = JSON.parse(localStorage.getItem('students'))
         students.map(item => {

@@ -11,7 +11,6 @@ export default {
     loadExcel () {
       try {
         let datas = []
-        console.log(this.students)
         let students = this.students
         students.map(item => {
           let data = {

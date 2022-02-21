@@ -147,24 +147,36 @@ export default {
       }
     },
     submit () {
-      console.log(this.stuData)
-      let data = {
-        stuName: this.stuData.stuName,
-        credit: this.stuData.credit,
-        one: this.stuData.one,
-        two: this.stuData.two,
-        three: this.stuData.three,
-        four: this.stuData.four
+      if (localStorage.getItem('students') === null) {
+        this.$message.warning('暂未开放学生问卷调查填写权限，请耐心等待~')
+      } else {
+        try {
+          let data = {
+            stuName: this.stuData.stuName,
+            credit: this.stuData.credit,
+            one: this.stuData.one,
+            two: this.stuData.two,
+            three: this.stuData.three,
+            four: this.stuData.four
+          }
+          Object.getOwnPropertyNames(data).forEach((item) => {
+            if (data[item] === '') {
+              const error = {message: '未全部填写完成'}
+              throw error
+            }
+          })
+          let stuData = JSON.parse(localStorage.getItem('students'))
+          stuData.push(data)
+          localStorage.setItem('students', JSON.stringify(stuData))
+          this.$message.success('提交成功')
+          localStorage.setItem('success', 'done')
+          console.log(JSON.parse(localStorage.getItem('students')))
+          this.$router.push('/student')
+        } catch (e) {
+          console.log(e)
+          this.$message.error('请确认您是否全部正确填写完成')
+        }
       }
-      console.log(localStorage.getItem('students'))
-      let stuData = JSON.parse(localStorage.getItem('students'))
-      stuData.push(data)
-      localStorage.setItem('students', JSON.stringify(stuData))
-      this.$message.success('提交成功')
-      localStorage.setItem('success', 'done')
-      console.log(123)
-      console.log(JSON.parse(localStorage.getItem('students')))
-      this.$router.push('/student')
     }
   }
 }

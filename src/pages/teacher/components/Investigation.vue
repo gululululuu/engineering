@@ -41,6 +41,9 @@
               <el-form-item label='目标三' prop='three'>
                 <el-input v-model='stuData.three' placeholder='请输入该学生目标三的达成度'></el-input>
               </el-form-item>
+              <el-form-item>
+                <el-button size='mini' @click='initStudents()' style="width: 200px;">开放学生问卷调查权限</el-button>
+              </el-form-item>
             </el-form>
           </div>
           <div class='anotherHalf'>
@@ -72,7 +75,7 @@
         <el-steps :active="active" finish-status="success" process-status="wait" space="400px">
           <el-step title="步骤 1" description="请确认您是否完成问卷调查"></el-step>
           <el-step title="步骤 2" description="请确认学生们是否完成问卷调查"></el-step>
-          <el-step title="步骤 3" description="请确认您是否要导出结果为EXCEL表格"></el-step>
+          <el-step title="步骤 3" description="请确认您是否要导出学生评价"></el-step>
         </el-steps>
         <el-button size='mini' @click="next()" style="margin-top: 22px;">下一步</el-button>
         <ExportStudentInvestigation v-if='isDone'></ExportStudentInvestigation>
@@ -147,7 +150,6 @@ export default {
       this.$router.push('/login')
       this.delLogin()
       localStorage.removeItem('username')
-      this.initStudents()
     },
     backHome () {
       this.$router.push('/')
@@ -164,7 +166,6 @@ export default {
       this.isMyInfo = true
       this.isActive = false
       this.isMyResult = false
-      this.initTeachers()
     },
     toMyResult () {
       this.isMyResult = true
@@ -176,13 +177,9 @@ export default {
     initStudents () {
       let students = []
       localStorage.setItem('students', JSON.stringify(students))
-    },
-    initTeachers () {
-      let teachers = []
-      localStorage.setItem('teachers', JSON.stringify(teachers))
+      this.$message.success('开放成功')
     },
     submit () {
-      console.log(this.stuData)
       let data = {
         stuName: this.stuData.stuName,
         credit: this.stuData.credit,
@@ -191,12 +188,8 @@ export default {
         three: this.stuData.three,
         four: this.stuData.four
       }
-      console.log(localStorage.getItem('teachers'))
-      let stuData = JSON.parse(localStorage.getItem('teachers'))
-      stuData.push(data)
-      localStorage.setItem('teachers', JSON.stringify(stuData))
-      console.log(123)
-      console.log(JSON.parse(localStorage.getItem('teachers')))
+      let _this = this
+      _this.students.push(data)
       this.$message.success('提交成功，可点击下一个继续提交')
     },
     clear () {

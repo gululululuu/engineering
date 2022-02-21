@@ -167,33 +167,45 @@ export default {
       return item
     },
     getFormDataName () {
-      var _this = this
-      let flag = 0
-      _this.items.map((item) => {
-        if (item.name.search(_this.formData.name) !== -1) {
-          _this.$http.get('../../static/mock/score.json').then((res) => {
-            res = res.data
-            if (res.data) {
-              const data = res.data
-              data.StudentList.forEach(function (item1, index) {
-                if (item1.username === localStorage.username) {
-                  item1.score.name = item.name
-                  item1 = _this.getTotal(item1)
-                  _this.info = item1
+      let score = JSON.parse(localStorage.getItem('score'))
+      if (score === null) {
+        this.$message.warning('暂未查询到您的成绩，请耐心等待老师上传~')
+      } else {
+        if (this.formData.term === '') {
+          this.$message.warning('请选择您要查询的学期')
+        } else if (this.formData.name === '') {
+          this.$message.warning('请输入您要查询的学科名称')
+        } else {
+          var _this = this
+          let flag = 0
+          _this.items.map((item) => {
+            console.log(this.formData.name)
+            if (item.name.search(this.formData.name) !== -1) {
+              _this.$http.get('../../static/mock/score.json').then((res) => {
+                res = res.data
+                if (res.data) {
+                  const data = res.data
+                  data.StudentList.forEach(function (item1, index) {
+                    if (item1.username === localStorage.username) {
+                      item1.score.name = _this.formData.name
+                      item1 = _this.getTotal(item1)
+                      _this.info = item1
+                    }
+                  })
                 }
               })
+              _this.hasItem = true
+              _this.isMyInfo = false
+              _this.isActive = false
+              flag = 1
             }
           })
-          _this.hasItem = true
-          _this.isMyInfo = false
-          _this.isActive = false
-          flag = 1
+          if (flag !== 1) {
+            _this.$message.warning('不存在您所查询的内容，请重新输入！')
+            _this.formData.term = ''
+            _this.formData.name = ''
+          }
         }
-      })
-      if (flag !== 1) {
-        _this.$message.warning('不存在您所查询的内容，请重新输入！')
-        _this.formData.term = ''
-        _this.formData.name = ''
       }
     }
   }
