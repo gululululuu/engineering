@@ -65,6 +65,12 @@
       "password": "123",
       "token": "162",
       "identity": "student"
+    }],
+    "admin":[{
+      "username": "admin",
+      "password": "admin",
+      "token": "admin",
+      "identity": "admin"
     }]
   }
 }

@@ -3,10 +3,13 @@ import Router from 'vue-router'
 import Home from '@/pages/home/Home.vue'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
-
 Vue.use(Router)
 Vue.use(ElementUI)
 const Login = () => import('@/pages/login/Login.vue')
+const Admin = () => import('@/pages/admin/Admin.vue')
+const UserManage = () => import('@/pages/admin/components/UserManage.vue')
+const CurriculumManage = () => import('@/pages/admin/components/CurriculumManage.vue')
+const AdminPersonalCenter = () => import('@/pages/admin/components/PersonalCenter.vue')
 const CollegeLeader = () => import('@/pages/collegeLeader/CollegeLeader.vue')
 const CollegePersonalCenter = () => import('@/pages/collegeLeader/components/PersonalCenter.vue')
 const EvaluationCollegeLeader = () => import('@/pages/collegeLeader/components/Evaluation.vue')
@@ -40,6 +43,26 @@ const router = new Router({
       path: '/login',
       name: 'Login',
       component: Login
+    },
+    {
+      path: '/admin',
+      name: 'Admin',
+      component: Admin
+    },
+    {
+      path: '/userManage',
+      name: 'UserManage',
+      component: UserManage
+    },
+    {
+      path: '/curriculumManage',
+      name: 'CurriculumManage',
+      component: CurriculumManage
+    },
+    {
+      path: '/adminPersonalCenter',
+      name: 'AdminPersonalCenter',
+      component: AdminPersonalCenter
     },
     {
       path: '/collegeLeader',
@@ -166,5 +189,4 @@ router.beforeEach((to, from, next) => {
     }
   }
 })
-
 export default router

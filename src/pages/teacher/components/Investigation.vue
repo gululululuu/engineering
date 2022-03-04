@@ -193,14 +193,10 @@ export default {
       this.$message.success('提交成功，可点击下一个继续提交')
     },
     clear () {
-      setTimeout(() => {
-        this.stuData.stuName = ''
-        this.stuData.credit = ''
-        this.stuData.one = ''
-        this.stuData.two = ''
-        this.stuData.three = ''
-        this.stuData.four = ''
-      }, 200)
+      let _this = this
+      Object.getOwnPropertyNames(this.courseData).forEach((item) => {
+        _this.courseData[item] = ''
+      })
     }
   }
 }

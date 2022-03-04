@@ -9,8 +9,8 @@ import VueResource from 'vue-resource'
 
 Vue.use(VueResource)
 Vue.config.productionTip = false
-// Vue.prototype.HOST = 'http://localhost:4000'
 Vue.prototype.$axios = axios
+axios.defaults.baseURL = '/api'
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

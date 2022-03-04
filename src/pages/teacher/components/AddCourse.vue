@@ -79,12 +79,13 @@ export default {
     addCourse () {
       localStorage.setItem('CourseInfo', JSON.stringify(this.CourseInfo))
       console.log(localStorage.getItem('CourseInfo'))
-      this.CourseInfo.courseTerm = ''
-      this.CourseInfo.courseName = ''
-      this.CourseInfo.courseId = ''
-      this.CourseInfo.courseCredit = ''
-      this.CourseInfo.coursePeriod = ''
-      this.CourseInfo.applicant = ''
+      this.clear()
+    },
+    clear () {
+      let _this = this
+      Object.getOwnPropertyNames(this.CourseInfo).forEach((item) => {
+        _this.courseData[item] = ''
+      })
     }
   }
 }

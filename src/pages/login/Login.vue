@@ -40,7 +40,7 @@ export default {
   name: 'Login',
   data () {
     return {
-      loginIdentity: ['first', 'second', 'third', 'fourth', 'fifth', 'student'],
+      loginIdentity: ['first', 'second', 'third', 'fourth', 'fifth', 'student', 'admin'],
       options: [{
         value: '1',
         label: '院领导'
@@ -55,10 +55,13 @@ export default {
         label: '教学秘书'
       }, {
         value: '5',
-        label: '讲师'
+        label: '教师'
       }, {
         value: '6',
         label: '学生'
+      }, {
+        value: '7',
+        label: '管理员'
       }],
       loginForm: {
         username: '',
@@ -129,6 +132,11 @@ export default {
               break
             case '6' :
               info = data.student
+              console.log(info)
+              this.verify(info)
+              break
+            case '7' :
+              info = data.admin
               console.log(info)
               this.verify(info)
               break
