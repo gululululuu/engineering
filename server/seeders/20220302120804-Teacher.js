@@ -9,6 +9,8 @@ module.exports = {
         sex: '男',
         age: 45,
         title: '教师',
+        address: '吉林省长春市',
+        department: '计算机科学与工程学院',
         createdAt: new Date(),
         updatedAt: new Date()
       }, {
@@ -17,6 +19,8 @@ module.exports = {
         sex: '男',
         age: 46,
         title: '教师',
+        address: '吉林省吉林市',
+        department: '计算机科学与工程学院',
         createdAt: new Date(),
         updatedAt: new Date()
       }, {
@@ -25,6 +29,8 @@ module.exports = {
         sex: '女',
         age: 40,
         title: '教师',
+        address: '辽宁省沈阳市',
+        department: '计算机科学与工程学院',
         createdAt: new Date(),
         updatedAt: new Date()
       }

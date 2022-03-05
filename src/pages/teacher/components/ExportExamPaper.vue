@@ -13,6 +13,10 @@ export default {
         console.log(this.formData)
         this.getName()
         var tableHeader = this.getTable()
+        /*
+         1. 重新写接口定义试卷结构
+         2. 重新设置表格每一行内容
+        */
         dataConversionUtil.exportToExcel('课程目标达成情况报告', tableHeader)
         // dataConversionUtil.dataToExcel('试卷分析报告', tableHeader)
         this.$message.success('导出成功！')

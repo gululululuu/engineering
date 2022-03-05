@@ -8,6 +8,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var coursesRouter = require('./routes/courses');
 var studentsRouter = require('./routes/students');
+var loginRouter = require('./routes/login');
 var stu_coursesRouter = require('./routes/stu_course');
 var tea_coursesRouter = require('./routes/tea_course');
 
@@ -27,6 +28,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/students', studentsRouter)
 app.use('/courses', coursesRouter)
+app.use('/login', loginRouter)
 app.use('/stu_course', stu_coursesRouter)
 app.use('/tea_course', tea_coursesRouter)
 

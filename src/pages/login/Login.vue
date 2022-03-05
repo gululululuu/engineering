@@ -40,27 +40,28 @@ export default {
   name: 'Login',
   data () {
     return {
-      loginIdentity: ['first', 'second', 'third', 'fourth', 'fifth', 'student', 'admin'],
+      identityEN: ['collegeLeader', 'dean', 'inspector', 'secretary', 'teacher', 'student', 'admin'],
+      identityCH: ['院领导', '系领导', '督学', '教学秘书', '教师', '学生', '管理员'],
       options: [{
-        value: '1',
+        value: '院领导',
         label: '院领导'
       }, {
-        value: '2',
+        value: '系主任',
         label: '系主任'
       }, {
-        value: '3',
+        value: '督学',
         label: '督学'
       }, {
-        value: '4',
+        value: '教学秘书',
         label: '教学秘书'
       }, {
-        value: '5',
+        value: '教师',
         label: '教师'
       }, {
-        value: '6',
+        value: '学生',
         label: '学生'
       }, {
-        value: '7',
+        value: '管理员',
         label: '管理员'
       }],
       loginForm: {
@@ -99,68 +100,34 @@ export default {
     ...mapMutations(['setToken']),
     // 获取用户信息
     handleLoginInfo () {
-      this.$http.get('../../../static/mock/login.json').then((res) => {
-        res = res.data
-        if (res.data) {
-          const data = res.data
-          // 根据用户身份来验证登录
-          switch (this.loginForm.identity) {
-            case '1' :
-              var info = data.first
-              console.log(info)
-              this.verify(info)
-              break
-            case '2' :
-              info = data.second
-              console.log(info)
-              this.verify(info)
-              break
-            case '3' :
-              info = data.third
-              console.log(info)
-              this.verify(info)
-              break
-            case '4' :
-              info = data.fourth
-              console.log(info)
-              this.verify(info)
-              break
-            case '5' :
-              info = data.fifth
-              console.log(info)
-              this.verify(info)
-              break
-            case '6' :
-              info = data.student
-              console.log(info)
-              this.verify(info)
-              break
-            case '7' :
-              info = data.admin
-              console.log(info)
-              this.verify(info)
-              break
+      this.$axios({
+        methods: 'get',
+        url: '/login',
+        params: {
+          identity: this.loginForm.identity
+        }
+      }).then(res => {
+        const data = res.data.users[0]
+        console.log(data)
+        if ((this.loginForm.username === data.userName) && (this.loginForm.password === data.password)) {
+          console.log('登录成功')
+          var token = 'Bearer' + data.userName + data.password
+          // 将用户token保存到vuex中
+          this.setToken({Authorization: token})
+          localStorage.setItem('username', data.userName)
+          var identity = data.identity
+          console.log(identity)
+          for (let i = 0; i < this.identityCH.length; i++) {
+            if (identity === this.identityCH[i]) {
+              this.$router.push('/' + this.identityEN[i])
+            }
           }
+          return 0
+        } else {
+          console.log('登录失败')
+          this.$message.error('用户名或密码错误')
         }
       })
-    },
-    // 验证用户名和密码
-    verify (info) {
-      var _this = this
-      for (let item of info) {
-        if ((item.username === this.loginForm.username) && (item.password === this.loginForm.password)) {
-          console.log('登录成功')
-          // 将用户token保存到vuex中
-          _this.setToken({Authorization: item.token})
-          localStorage.setItem('username', item.username)
-          var identity = item.identity
-          console.log(identity)
-          _this.$router.push({path: '/' + identity})
-          return 0
-        }
-      }
-      console.log('登录失败')
-      _this.$message.error('用户名或密码错误')
     },
     handleLogin (res) {
       this.$refs.loginForm.validate((valid) => {

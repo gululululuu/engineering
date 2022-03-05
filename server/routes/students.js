@@ -4,33 +4,36 @@ var models = require('../models')
 var Op = models.Sequelize.Op
 // 获取所有学生的信息
 router.get('/', async function (req, res, next) {
-  var currentPage = parseInt(req.query.currentPage) || 1
-  var pageSize = parseInt(req.query.pageSize) || 2
+  // var currentPage = parseInt(req.query.currentPage) || 1
+  // var pageSize = parseInt(req.query.pageSize) || 2
   var where = {}
   // 模糊查找学生姓名
-  var firstName = req.query.firstName
-  if (firstName) {
-    where.firstName = {
-      [Op.like]: '%' + firstName + '%'
-    }
+  if (req.query.userName) {
+    var stuName = req.query.userName
+    var students = await models.Student.findAll({
+      where: { [Op.and]: [{stuName: `${stuName}`}] },
+      order: [['id', 'ASC']]
+    })
+    res.json({students: students})
+  } else {
+    var students = await models.Student.findAll({
+      order: [['id', 'ASC']]
+    })
+    res.json({students: students})
   }
-  var result = await models.Student.findAndCountAll({
-    order: [['id', 'DESC']],
-    where: where,
-    offset: (currentPage - 1) * pageSize,
-    limit: pageSize
-  })
-  res.json({
-    student: result.rows,
-    pagination: {
-      currentPage: currentPage,
-      pageSize: pageSize,
-      total: result.count
-    }
-  })
-  // var students = await models.Student.findAll({
+  // var result = await models.Student.findAndCountAll({
   //   order: [['id', 'DESC']],
-  //   where: where
+  //   where: where,
+  //   offset: (currentPage - 1) * pageSize,
+  //   limit: pageSize
+  // })
+  // res.json({
+  //   student: result.rows,
+  //   pagination: {
+  //     currentPage: currentPage,
+  //     pageSize: pageSize,
+  //     total: result.count
+  //   }
   // })
   // res.json({students: students})
 })
@@ -39,13 +42,13 @@ router.post('/', async function (req, res, next) {
   const data = req.query
   console.log(data)
   var course = await models.Student.create({
-    id: `${data.userId}`,
-    age: `${data.userAge}`,
-    sex: `${data.userSex}`,
-    stuName: `${data.userName}`,
-    address: `${data.userAddress}`,
-    class: `${data.userClass}`,
-    department: `${data.userDepartment}`
+    id: `${data.id}`,
+    age: `${data.age}`,
+    sex: `${data.sex}`,
+    stuName: `${data.stuName}`,
+    address: `${data.address}`,
+    class: `${data.class}`,
+    department: `${data.department}`
   })
   res.json({course: course})
 })
@@ -62,16 +65,40 @@ router.get('/:id', async function (req, res, next) {
   })
   res.json({student: student})
 })
+
+// 修改学生信息
+router.put('/', async function (req, res, next) {
+  const data = req.query
+  console.log(data)
+  var students = await models.Student.update({
+    stuName: `${data.stuName}`,
+    id: `${data.id}`,
+    age: `${data.age}`,
+    sex: `${data.sex}`,
+    address: `${data.address}`,
+    department: `${data.department}`,
+    class: `${data.class}`
+  }, {where: {id: `${data.id}`}})
+  res.json({students: students})
+})
+
 // 修改 id 为 /id 的学生信息
 router.put('/:id', async function (req, res, next) {
   var student = await models.Student.findByPk(req.params.id)
   student.update(req.body)
   res.json({student: student})
 })
-// 删除 id 为 /id 的学生信息
-router.delete('/:id', async function (req, res, next) {
-  var student = await models.Student.findByPk(req.params.id)
-  student.destroy()
-  res.json({msg: '删除成功'})
+
+// 删除学生信息
+router.delete('/', async function (req, res, next) {
+  const data = req.query
+  console.log(data)
+  var student = await models.Student.findByPk(data.id)
+  if (student) {
+    student.destroy()
+    res.json({msg: '删除成功'})
+  } else {
+    res.json({msg: '不存在该数据'})
+  }
 })
 module.exports = router

@@ -15,7 +15,6 @@
           <button class='investigation' @click='toMyInfo()'><p class='invesFonts'>添加用户信息</p></button>
           <button class='investigation' @click='toAlter()'><p class='invesFonts'>修改用户信息</p></button>
           <button class='investigation' @click='toQuery()'><p class='invesFonts'>查询用户信息</p></button>
-          <button class='investigation' @click='toDelte()'><p class='invesFonts'>删除用户信息</p></button>
         </div>
       </div>
       <div class='Right'>
@@ -27,10 +26,6 @@
             <el-form :label-position='labelPosition' label-width='80px' :rules='rules' :model='userData' size='mini'>
               <el-form-item label='用户身份' prop='identity'>
                 <el-select v-model='userData.identity' placeholder='请选择新用户的身份'>
-                  <el-option label='院领导' value='院领导'></el-option>
-                  <el-option label='系领导' value='系领导'></el-option>
-                  <el-option label='督学' value='督学'></el-option>
-                  <el-option label='教学秘书' value='教学秘书'></el-option>
                   <el-option label='教师' value='教师'></el-option>
                   <el-option label='学生' value='学生'></el-option>
                 </el-select>
@@ -55,7 +50,10 @@
                     <el-input v-model='userData.userAge' placeholder='请输入新用户的年龄'></el-input>
                   </el-form-item>
                   <el-form-item label='性别' prop='userSex'>
-                    <el-input v-model='userData.userSex' placeholder='请输入新用户的性别'></el-input>
+                    <el-select v-model='userData.userSex' placeholder='请选择新用户的性别'>
+                      <el-option label='男' value='男'></el-option>
+                      <el-option label='女' value='女'></el-option>
+                    </el-select>
                   </el-form-item>
                   <el-form-item label='专业' prop='userMajor'>
                     <el-input v-model='userData.userMajor' placeholder='请输入新用户的专业'></el-input>
@@ -74,7 +72,7 @@
                     <el-input v-model='userData.userAddress' placeholder='请输入新用户的住址'></el-input>
                   </el-form-item>
                   <el-form-item>
-                    <el-button size='mini' @click='submitAddInfo()' style="width: 180px;">提交</el-button>
+                    <el-button size='mini' @click='submitStuInfo()' style="width: 180px;">提交</el-button>
                   </el-form-item>
                 </el-form>
               </div>
@@ -95,7 +93,10 @@
                     <el-input v-model='userData.userAge' placeholder='请输入新用户的年龄'></el-input>
                   </el-form-item>
                   <el-form-item label='性别' prop='userSex'>
-                    <el-input v-model='userData.userSex' placeholder='请输入新用户的性别'></el-input>
+                    <el-select v-model='userData.userSex' placeholder='请选择新用户的性别'>
+                      <el-option label='男' value='男'></el-option>
+                      <el-option label='女' value='女'></el-option>
+                    </el-select>
                   </el-form-item>
                   <el-form-item label='院系' prop='userMajor'>
                     <el-input v-model='userData.userMajor' placeholder='请输入新用户的院系'></el-input>
@@ -108,13 +109,19 @@
                     <el-input v-model='userData.userId' placeholder='请输入新用户的工号'></el-input>
                   </el-form-item>
                   <el-form-item label='职称' prop='userTitle'>
-                    <el-input v-model='userData.userTitle' placeholder='请输入新用户的职称'></el-input>
+                    <el-select v-model='userData.userTitle' placeholder='请选择用户的职称'>
+                      <el-option label='院领导' value='院领导'></el-option>
+                      <el-option label='系领导' value='系领导'></el-option>
+                      <el-option label='督学' value='督学'></el-option>
+                      <el-option label='教学秘书' value='教学秘书'></el-option>
+                      <el-option label='教师' value='教师'></el-option>
+                    </el-select>
                   </el-form-item>
                   <el-form-item label='住址' prop='userAddress'>
                     <el-input v-model='userData.userAddress' placeholder='请输入新用户的住址'></el-input>
                   </el-form-item>
                   <el-form-item>
-                    <el-button size='mini' @click='submitAddInfo()' style="width: 180px;">提交</el-button>
+                    <el-button size='mini' @click='submitUserInfo()' style="width: 192px;">提交</el-button>
                   </el-form-item>
                 </el-form>
               </div>
@@ -129,10 +136,6 @@
             <el-form :label-position='labelPosition' label-width='80px' :rules='rules' :model='userData' size='mini'>
               <el-form-item label='用户身份' prop='identity'>
                 <el-select v-model='userData.identity' placeholder='请选择新用户的身份'>
-                  <el-option label='院领导' value='院领导'></el-option>
-                  <el-option label='系领导' value='系领导'></el-option>
-                  <el-option label='督学' value='督学'></el-option>
-                  <el-option label='教学秘书' value='教学秘书'></el-option>
                   <el-option label='教师' value='教师'></el-option>
                   <el-option label='学生' value='学生'></el-option>
                 </el-select>
@@ -157,7 +160,10 @@
                     <el-input v-model='userData.userAge' placeholder='请输入用户的新年龄'></el-input>
                   </el-form-item>
                   <el-form-item label='性别' prop='userSex'>
-                    <el-input v-model='userData.userSex' placeholder='请输入用户的性别'></el-input>
+                    <el-select v-model='userData.userSex' placeholder='请选择用户的性别'>
+                      <el-option label='男' value='男'></el-option>
+                      <el-option label='女' value='女'></el-option>
+                    </el-select>
                   </el-form-item>
                   <el-form-item label='专业' prop='userMajor'>
                     <el-input v-model='userData.userMajor' placeholder='请输入用户的新专业'></el-input>
@@ -176,7 +182,7 @@
                     <el-input v-model='userData.userAddress' placeholder='请输入用户的新住址'></el-input>
                   </el-form-item>
                   <el-form-item>
-                    <el-button size='mini' @click='submitAddInfo()' style="width: 180px;">提交</el-button>
+                    <el-button size='mini' @click='updateStuInfo()' style="width: 180px;">提交</el-button>
                   </el-form-item>
                 </el-form>
               </div>
@@ -197,7 +203,10 @@
                     <el-input v-model='userData.userAge' placeholder='请输入用户的新年龄'></el-input>
                   </el-form-item>
                   <el-form-item label='性别' prop='userSex'>
-                    <el-input v-model='userData.userSex' placeholder='请输入用户的性别'></el-input>
+                    <el-select v-model='userData.userSex' placeholder='请选择用户的性别'>
+                      <el-option label='男' value='男'></el-option>
+                      <el-option label='女' value='女'></el-option>
+                    </el-select>
                   </el-form-item>
                   <el-form-item label='院系' prop='userMajor'>
                     <el-input v-model='userData.userMajor' placeholder='请输入用户的新院系'></el-input>
@@ -210,13 +219,19 @@
                     <el-input v-model='userData.userId' placeholder='请输入用户的新工号'></el-input>
                   </el-form-item>
                   <el-form-item label='职称' prop='userTitle'>
-                    <el-input v-model='userData.userTitle' placeholder='请输入用户的新职称'></el-input>
+                    <el-select v-model='userData.userTitle' placeholder='请选择用户的职称'>
+                      <el-option label='院领导' value='院领导'></el-option>
+                      <el-option label='系领导' value='系领导'></el-option>
+                      <el-option label='督学' value='督学'></el-option>
+                      <el-option label='教学秘书' value='教学秘书'></el-option>
+                      <el-option label='教师' value='教师'></el-option>
+                    </el-select>
                   </el-form-item>
                   <el-form-item label='住址' prop='userAddress'>
                     <el-input v-model='userData.userAddress' placeholder='请输入用户的新住址'></el-input>
                   </el-form-item>
                   <el-form-item>
-                    <el-button size='mini' @click='submitAddInfo()' style="width: 180px;">提交</el-button>
+                    <el-button size='mini' @click='updateUserInfo()' style="width: 192px;">提交</el-button>
                   </el-form-item>
                 </el-form>
               </div>
@@ -224,35 +239,88 @@
           </div>
         </div>
         <div v-show='isAll' class="MyInfo">
-          <div class="allInfo">
+          <div v-show="isAllSelect" class='allInfo'>
+            <div class='rightForm'>
+              <div class='half'>
+                <el-form :label-position='labelPosition' label-width='80px' :model='userData' size='mini'>
+                  <el-form-item label='用户身份' prop='identity'>
+                    <el-select v-model='userData.identity' placeholder='请选择用户的身份'>
+                      <el-option label='院领导' value='院领导'></el-option>
+                      <el-option label='系领导' value='系领导'></el-option>
+                      <el-option label='督学' value='督学'></el-option>
+                      <el-option label='教学秘书' value='教学秘书'></el-option>
+                      <el-option label='教师' value='教师'></el-option>
+                      <el-option label='学生' value='学生'></el-option>
+                    </el-select>
+                  </el-form-item>
+                  <el-form-item label='姓名' prop='userName'>
+                    <el-input v-model='userData.userName' placeholder='请输入用户的姓名'></el-input>
+                  </el-form-item>
+                  <el-form-item label='编号' prop='userId'>
+                    <el-input v-model='userData.userId' placeholder='请输入用户的编号'></el-input>
+                  </el-form-item>
+                </el-form>
+              </div>
+              <div class='anotherHalf'>
+                <el-form :label-position='labelPosition' label-width='110px' :rules='rules' :model='userData' size='mini'>
+                  <el-form-item>
+                    <el-button size='mini' @click='getInfoByIdentity()' style="width: 180px;">提交&emsp;&emsp;&emsp;(只按身份查询)</el-button>
+                  </el-form-item>
+                  <el-form-item>
+                    <el-button size='mini' @click='getInfoByName()' style="width: 180px;">提交&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;(身份+姓名)</el-button>
+                  </el-form-item>
+                  <el-form-item>
+                    <el-button size='mini' @click='getInfoById()' style="width: 180px;">提交&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;(身份+编号)</el-button>
+                  </el-form-item>
+                </el-form>
+              </div>
+            </div>
+            <div class='bottomFonts'>若要删除数据，请在查询之后再进行操作~</div>
+          </div>
+          <div v-show='isAllUser' class="allInfo">
             <div class="backLastest">
               <img src='../../../assets/img/back.png' class='backImg' @click='back()'/>
               <p class='backFonts' @click='back()'>返回上一层</p>
-              <el-button size='mini' class="addButton" @click='addCourse()'>添加课程</el-button>
             </div>
             <el-table
               v-loading="loading"
               element-loading-text="拼命加载中"
               element-loading-spinner="el-icon-loading"
               element-loading-background="rgba(0, 0, 0, 0.8)" :data="tableData" border max-height="420" class="infoTable">
-              <el-table-column prop="userName" label="名称" width="120" align="center"></el-table-column>
-              <el-table-column prop="userId" label="课程编号" width="120" align="center"></el-table-column>
-              <el-table-column prop="address" label="成绩组成"  align="center">
-                <el-table-column prop="quantity" label="定量"  align="center">
-                  <el-table-column prop="userAge" label="试卷" width="120" align="center"></el-table-column>
-                  <el-table-column prop="userSex" label="作业" width="120" align="center"></el-table-column>
-                  <el-table-column prop="userClass" label="实验" width="120" align="center"></el-table-column>
-                  <el-table-column prop="userTitle" label="随堂检验" width="120" align="center"></el-table-column>
-                </el-table-column>
-                <el-table-column prop="quality" label="定性" align="center">
-                  <el-table-column prop="teaEvaluate" label="教师评价" width="120" align="center"></el-table-column>
-                  <el-table-column prop="stuEvaluate" label="学生自我评价" width="120" align="center"></el-table-column>
-                </el-table-column>
-              </el-table-column>
-              <el-table-column fixed="right" label="操作" width="100" align="center">
+              <el-table-column prop="userName" label="姓名" align="center"></el-table-column>
+              <el-table-column prop="userId" label="工号" align="center"></el-table-column>
+              <el-table-column prop="userAge" label="年龄" align="center"></el-table-column>
+              <el-table-column prop="userSex" label="性别" align="center"></el-table-column>
+              <el-table-column prop="userAddress" label="住址" align="center"></el-table-column>
+              <el-table-column prop="userMajor" label="院系" align="center"></el-table-column>
+              <el-table-column prop="userTitle" label="职称" align="center"></el-table-column>
+              <el-table-column fixed="right" label="操作" width="100" align='center'>
                 <template slot-scope="scope">
-                  <el-button @click="alter(scope.row)" type="text" size="small">编辑</el-button>
-                  <el-button @click="deleteInfo(scope.row)" type="text" size="small">删除</el-button>
+                  <el-button @click="deleteUserInfo(scope.row)" type="text" size="small">删除</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </div>
+          <div v-show='isAllStu' class="allInfo">
+            <div class="backLastest">
+              <img src='../../../assets/img/back.png' class='backImg' @click='back()'/>
+              <p class='backFonts' @click='back()'>返回上一层</p>
+            </div>
+            <el-table
+              v-loading="loading"
+              element-loading-text="拼命加载中"
+              element-loading-spinner="el-icon-loading"
+              element-loading-background="rgba(0, 0, 0, 0.8)" :data="tableData" border max-height="420" class="infoTable">
+              <el-table-column prop="userName" label="姓名" align="center"></el-table-column>
+              <el-table-column prop="userId" label="学号" align="center"></el-table-column>
+              <el-table-column prop="userAge" label="年龄" align="center"></el-table-column>
+              <el-table-column prop="userSex" label="性别" align="center"></el-table-column>
+              <el-table-column prop="userClass" label="班级" align="center"></el-table-column>
+              <el-table-column prop="userMajor" label="专业" align="center"></el-table-column>
+              <el-table-column prop="userAddress" label="住址" align="center"></el-table-column>
+              <el-table-column fixed="right" label="操作" width="100" align='center'>
+                <template slot-scope="scope">
+                  <el-button @click="deleteStuInfo(scope.row)" type="text" size="small">删除</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -280,6 +348,9 @@ export default {
       isAlterStu: false,
       isAlterUser: false,
       isAll: false,
+      isAllSelect: false,
+      isAllUser: false,
+      isAllStu: false,
       labelPosition: 'right',
       loading: true,
       rules: {
@@ -315,7 +386,6 @@ export default {
         identity: '',
         userName: '',
         userId: '',
-        teaId: '',
         userAge: '',
         userSex: '',
         userTitle: '',
@@ -324,7 +394,6 @@ export default {
         userAddress: ''
       },
       tableData: [],
-      identity: '',
       alterInfo: []
     }
   },
@@ -385,6 +454,9 @@ export default {
     },
     toQuery () {
       this.isAll = true
+      this.isAllSelect = true
+      this.isAllUser = false
+      this.isAllStu = false
       this.isAdd = false
       this.isAlter = false
       this.isActive = false
@@ -399,6 +471,10 @@ export default {
         this.isAlterSelect = true
         this.isAlterStu = false
         this.isAlterUser = false
+      } else if (this.isAll === true) {
+        this.isAllSelect = true
+        this.isAllStu = false
+        this.isAllUser = false
       }
       this.clear()
       this.tableData = []
@@ -409,22 +485,17 @@ export default {
         _this.userData[item] = ''
       })
     },
-    // 添加课程信息
-    addCourse () {
-      this.isAdd = true
-      this.isAlter = false
-      this.isAll = false
-    },
-    submitAddInfo () {
+    // 添加新学生的信息
+    submitStuInfo () {
       try {
         let data = {
-          identity: this.userData.identity,
           userName: this.userData.userName,
           userId: this.userData.userId,
           userAge: this.userData.userAge,
           userSex: this.userData.userSex,
           userClass: this.userData.userClass,
-          userTitle: this.userData.userTitle
+          userAddress: this.userData.userAddress,
+          userMajor: this.userData.userMajor
         }
         Object.getOwnPropertyNames(data).forEach((item) => {
           if (data[item] === '') {
@@ -432,30 +503,17 @@ export default {
             throw error
           }
         })
-        let _this = this
-        switch (data.identity) {
-          case '院领导':
-          case '系领导':
-          case '督学':
-          case '教学秘书':
-          case '教师':
-            _this.identity = 'users'
-            break
-          case '学生':
-            _this.identity = 'students'
-            break
-        }
         this.$axios({
           method: 'post',
-          url: '/' + this.identity,
+          url: '/students',
           params: {
-            identity: this.userData.identity,
-            userName: this.userData.userName,
-            userId: this.userData.userId,
-            userAge: this.userData.userAge,
-            userSex: this.userData.userSex,
-            userClass: this.userData.userClass,
-            userTitle: this.userData.userTitle
+            stuName: data.userName,
+            id: data.userId,
+            age: data.userAge,
+            sex: data.userSex,
+            class: data.userClass,
+            address: data.userAddress,
+            department: data.userMajor
           }
         }).then(res => {})
         this.$message.success('提交成功')
@@ -464,17 +522,54 @@ export default {
         this.$message.error('请确认您是否全部正确填写完成')
       }
     },
-    // 修改成绩组成占比
-    submit () {
+    // 添加新教师的信息
+    submitUserInfo () {
       try {
         let data = {
-          identity: this.userData.identity,
+          userName: this.userData.userName,
+          userId: this.userData.userId,
+          userAge: this.userData.userAge,
+          userSex: this.userData.userSex,
+          userAddress: this.userData.userAddress,
+          userMajor: this.userData.userMajor,
+          userTitle: this.userData.userTitle
+        }
+        Object.getOwnPropertyNames(data).forEach((item) => {
+          if (data[item] === '') {
+            const error = {message: '未全部填写完成'}
+            throw error
+          }
+        })
+        this.$axios({
+          method: 'post',
+          url: '/users',
+          params: {
+            teaName: this.userData.userName,
+            id: this.userData.userId,
+            age: this.userData.userAge,
+            sex: this.userData.userSex,
+            address: this.userData.userAddress,
+            department: this.userData.userMajor,
+            title: this.userData.userTitle
+          }
+        }).then(res => {})
+        this.$message.success('提交成功')
+      } catch (e) {
+        console.log(e)
+        this.$message.error('请确认您是否全部正确填写完成')
+      }
+    },
+    // 修改学生信息
+    updateStuInfo () {
+      try {
+        let data = {
+          userMajor: this.userData.userMajor,
           userName: this.userData.userName,
           userId: this.userData.userId,
           userAge: this.userData.userAge,
           userSex: this.userData.userSex,
           userClass: this.userData.userClass,
-          userTitle: this.userData.userTitle
+          userAddress: this.userData.userAddress
         }
         Object.getOwnPropertyNames(data).forEach((item) => {
           if (data[item] === '') {
@@ -484,15 +579,15 @@ export default {
         })
         this.$axios({
           method: 'put',
-          url: '/courses',
+          url: '/students',
           params: {
-            identity: this.userData.identity,
-            userName: this.userData.userName,
-            userId: this.userData.userId,
-            userAge: this.userData.userAge,
-            userSex: this.userData.userSex,
-            userClass: this.userData.userClass,
-            userTitle: this.userData.userTitle
+            id: data.userId,
+            stuName: data.userName,
+            department: data.userMajor,
+            age: data.userAge,
+            sex: data.userSex,
+            class: data.userClass,
+            address: data.userAddress
           }
         }).then(res => {})
         this.$message.success('提交成功')
@@ -501,13 +596,45 @@ export default {
         this.$message.error('请确认您是否全部正确填写完成')
       }
     },
-    alter (row) {
-      this.isAlter = true
-      this.isAdd = false
-      this.isAll = false
+    // 修改教师信息
+    updateUserInfo () {
+      try {
+        let data = {
+          userMajor: this.userData.userMajor,
+          userName: this.userData.userName,
+          userId: this.userData.userId,
+          userAge: this.userData.userAge,
+          userSex: this.userData.userSex,
+          userTitle: this.userData.userTitle,
+          userAddress: this.userData.userAddress
+        }
+        Object.getOwnPropertyNames(data).forEach((item) => {
+          if (data[item] === '') {
+            const error = {message: '未全部填写完成'}
+            throw error
+          }
+        })
+        this.$axios({
+          method: 'put',
+          url: '/users',
+          params: {
+            id: data.userId,
+            teaName: data.userName,
+            department: data.userMajor,
+            age: data.userAge,
+            sex: data.userSex,
+            address: data.userAddress,
+            title: data.userTitle
+          }
+        }).then(res => {})
+        this.$message.success('提交成功')
+      } catch (e) {
+        console.log(e)
+        this.$message.error('请确认您是否全部正确填写完成')
+      }
     },
-    // 删除课程信息
-    deleteInfo (row) {
+    // 删除教师信息
+    deleteUserInfo (row) {
       this.$confirm('您确认将要删除此条课程信息？', '确认信息', {
         distinguishCancelAndClose: true,
         confirmButtonText: '确定',
@@ -515,9 +642,9 @@ export default {
       }).then(() => {
         this.$axios({
           method: 'delete',
-          url: '/courses',
+          url: '/users',
           params: {
-            userId: row.userId
+            id: row.userId
           }
         }).then(res => {
           if (res.data.msg === '删除成功') {
@@ -533,29 +660,191 @@ export default {
         })
       })
     },
-    queryAll () {
-      this.isAll = true
-      this.isAdd = false
-      this.isAlter = false
-      this.$axios.get('/courses').then(res => {
-        if (res.data) {
-          let data = res.data.courses
-          console.log(data)
-          let _this = this
-          data.forEach((item) => {
-            let course = {
-              userName: item.userName,
-              userId: item.id,
-              userAge: item.userAge,
-              userSex: item.userSex,
-              userClass: item.userClass,
-              userTitle: item.userTitle
-            }
-            _this.tableData.push(course)
-          })
-        }
-        this.loading = false
+    // 删除学生信息
+    deleteStuInfo (row) {
+      this.$confirm('您确认将要删除此条课程信息？', '确认信息', {
+        distinguishCancelAndClose: true,
+        confirmButtonText: '确定',
+        cancelButtonText: '取消'
+      }).then(() => {
+        this.$axios({
+          method: 'delete',
+          url: '/students',
+          params: {
+            id: row.userId
+          }
+        }).then(res => {
+          if (res.data.msg === '删除成功') {
+            this.$message.success('删除成功，请重新刷新页面来查看')
+          } else {
+            this.$message.warning('不存在该数据，请重新刷新页面来查看')
+          }
+        }).catch(e => { console.log(e) })
+      }).catch(action => {
+        this.$message({
+          type: 'info',
+          message: action === 'cancel' ? '放弃删除' : '停留在当前页面'
+        })
       })
+    },
+    // 根据用户的身份查询
+    getInfoByIdentity () {
+      if (this.userData.identity !== '学生') {
+        this.isAllUser = true
+        this.isAllSelect = false
+        this.$axios({
+          method: 'get', url: '/users', params: {title: this.userData.identity}
+        }).then(res => {
+          if (res.data) {
+            let data = res.data.users
+            console.log(data)
+            let _this = this
+            data.forEach((item) => {
+              let teaInfo = {
+                userName: item.teaName,
+                userId: item.id,
+                userAge: item.age,
+                userSex: item.sex,
+                userTitle: item.title,
+                userMajor: item.department,
+                userAddress: item.address
+              }
+              _this.tableData.push(teaInfo)
+            })
+          }
+          this.loading = false
+        })
+      } else {
+        this.isAllStu = true
+        this.isAllSelect = false
+        this.$axios({
+          method: 'get', url: '/students'
+        }).then(res => {
+          if (res.data) {
+            let data = res.data.students
+            console.log(data)
+            let _this = this
+            data.forEach((item) => {
+              let stuInfo = {
+                userName: item.stuName,
+                userId: item.id,
+                userAge: item.age,
+                userSex: item.sex,
+                userClass: item.class,
+                userAddress: item.address,
+                userMajor: item.department
+              }
+              _this.tableData.push(stuInfo)
+            })
+          }
+          this.loading = false
+        })
+      }
+    },
+    // 根据用户的身份和姓名查询
+    getInfoByName () {
+      if (this.userData.identity !== '学生') {
+        this.isAllUser = true
+        this.isAllSelect = false
+        this.$axios({
+          method: 'get', url: '/users', params: {userName: this.userData.userName}
+        }).then(res => {
+          if (res.data) {
+            let data = res.data.users
+            console.log(data)
+            let _this = this
+            data.forEach((item) => {
+              let teaInfo = {
+                userName: item.teaName,
+                userId: item.id,
+                userAge: item.age,
+                userSex: item.sex,
+                userTitle: item.title,
+                userMajor: item.department,
+                userAddress: item.address
+              }
+              _this.tableData.push(teaInfo)
+            })
+          }
+          this.loading = false
+        })
+      } else {
+        this.isAllStu = true
+        this.isAllSelect = false
+        this.$axios({
+          method: 'get', url: '/students', params: {userName: this.userData.userName}
+        }).then(res => {
+          console.log(res)
+          if (res.data) {
+            let data = res.data.students
+            console.log(data)
+            let _this = this
+            data.forEach((item) => {
+              let stuInfo = {
+                userName: item.stuName,
+                userId: item.id,
+                userAge: item.age,
+                userSex: item.sex,
+                userClass: item.class,
+                userAddress: item.address,
+                userMajor: item.department
+              }
+              _this.tableData.push(stuInfo)
+            })
+          }
+          this.loading = false
+        })
+      }
+    },
+    // 根据用户的身份和编号查询
+    getInfoById () {
+      if (this.userData.identity !== '学生') {
+        this.isAllUser = true
+        this.isAllSelect = false
+        this.$axios({
+          method: 'get', url: '/users' + '/' + this.userData.userId
+        }).then(res => {
+          if (res.data) {
+            let data = res.data.user
+            console.log(data)
+            let _this = this
+            let teaInfo = {
+              userName: data.teaName,
+              userId: data.id,
+              userAge: data.age,
+              userSex: data.sex,
+              userTitle: data.title,
+              userMajor: data.department,
+              userAddress: data.address
+            }
+            _this.tableData.push(teaInfo)
+          }
+          this.loading = false
+        })
+      } else {
+        this.isAllStu = true
+        this.isAllSelect = false
+        this.$axios({
+          method: 'get', url: '/students' + '/' + this.userData.userId
+        }).then(res => {
+          if (res.data) {
+            let data = res.data.student
+            console.log(data)
+            let _this = this
+            let stuInfo = {
+              userName: data.stuName,
+              userId: data.id,
+              userAge: data.age,
+              userSex: data.sex,
+              userClass: data.class,
+              userAddress: data.address,
+              userMajor: data.department
+            }
+            _this.tableData.push(stuInfo)
+          }
+          this.loading = false
+        })
+      }
     }
   }
 }
@@ -642,6 +931,11 @@ export default {
         position : absolute
         width : 100%
         height : 500px
+        .bottomFonts
+          position : absolute
+          line-height : 500px
+          left: 40%
+          color : #DCDDE0
         .rightForm
           position : absolute
           top : 10%
@@ -684,15 +978,6 @@ export default {
               display : inline
               float : right
               margin : 3px 15px 0px 0px
-            .addButton
-              position : absolute
-              right : 0
-              top : 10%
-          .el-table
-            .warning-row
-              background: oldlace
-            .success-row
-              background: #f0f9eb
         .basicInfo
           width : 270px
           height : 500px

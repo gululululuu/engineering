@@ -92,7 +92,8 @@ export default {
         id: '',
         phone: '',
         addr: '',
-        contactAddr: ''
+        contactAddr: '',
+        introduction: ''
       }
     }
   },

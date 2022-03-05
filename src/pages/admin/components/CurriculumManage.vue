@@ -58,7 +58,7 @@
                   <el-table-column prop="stuEvaluate" label="学生自我评价" width="120" align="center"></el-table-column>
                 </el-table-column>
               </el-table-column>
-              <el-table-column fixed="right" label="操作" width="100">
+              <el-table-column fixed="right" label="操作" width="100" align='center'>
                 <template slot-scope="scope">
                   <el-button @click="alter(scope.row)" type="text" size="small">编辑</el-button>
                   <el-button @click="deleteInfo(scope.row)" type="text" size="small">删除</el-button>
