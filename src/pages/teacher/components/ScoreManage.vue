@@ -12,6 +12,7 @@
       </div>
       <div class='inputBox'>
         <button class='investigation' @click='toUpExam()'><p class='invesFonts'>上传试卷</p></button>
+        <button class='investigation' @click='toUpScore()'><p class='invesFonts'>上传成绩</p></button>
         <button class='investigation' @click='toMyInfo()'><p class='invesFonts'>导出试卷</p></button>
       </div>
     </div>
@@ -144,8 +145,80 @@
           </div>
         </div>
       </div>
+      <div v-show='isUpScore' class='MyInfo'>
+        <div v-show='isUpSelect' class="basicInfo">
+          <el-form :label-position='labelPosition' label-width='110px' :rules='rules' :model='formData' size='mini'>
+            <el-form-item label='科目' prop='selectName'>
+              <el-select v-model='formData.selectName' placeholder='请选择要上传的科目'>
+                <el-option
+                  v-for="item in courses"
+                  :key='item.courseId'
+                  :value="item.courseName"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item>
+              <el-button size='mini' @click='getUserInfo()' style="width: 180px;">提交</el-button>
+            </el-form-item>
+          </el-form>
+        </div>
+        <div v-show='isUpInfo'>
+          <div class='upInfo'>
+            <el-form>
+              <el-form-item label="课程名" prop='selectName'>
+                <el-tag type="info">{{this.formData.selectName}}</el-tag>
+                <el-button @click='upload()' size='small' style="float: right; margin-top: 10px;">提交</el-button>
+              </el-form-item>
+            </el-form>
+            <el-table
+              v-loading="loading"
+              element-loading-text="拼命加载中"
+              element-loading-spinner="el-icon-loading"
+              element-loading-background="rgba(0, 0, 0, 0.8)" :data="tableData" border max-height="420" class="infoTable">
+              <el-table-column prop="stuName" label="学生姓名" align="center"></el-table-column>
+              <el-table-column prop="stuId" label="学号" align="center"></el-table-column>
+              <el-table-column prop="exam" label="试卷成绩" align="center">
+                <template slot-scope="scope">
+                  <el-input placeholder="请输入试卷成绩" v-if="scope.row.isClick" v-model="tableData[scope.$index].exam"></el-input>
+                  <span v-else>{{ tableData[scope.$index].exam }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column prop="experiment" label="实验成绩" align="center">
+                <template slot-scope="scope">
+                  <el-input placeholder="请输入实验成绩" v-if="scope.row.isClick" v-model="tableData[scope.$index].experiment"></el-input>
+                  <span v-else>{{ tableData[scope.$index].experiment }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column prop="test" label="随堂检测成绩" align="center">
+                <template slot-scope="scope">
+                  <el-input placeholder="请输入随堂检测成绩" v-if="scope.row.isClick" v-model="tableData[scope.$index].test"></el-input>
+                  <span v-else>{{ tableData[scope.$index].test }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column prop="work" label="作业成绩" align="center">
+                <template slot-scope="scope">
+                  <el-input placeholder="请输入作业成绩" v-if="scope.row.isClick" v-model="tableData[scope.$index].work"></el-input>
+                  <span v-else>{{ tableData[scope.$index].work }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column prop="totalScore" label="总成绩" align="center">
+                <template slot-scope="scope">
+                  <el-input placeholder="请输入总成绩" v-if="scope.row.isClick" v-model="tableData[scope.$index].total"></el-input>
+                  <span v-else>{{ tableData[scope.$index].total }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="操作" align="center">
+                <template slot-scope="scope">
+                  <el-button @click="change(scope)" size='small' type='text'>编辑</el-button>
+                  <el-button @click="save(scope)" size='small' type='text'>保存</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </div>
+        </div>
+      </div>
       <div v-show='isMyInfo' class='upload'>
-        <Upload></Upload>
+        <ExportExamPaper v-bind:formData='formData'></ExportExamPaper>
       </div>
       <p v-show='isActive' class='rightFonts'>请在左侧选择您要进行的操作~</p>
     </div>
@@ -154,26 +227,32 @@
 
 <script>
 import { mapMutations } from 'vuex'
-import Upload from '../../../components/Upload.vue'
+import ExportExamPaper from './ExportExamPaper'
 export default {
   name: 'ScoreManage',
   components: {
-    Upload
+    ExportExamPaper
   },
   data () {
     return {
       isActive: true,
       isMyInfo: false,
       isUpExam: false,
+      isUpScore: false,
+      isUpSelect: false,
+      isUpInfo: false,
       isExamInfo: false,
       isDetails: false,
+      loading: true,
+      isShow: false,
       labelPosition: 'right',
       formData: {
         term: '',
         courseName: '',
         number: '',
         courseId: '',
-        totalAim: ''
+        totalAim: '',
+        selectName: ''
       },
       rules: {
         term: [
@@ -183,7 +262,7 @@ export default {
           { required: true, message: '请输入课程名称', trigger: 'blur' }
         ],
         number: [
-          { required: true, message: '请输入课程编码', trigger: 'blur' }
+          { required: true, message: '请输入大题总数', trigger: 'blur' }
         ],
         courseId: [
           { required: true, message: '请输入课程学分', trigger: 'blur' }
@@ -193,15 +272,42 @@ export default {
         ]
       },
       list: [{examName: '第1大题', examTotal: '', examNum: '', examScore: ''}],
-      aims: [{aimName: '目标1', totalAim: '', aimNum: '', aimPosition: ''}]
+      aims: [{aimName: '目标1', totalAim: '', aimNum: '', aimPosition: ''}],
+      courses: [],
+      tableData: [],
+      lastClick: null
     }
+  },
+  // 在数据库中查找当前教师教授的所有课程
+  created () {
+    var id = JSON.parse(localStorage.getItem('userId'))
+    this.$axios({
+      methods: 'get',
+      url: '/courses',
+      params: {id: id}
+    }).then(res => {
+      const data = res.data.courses
+      let _this = this
+      data.forEach(item => {
+        let course = {
+          courseName: item.courseName,
+          courseId: item.id
+        }
+        _this.courses.push(course)
+      })
+    })
+  },
+  mounted () {
+    this.tableData.forEach(item => {
+      this.$set(item, 'isClick', false)
+    })
   },
   methods: {
     ...mapMutations(['delLogin']),
     backLogin () {
       this.$router.push('/login')
       this.delLogin()
-      localStorage.removeItem('username')
+      localStorage.removeItem('userId')
     },
     backHome () {
       this.$router.push('/')
@@ -217,13 +323,24 @@ export default {
     toUpExam () {
       this.isUpExam = true
       this.isExamInfo = true
+      this.isUpScore = false
       this.isDetails = false
       this.isMyInfo = false
       this.isActive = false
       this.clear()
     },
+    toUpScore () {
+      this.isUpScore = true
+      this.isUpSelect = true
+      this.isUpInfo = false
+      this.isMyInfo = false
+      this.isUpExam = false
+      this.isActive = false
+      this.clear()
+    },
     toMyInfo () {
       this.isMyInfo = true
+      this.isUpScore = false
       this.isUpExam = false
       this.isActive = false
       this.clear()
@@ -231,10 +348,77 @@ export default {
     clear () {
       this.list = []
       this.aims = []
+      this.tableData = []
       let _this = this
       Object.getOwnPropertyNames(this.formData).forEach((item) => {
         _this.formData[item] = ''
       })
+    },
+    // 编辑学生成绩信息
+    change (scope) {
+      // 再次点击则还原其他行
+      if (this.lastClick) {
+        this.$set(this.lastClick.row, 'isClick', false)
+      }
+      // 第一次点击，变成显示
+      this.lastClick = scope
+      this.$set(scope.row, 'isClick', true)
+    },
+    // 保存学生成绩信息
+    save (scope) {
+      // 再次点击则还原其他行
+      if (this.lastClick) {
+        this.$set(this.lastClick.row, 'isClick', false)
+      }
+      // 第一次点击，变成隐藏
+      this.lastClick = scope
+      this.$set(scope.row, 'isClick', false)
+      console.log(this.tableData)
+    },
+    // 上传学生成绩
+    upload () {
+      var table = []
+      var uploadCourseName = this.formData.selectName
+      localStorage.setItem(uploadCourseName + '成绩单', JSON.stringify(table))
+      var arr = JSON.parse(localStorage.getItem(uploadCourseName + '成绩单'))
+      this.tableData.push(this.formData.selectName)
+      arr.push(this.tableData)
+      localStorage.setItem(uploadCourseName + '成绩单', JSON.stringify(arr))
+      console.log(JSON.parse(localStorage.getItem(uploadCourseName + '成绩单')))
+    },
+    // 获取教师选择的课程下的学生名单
+    getUserInfo () {
+      this.isUpInfo = true
+      this.isUpSelect = false
+      console.log(this.courses)
+      let courseId = ''
+      let _this = this
+      this.courses.forEach(item => {
+        if (item.courseName === this.formData.selectName) {
+          courseId = item.courseId
+        }
+      })
+      this.$axios({
+        methods: 'get',
+        url: '/stu_course',
+        params: {id: courseId}
+      }).then(res => {
+        console.log(res)
+        const data = res.data.students
+        data.forEach(item => {
+          let stu = {
+            stuName: item.Student.stuName,
+            stuId: item.Student.id,
+            exam: '',
+            experiment: '',
+            test: '',
+            work: '',
+            total: ''
+          }
+          _this.tableData.push(stu)
+        })
+      })
+      this.loading = false
     },
     getExamInfo () {
       if (this.formData.totalAim < 1 || this.formData.number < 1) {
@@ -277,6 +461,23 @@ export default {
       }
       console.log(result)
       console.log(this.list)
+      var arr = []
+      localStorage.setItem('question', JSON.stringify(arr))
+      var test = JSON.parse(localStorage.getItem('question'))
+      test.push(result)
+      test.push(this.list)
+      localStorage.setItem('question', JSON.stringify(test))
+      console.log(JSON.parse(localStorage.getItem('question')))
+      let question = JSON.parse(localStorage.getItem('question'))
+      var totalRow = 0
+      var quesNum = []
+      for (let i = 0; i < question[1].length; i++) {
+        console.log(question[1][i])
+        quesNum[i] = parseInt(question[1][i].examNum)
+        totalRow = totalRow + parseInt(question[1][i].examNum)
+      }
+      console.log(quesNum)
+      console.log(totalRow)
       this.$message.success('提交成功')
     },
     getAimInfo () {
@@ -291,6 +492,23 @@ export default {
       }
       console.log(result)
       console.log(this.aims)
+      var arr = []
+      localStorage.setItem('aim', JSON.stringify(arr))
+      var test = JSON.parse(localStorage.getItem('aim'))
+      test.push(result)
+      test.push(this.aims)
+      test.push(this.formData)
+      localStorage.setItem('aim', JSON.stringify(test))
+      console.log(JSON.parse(localStorage.getItem('aim')))
+      let aim = JSON.parse(localStorage.getItem('aim'))
+      console.log(aim)
+      console.log(aim[1])
+      console.log(aim[2])
+      var question = []
+      for (let i = 0; i < aim[2].number; i++) {
+        question.push('第' + i + '大题')
+      }
+      console.log(question)
       this.$message.success('提交成功')
     }
   }
@@ -464,10 +682,15 @@ export default {
               margin : 3px 15px 0px 0px
         .basicInfo
           width : 290px
-          height : 500px
+          height : 300px
           position : absolute
           left : 30%
           top : 10%
+        .upInfo
+          width : 900px
+          position : absolute
+          left : 10%
+          top : 5%
       .rightFonts
         text-align : center
         line-height : 500px

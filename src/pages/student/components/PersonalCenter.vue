@@ -105,7 +105,7 @@ export default {
     backLogin () {
       this.$router.push('/login')
       this.delLogin()
-      localStorage.removeItem('username')
+      localStorage.removeItem('userId')
       localStorage.removeItem('success')
     },
     backHome () {

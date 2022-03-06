@@ -31,6 +31,9 @@ module.exports = {
       term: {
         type: Sequelize.STRING
       },
+      teaId: {
+        type: Sequelize.STRING
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

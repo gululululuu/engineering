@@ -114,7 +114,7 @@ export default {
           var token = 'Bearer' + data.userName + data.password
           // 将用户token保存到vuex中
           this.setToken({Authorization: token})
-          localStorage.setItem('username', data.userName)
+          localStorage.setItem('userId', data.userId)
           var identity = data.identity
           console.log(identity)
           for (let i = 0; i < this.identityCH.length; i++) {

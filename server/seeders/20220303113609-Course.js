@@ -6,6 +6,7 @@ module.exports = {
       {
         id: 'C1001',
         courseName: '数据结构',
+        teaId: '110401',
         exam: 0.7,
         work: 0.1,
         experiment: 0.1,
@@ -18,6 +19,7 @@ module.exports = {
       }, {
         id: 'C1002',
         courseName: '操作系统',
+        teaId: '110401',
         exam: 0.6,
         work: 0.1,
         experiment: 0.1,
@@ -30,6 +32,7 @@ module.exports = {
       }, {
         id: 'C1003',
         courseName: '离散数学',
+        teaId: '110401',
         exam: 0.6,
         work: 0.2,
         experiment: 0.1,

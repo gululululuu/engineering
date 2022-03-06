@@ -243,6 +243,83 @@ dataConversionUtil.exportToExcel = function (fileName, tableHeader, dataList, sh
     }), fileName + '.xlsx')
 }
 
+dataConversionUtil.examToExcel = function (fileName, tableHeader, dataList, sheet = fileName) {
+  // excel的表头和数据
+  let aoa = []
+  // aoa的数据格式：[[],[],[],[]]   数组的第一个子数组可以指定为表头  根据情况而定
+  aoa = tableHeader.concat(dataList)
+  let workSheet = XLSX.utils.aoa_to_sheet(aoa)
+  var question = JSON.parse(localStorage.getItem('question'))
+  var aim = JSON.parse(localStorage.getItem('aim'))
+  var totalRow = 0
+  var quesNum = []
+  for (let i = 0; i < question[1].length; i++) {
+    quesNum[i] = parseInt(question[1][i].examNum)
+    totalRow = totalRow + parseInt(question[1][i].examNum)
+  }
+  var quesLen = []
+  for (let i = 0; i < quesNum.length; i++) {
+    if (i === 0) {
+      quesLen[i] = 1
+    } else {
+      quesLen[i] = quesLen[i - 1] + quesNum[i - 1]
+    }
+  }
+  quesLen.push((quesLen[quesNum.length - 1] + quesNum[quesNum.length - 1]))
+  var merge = []
+  merge.push({s: {r: 0, c: 0}, e: {r: 0, c: (totalRow + 3)}})
+  merge.push({s: {r: 1, c: 0}, e: {r: 2, c: 0}})
+  merge.push({s: {r: 1, c: 2}, e: {r: 1, c: quesLen[1]}})
+  merge.push({s: {r: 2, c: 2}, e: {r: 2, c: quesLen[1]}})
+  for (let i = 1; i < quesLen.length; i++) {
+    merge.push({s: {r: 1, c: (quesLen[i] + 1)}, e: {r: 1, c: quesLen[i + 1]}})
+    merge.push({s: {r: 2, c: (quesLen[i] + 1)}, e: {r: 2, c: quesLen[i + 1]}})
+  }
+  merge.push({s: {r: 4, c: 0}, e: {r: (4 + aim[1].length), c: 0}})
+  workSheet['!merges'] = merge
+  // 单元格宽度
+  let width = []
+  // 单元格高度
+  let height = []
+  // 设置单元格属性
+  Object.keys(workSheet).forEach((key) => {
+    if (key.indexOf('!') < 0) {
+      workSheet[key].s = {
+        font: {
+          name: '宋体',
+          sz: 12
+        },
+        alignment: {
+          horizontal: 'center',
+          vertical: 'center',
+          wrapText: true
+        }
+      }
+    }
+    width.push({ wpx: 90 })
+    height.push({ hpx: 20 })
+  })
+  workSheet['!cols'] = width
+  workSheet['!rows'] = height
+  console.log(workSheet)
+  let workBook = XLSX.utils.book_new()
+  // 把数据写到工作簿中
+  XLSX.utils.book_append_sheet(workBook, workSheet, sheet)
+  // 如果一个工作工作簿中有多个工作表，可以修改参数类型并遍历添加，期中workBook是同一个，workSheet和sheet根据自己的需求添加，
+  // 比如在此处添加第二个工作表叫‘第二张表’，把数据封装好后，数据格式同上,假如数据叫workSheet2，执行下面代码，工作簿就会多一张工作表叫‘第二张表’
+  // XLSX.utils.book_append_sheet(workBook,workSheet2,'第二张表')
+  // 保存
+  console.log(workBook)
+  const wbout = xlsxStyle.write(workBook, {
+    type: 'binary',
+    bookType: 'xlsx'
+  })
+  xlsxSave.saveAs(
+    new Blob([s2ab(wbout)], {
+      type: 'application/octet-stream'
+    }), fileName + '.xlsx')
+}
+
 function s2ab (s) {
   var buf = new ArrayBuffer(s.length)
   var view = new Uint8Array(buf)

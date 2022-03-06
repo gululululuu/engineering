@@ -10,7 +10,8 @@ module.exports = (sequelize, DataTypes) => {
   Login.init({
     userName: DataTypes.STRING,
     password: DataTypes.STRING,
-    identity: DataTypes.STRING
+    identity: DataTypes.STRING,
+    userId: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Login',

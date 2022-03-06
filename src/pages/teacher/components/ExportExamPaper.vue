@@ -6,21 +6,16 @@
 import { dataConversionUtil } from '../../../assets/js/exportToExcel.js'
 export default {
   name: 'Excel',
-  props: ['formData'],
   methods: {
     loadExcel () {
       try {
-        console.log(this.formData)
-        this.getName()
         var tableHeader = this.getTable()
         /*
          1. 重新写接口定义试卷结构
          2. 重新设置表格每一行内容
         */
-        dataConversionUtil.exportToExcel('课程目标达成情况报告', tableHeader)
-        // dataConversionUtil.dataToExcel('试卷分析报告', tableHeader)
+        dataConversionUtil.examToExcel('试卷', tableHeader)
         this.$message.success('导出成功！')
-        this.clear()
       } catch (e) {
         this.$message.warning('导出错误，请联系管理员！')
         console.log(e)
@@ -28,105 +23,104 @@ export default {
     },
     getTable () {
       var tableHeader = []
-      tableHeader.push(['课程目标达成情况评价报告'], [null])
-      tableHeader.push(['课程号', '', '', this.formData.id, '', '', '', '课程名称', '', this.formData.name])
-      tableHeader.push(['开课学期', '', '', this.formData.term, '', '', '', '任课教师', '', localStorage.getItem('name')])
-      tableHeader.push(['班级', '', '', this.formData.class, '', '', '', '学时/学分', '', this.formData.period + '/' + this.formData.credit])
-      tableHeader.push(['考核方式', '', '课程目标1', '课程目标2', '课程目标3', '课程目标4'])
-      let coefficients = JSON.parse(localStorage.getItem('coefficients'))
-      tableHeader.push(['随堂测验', '', coefficients[0][0], coefficients[0][1], coefficients[0][2], coefficients[0][3]])
-      tableHeader.push(['作业', '', coefficients[1][0], coefficients[1][1], coefficients[1][2], coefficients[1][3]])
-      tableHeader.push(['实验', '', coefficients[2][0], coefficients[2][1], coefficients[2][2], coefficients[2][3]])
-      tableHeader.push(['考试', '', coefficients[3][0], coefficients[3][1], coefficients[3][2], coefficients[3][3]])
-      tableHeader.push(['权重和', '', '1.000', '1.000', '1.000', '1.000'])
-      tableHeader.push(['考核方式', '', '课程目标1', '课程目标2', '课程目标3', '课程目标4'])
-      let data = JSON.parse(localStorage.getItem('achievement'))
-      console.log(data)
-      tableHeader.push(['随堂测验', '', data[0][0], data[0][1], data[0][2], data[0][3]])
-      tableHeader.push(['作业', '', data[1][0], data[1][1], data[1][2], data[1][3]])
-      tableHeader.push(['实验', '', data[2][0], data[2][1], data[2][2], data[2][3]])
-      tableHeader.push(['考试', '', data[5][0], data[5][1], data[5][2], data[5][3]])
-      tableHeader.push(['权重和', '', '1.000', '1.000', '1.000', '1.000'])
-      tableHeader.push(['课程目标达成度情况', '', '', '', '', '', '', '', '', '', '', '权重', '权重值'])
-      let score = this.getExamData(coefficients, data)
-      tableHeader.push(['达成度（考核成绩法）', '', score[0], score[1], score[2], score[3], '', '', '', '', '', '', 'α', '0.600'])
-      tableHeader.push(['达成度（教师评价法）', '', data[3][0], data[3][1], data[3][2], data[3][3], '', '', '', '', '', '', 'β', '0.200'])
-      tableHeader.push(['达成度（学生自评法）', '', data[4][0], data[4][1], data[4][2], data[4][3], '', '', '', '', '', '', 'γ', '0.200'])
-      let weight = JSON.parse(localStorage.getItem('weight'))
-      let multiple = this.getMultiple(score, data, weight)
-      tableHeader.push(['达成度（综合加权）', '', multiple[0], multiple[1], multiple[2], multiple[3]])
-      tableHeader.push(['课程目标达成情况分析与持续改进'])
-      tableHeader.push(['评价项', '', '达成情况分析', '', '', '持续改进措施'], [null])
-      let courseAnalysis = JSON.parse(localStorage.getItem('courseAnalysis'))
-      console.log(courseAnalysis)
-      tableHeader.push(['课程目标1', '', courseAnalysis[0].one, '', '', courseAnalysis[0].forOne])
-      tableHeader.push(['课程目标2', '', courseAnalysis[0].two, '', '', courseAnalysis[0].forTwo])
-      tableHeader.push(['课程目标3', '', courseAnalysis[0].three, '', '', courseAnalysis[0].forThree])
-      tableHeader.push(['课程目标4', '', courseAnalysis[0].four, '', '', courseAnalysis[0].forFour])
-      tableHeader.push(['', '', '', '', '', '', '', '', '', '', '', '审核时间', ''])
-      return tableHeader
-    },
-    getTableHeader () {
-      var tableHeader = []
-      tableHeader.push([null], ['长春工业大学课程试卷分析报告'])
-      tableHeader.push([this.formData.term])
-      tableHeader.push(['课程名称', this.formData.name, '课程编码', this.formData.id, '学分', this.formData.credit, '学生班级', this.formData.class])
-      tableHeader.push(['课程平台', this.formData.platform, '课程属性', this.formData.attribute, '学时', this.formData.period, '考核方式', this.formData.examination])
-      tableHeader.push(['试题对课程目标的支撑情况'])
-      tableHeader.push(['试题分数在各章节的分布情况'])
-      tableHeader.push(['试题内容的难易情况'])
-      tableHeader.push(['学生答题情况分析'])
-      return tableHeader
-    },
-    getName () {
-      this.$http.get('../../../../static/mock/teacher.json').then((res) => {
-        res = res.data
-        if (res.data) {
-          const data = res.data
-          data.TeacherList.forEach(function (item, index) {
-            if (item.username === localStorage.username) {
-              localStorage.setItem('name', item.name)
-            }
-          })
-        }
-      })
-    },
-    getMultiple (score, data, weight) {
-      let arr = []
-      for (let j = 0; j < 4; j++) {
-        let temp = 0
-        for (let i = 0; i < 3; i++) {
-          if (i === 0) {
-            temp = temp + score[i] * weight[i]
-          } else {
-            temp = temp + data[i + 2][j] * weight[i]
-          }
-        }
-        arr[j] = temp.toFixed(3)
+      var questions = JSON.parse(localStorage.getItem('question'))
+      var detail = JSON.parse(localStorage.getItem('aim'))
+      var courseName = detail[2].courseName // 试卷科目
+      var term = detail[2].term // 参与考试的年级
+      var quesNum = detail[2].number // 共多少大题
+      var totalSection = 0 // 共多少小题
+      var totalAim = 0 // 所有目标共多少小题
+      var question = [] // 大题名
+      var score = [] // 大题总分
+      var stu = [] // 小题题号
+      var sectionScore = [] // 每一小题的分数
+      var pos = [] // 所有目标的位置
+      sectionScore.push('', '小题分数')
+      stu.push('学生学号', '学生姓名')
+      question.push('', '')
+      score.push('', '大题')
+      // 获取小题的总数
+      for (let i = 0; i < questions[1].length; i++) {
+        totalSection = totalSection + parseInt(questions[1][i].examNum)
       }
-      return arr
-    },
-    getExamData (coefficients, data) {
-      let arr = []
-      for (let j = 0; j < 4; j++) {
-        let temp = 0
-        for (let i = 0; i < 4; i++) {
-          if (i !== 3) {
-            temp = temp + coefficients[i][j] * data[i][j]
-          } else {
-            temp = temp + coefficients[i][j] * data[5][j]
-          }
-        }
-        arr[j] = temp
+      // 获取所有目标的小题总数
+      for (let i = 0; i < detail[1].length; i++) {
+        totalAim = totalAim + parseInt(detail[1][i].aimNum)
       }
-      return arr
-    },
-    clear () {
-      let _this = this
-      Object.getOwnPropertyNames(this.formData).forEach((item) => {
-        _this.formData[item] = ''
-      })
+      // 填入课程目标
+      for (let i = 0; i < detail[2].totalAim; i++) {
+        var aim1 = []
+        aim1.push('', '课程目标' + (i + 1))
+        pos.push(aim1)
+        // this.getAim(detail, questions, i).then(res => {
+        //   res.forEach(item => {
+        //     aim1.push(item)
+        //   })
+        //   console.log(aim1)
+        // })
+      }
+      console.log(pos)
+      // 获取每一小题的分数
+      for (let i = 0; i < questions[0].length; i++) {
+        for (let j = 0; j < questions[0][i].length; j++) {
+          sectionScore.push(questions[0][i][j])
+        }
+      }
+      // 填入第二和第三行数据
+      for (let i = 0; i < quesNum; i++) {
+        question.push('第' + (i + 1) + '大题')
+        score.push('(' + questions[1][i].examTotal + '分)')
+        if (questions[1][i].examNum > 1) {
+          let j = 1
+          for (; j < questions[1][i].examNum; j++) {
+            question.push('')
+            score.push('')
+            stu.push(j)
+          }
+          stu.push(j)
+        } else {
+          stu.push('1')
+        }
+      }
+      question.push('')
+      score.push('总分')
+      console.log(sectionScore)
+      tableHeader.push(['《' + courseName + '》' + term + '期末试卷对课程目标的支撑情况'])
+      tableHeader.push(question, score)
+      tableHeader.push(stu)
+      tableHeader.push(sectionScore)
+      for (let i = 0; i < detail[2].totalAim; i++) {
+        tableHeader.push(pos[i])
+      }
+      return tableHeader
     }
+    // async getAim (detail, questions, index) {
+    //   let temp = []
+    //   // 获取目标所在位置
+    //   let pos1 = []
+    //   for (let j = 0; j < detail[0][index].length; j++) {
+    //     pos1.push(detail[0][index][j].split('-'))
+    //   }
+    //   // i 和 j 同时和pos中的每一对元素比较
+    //   for (let i = 0; i < detail[2].number; i++) {
+    //     for (let j = 0; j < questions[1][i].examNum; j++) {
+    //       var flag = await this.findElement(i, j, pos1, temp)
+    //       if (!flag) {
+    //         temp.push('')
+    //       }
+    //     }
+    //   }
+    //   return temp
+    // },
+    // findElement (i, j, pos1, temp) {
+    //   for (let z = 0; z < pos1.length; z++) {
+    //     if ((parseInt(pos1[z][0]) === (i + 1)) && (parseInt(pos1[z][1]) === (j + 1))) {
+    //       temp.push('√')
+    //       return true
+    //     }
+    //   }
+    //   return false
+    // }
   }
 }
 </script>
