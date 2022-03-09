@@ -41,7 +41,7 @@ export default {
   data () {
     return {
       identityEN: ['collegeLeader', 'dean', 'inspector', 'secretary', 'teacher', 'student', 'admin'],
-      identityCH: ['院领导', '系领导', '督学', '教学秘书', '教师', '学生', '管理员'],
+      identityCH: ['院领导', '系主任', '督学', '教学秘书', '教师', '学生', '管理员'],
       options: [{
         value: '院领导',
         label: '院领导'
@@ -107,6 +107,7 @@ export default {
           identity: this.loginForm.identity
         }
       }).then(res => {
+        console.log(res)
         const data = res.data.users[0]
         console.log(data)
         if ((this.loginForm.username === data.userName) && (this.loginForm.password === data.password)) {
@@ -115,6 +116,7 @@ export default {
           // 将用户token保存到vuex中
           this.setToken({Authorization: token})
           localStorage.setItem('userId', data.userId)
+          localStorage.setItem('identity', data.identity)
           var identity = data.identity
           console.log(identity)
           for (let i = 0; i < this.identityCH.length; i++) {

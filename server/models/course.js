@@ -17,7 +17,9 @@ module.exports = (sequelize, DataTypes) => {
     teaEvaluate: DataTypes.FLOAT,
     stuEvaluate: DataTypes.FLOAT,
     term: DataTypes.STRING,
-    teaId: DataTypes.STRING
+    teaId: DataTypes.STRING,
+    courseCredit: DataTypes.INTEGER,
+    courseHour: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Course',

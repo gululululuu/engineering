@@ -18,6 +18,13 @@ router.get('/', async function(req, res, next) {
       order: [['id', 'ASC']]
     })
     res.json({courses: courses})
+  } else if (req.query.courseName) {
+    var courseName = req.query.courseName
+    var courses = await models.Course.findAll({
+      where: { [Op.and]: [{courseName: `${courseName}`}] },
+      order: [['id', 'ASC']]
+    })
+    res.json({courses: courses})
   } else {
     var courses = await models.Course.findAll({
       order: [['id', 'ASC']]

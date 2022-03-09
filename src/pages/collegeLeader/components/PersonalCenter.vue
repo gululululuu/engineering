@@ -3,7 +3,7 @@
     <div class='head'>
       <p class='headFonts'>个人中心</p>
       <p class="headOut" @click="backLogin()">注销</p>
-      <p class='headMe' @click='backCollege()'>我的</p>
+      <p class='headMe' @click='backStu()'>我的</p>
     </div>
     <div class='Left'>
       <div class='back'>
@@ -17,61 +17,51 @@
     <div class='Right'>
       <div v-if='isMyInfo' class='MyInfo'>
         <div class='basicInfo'>
-          <div class='basicHead'>
-            <p class='info'>基本信息</p>
-          </div>
           <div class='content'>
-            <el-descriptions direction="vertical" v-loading="loading" class="margin-top" :column="3" border>
-                <el-descriptions-item>
-                  <template slot="label">
-                    <i class="el-icon-user"></i>
-                    用户名
-                  </template>
-                  {{ info.name }}
-                </el-descriptions-item>
-                <el-descriptions-item>
-                  <template slot="label">
-                    <i class="el-icon-postcard"></i>
-                    工号
-                  </template>
-                  {{ info.id }}
-                </el-descriptions-item>
-                <el-descriptions-item>
-                  <template slot="label">
-                    <i class="el-icon-mobile-phone"></i>
-                    手机号
-                  </template>
-                  {{info.phone}}
-                </el-descriptions-item>
-                <el-descriptions-item>
-                  <template slot="label">
-                    <i class="el-icon-location-outline"></i>
-                    居住地
-                  </template>
-                  {{info.addr}}
-                </el-descriptions-item>
-                <el-descriptions-item>
-                  <template slot="label">
-                    <i class="el-icon-tickets"></i>
-                    备注
-                  </template>
-                  <el-tag size="small">学校</el-tag>
-                </el-descriptions-item>
-                <el-descriptions-item>
-                  <template slot="label">
-                    <i class="el-icon-office-building"></i>
-                    联系地址
-                  </template>
-                  {{info.contactAddr}}
-                </el-descriptions-item>
-                <el-descriptions-item>
-                  <template slot="label">
-                    <i class="el-icon-document"></i>
-                    个人简介
-                  </template>
-                  {{info.introduction}}
-                </el-descriptions-item>
-              </el-descriptions>
+            <el-descriptions direction="vertical" :column="3" border>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-user"></i>
+                  姓名
+                </template>{{ info.teaName }}</el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-postcard"></i>
+                  工号
+                </template>{{ info.id }}</el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-postcard"></i>
+                  学院
+                </template>{{ info.department }}</el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-tickets"></i>
+                  备注
+                </template>
+                <el-tag size="small">学校</el-tag>
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-male"></i>
+                  性别
+                </template>{{ info.sex }}</el-descriptions-item>
+              <el-descriptions-item :span="2">
+                <template slot="label">
+                  <i class="el-icon-date"></i>
+                  年龄
+                </template>{{ info.age }}</el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-medal"></i>
+                  职称
+                </template>{{ info.title }}</el-descriptions-item>
+              <el-descriptions-item :span="2">
+                <template slot="label">
+                  <i class="el-icon-location-outline"></i>
+                  居住地
+                </template>{{ info.address }}</el-descriptions-item>
+            </el-descriptions>
           </div>
         </div>
       </div>
@@ -88,29 +78,26 @@ export default {
       isMyInfo: false,
       loading: true,
       info: {
-        name: '',
-        id: '',
-        phone: '',
-        addr: '',
-        contactAddr: '',
-        introduction: ''
+        teaName: '',
+        address: '',
+        department: '',
+        sex: '',
+        title: '',
+        age: ''
       }
     }
   },
   methods: {
     getUserInfo () {
-      var _this = this
-      this.$http.get('../../../../static/mock/collegeLeader.json').then((res) => {
-        res = res.data
-        if (res.data) {
-          const data = res.data
-          data.LeaderList.forEach(function (item, index) {
-            if (item.username === localStorage.username) {
-              _this.info = item
-            }
-          })
-          this.loading = false
-        }
+      var id = JSON.parse(localStorage.getItem('userId'))
+      console.log(id)
+      this.$axios({
+        methods: 'get',
+        url: '/users/' + id
+      }).then(res => {
+        const data = res.data.user
+        let _this = this
+        _this.info = data
       })
     },
     backLogin () {

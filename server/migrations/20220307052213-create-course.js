@@ -34,6 +34,12 @@ module.exports = {
       teaId: {
         type: Sequelize.STRING
       },
+      courseCredit: {
+        type: Sequelize.INTEGER
+      },
+      courseHour: {
+        type: Sequelize.INTEGER
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

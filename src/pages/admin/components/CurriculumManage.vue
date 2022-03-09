@@ -46,6 +46,8 @@
             <el-table :data="tableData" border max-height="500" class="infoTable">
               <el-table-column prop="courseName" label="名称" width="120" align="center"></el-table-column>
               <el-table-column prop="courseId" label="课程编号" width="120" align="center"></el-table-column>
+              <el-table-column prop="courseCredit" label="学分" width="120" align="center"></el-table-column>
+              <el-table-column prop="courseHour" label="学时" width="120" align="center"></el-table-column>
               <el-table-column prop="address" label="成绩组成"  align="center">
                 <el-table-column prop="quantity" label="定量"  align="center">
                   <el-table-column prop="exam" label="试卷" width="120" align="center"></el-table-column>
@@ -91,6 +93,9 @@
                   <el-form-item label='课程名称' prop='courseName'>
                     <el-input v-model='courseData.courseName' placeholder='请输入新的课程名称'></el-input>
                   </el-form-item>
+                  <el-form-item label='学分' prop='courseCredit'>
+                    <el-input v-model='courseData.courseCredit' placeholder='请输入新的课程学分'></el-input>
+                  </el-form-item>
                   <el-form-item label='考试占比' prop='exam'>
                     <el-input v-model='courseData.exam' placeholder='请输入考试占比'></el-input>
                   </el-form-item>
@@ -107,8 +112,9 @@
                   <el-form-item label='课程编号' prop='courseId'>
                     <el-input v-model='courseData.courseId' placeholder='请输入课程编号'></el-input>
                   </el-form-item>
-                </el-form>
-                <el-form :label-position='labelPosition' label-width='110px' :rules='rules' :model='courseData' size='mini'>
+                  <el-form-item label='学时' prop='courseHour'>
+                    <el-input v-model='courseData.courseHour' placeholder='请输入课程学时'></el-input>
+                  </el-form-item>
                   <el-form-item label='实验占比' prop='experiment'>
                     <el-input v-model='courseData.experiment' placeholder='请输入实验占比'></el-input>
                   </el-form-item>
@@ -197,6 +203,8 @@
               element-loading-background="rgba(0, 0, 0, 0.8)" :data="tableData" border max-height="420" class="infoTable">
               <el-table-column prop="courseName" label="名称" width="120" align="center"></el-table-column>
               <el-table-column prop="courseId" label="课程编号" width="120" align="center"></el-table-column>
+              <el-table-column prop="courseCredit" label="学分" width="120" align="center"></el-table-column>
+              <el-table-column prop="courseHour" label="学时" width="120" align="center"></el-table-column>
               <el-table-column prop="address" label="成绩组成"  align="center">
                 <el-table-column prop="quantity" label="定量"  align="center">
                   <el-table-column prop="exam" label="试卷" width="120" align="center"></el-table-column>
@@ -255,6 +263,12 @@ export default {
         courseId: [
           { required: true, message: '请输入课程编号', trigger: 'blur' }
         ],
+        courseCredit: [
+          { required: true, message: '请输入课程学分', trigger: 'blur' }
+        ],
+        courseHour: [
+          { required: true, message: '请输入课程学时', trigger: 'blur' }
+        ],
         exam: [
           { required: true, message: '请输入考试评价占比', trigger: 'blur' }
         ],
@@ -277,6 +291,8 @@ export default {
       courseData: {
         courseName: '',
         courseId: '',
+        courseCredit: '',
+        courseHour: '',
         teaId: '',
         exam: '',
         work: '',
@@ -357,6 +373,8 @@ export default {
             term: this.formData.term,
             courseName: this.courseData.courseName,
             courseId: this.courseData.courseId,
+            courseCredit: this.courseData.courseCredit,
+            courseHour: this.courseData.courseHour,
             exam: this.courseData.exam,
             work: this.courseData.work,
             experiment: this.courseData.experiment,
@@ -378,6 +396,8 @@ export default {
           term: this.formData.term,
           courseName: this.courseData.courseName,
           courseId: this.courseData.courseId,
+          courseCredit: this.courseData.courseCredit,
+          courseHour: this.courseData.courseHour,
           exam: this.courseData.exam,
           work: this.courseData.work,
           experiment: this.courseData.experiment,
@@ -398,6 +418,8 @@ export default {
             term: this.formData.term,
             courseName: this.courseData.courseName,
             courseId: this.courseData.courseId,
+            courseCredit: this.courseData.courseCredit,
+            courseHour: this.courseData.courseHour,
             exam: this.courseData.exam,
             work: this.courseData.work,
             experiment: this.courseData.experiment,
@@ -467,6 +489,8 @@ export default {
               courseName: item.courseName,
               teaId: item.userId,
               courseId: item.id,
+              courseCredit: item.courseCredit,
+              courseHour: item.courseHour,
               exam: item.exam,
               work: item.work,
               experiment: item.experiment,
@@ -495,6 +519,8 @@ export default {
               courseName: item.courseName,
               teaId: item.userId,
               courseId: item.id,
+              courseCredit: item.courseCredit,
+              courseHour: item.courseHour,
               exam: item.exam,
               work: item.work,
               experiment: item.experiment,

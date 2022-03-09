@@ -1,7 +1,7 @@
 <template>
   <div class='Center'>
     <div class='head'>
-      <p class='headFonts'>学生专区</p>
+      <p class='headFonts'>个人中心</p>
       <p class="headOut" @click="backLogin()">注销</p>
       <p class='headMe' @click='backStu()'>我的</p>
     </div>
@@ -17,36 +17,23 @@
     <div class='Right'>
       <div v-if='isMyInfo' class='MyInfo'>
         <div class='basicInfo'>
-          <div class='basicHead'>
-            <p class='info'>基本信息</p>
-          </div>
           <div class='content'>
-            <el-descriptions direction="vertical" :column="4" border>
+            <el-descriptions direction="vertical" :column="3" border>
               <el-descriptions-item>
                 <template slot="label">
                   <i class="el-icon-user"></i>
                   姓名
-                </template>{{ info.name }}</el-descriptions-item>
+                </template>{{ info.stuName }}</el-descriptions-item>
               <el-descriptions-item>
                 <template slot="label">
                   <i class="el-icon-postcard"></i>
-                  学号
+                  工号
                 </template>{{ info.id }}</el-descriptions-item>
               <el-descriptions-item>
                 <template slot="label">
-                  <i class="el-icon-male"></i>
-                  性别
-                </template>{{ info.sex }}</el-descriptions-item>
-              <el-descriptions-item>
-                <template slot="label">
-                  <i class="el-icon-mobile-phone"></i>
-                  手机号
-                </template>{{ info.phone }}</el-descriptions-item>
-              <el-descriptions-item :span="2">
-                <template slot="label">
-                  <i class="el-icon-location-outline"></i>
-                  居住地
-                </template>{{ info.addr }}</el-descriptions-item>
+                  <i class="el-icon-postcard"></i>
+                  专业
+                </template>{{ info.department }}</el-descriptions-item>
               <el-descriptions-item>
                 <template slot="label">
                   <i class="el-icon-tickets"></i>
@@ -56,9 +43,24 @@
               </el-descriptions-item>
               <el-descriptions-item>
                 <template slot="label">
-                  <i class="el-icon-office-building"></i>
-                  联系地址
-                </template>{{ info.contactAddr }}</el-descriptions-item>
+                  <i class="el-icon-male"></i>
+                  性别
+                </template>{{ info.sex }}</el-descriptions-item>
+              <el-descriptions-item :span="2">
+                <template slot="label">
+                  <i class="el-icon-date"></i>
+                  年龄
+                </template>{{ info.age }}</el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-medal"></i>
+                  班级
+                </template>{{ info.class }}</el-descriptions-item>
+              <el-descriptions-item :span="2">
+                <template slot="label">
+                  <i class="el-icon-location-outline"></i>
+                  居住地
+                </template>{{ info.address }}</el-descriptions-item>
             </el-descriptions>
           </div>
         </div>
@@ -76,30 +78,26 @@ export default {
     return {
       isMyInfo: false,
       info: {
-        name: '',
-        id: '',
+        stuName: '',
+        address: '',
+        department: '',
         sex: '',
-        phone: '',
-        addr: '',
-        contactAddr: ''
+        title: '',
+        age: ''
       }
     }
   },
   methods: {
     ...mapMutations(['delLogin']),
     getUserInfo () {
-      var _this = this
-      this.$http.get('../../../../static/mock/student.json').then((res) => {
-        res = res.data
-        if (res.data) {
-          const data = res.data
-          data.StudentList.forEach(function (item, index) {
-            if (item.username === localStorage.username) {
-              _this.info = item
-            }
-          })
-          console.log(this.info)
-        }
+      var id = JSON.parse(localStorage.getItem('userId'))
+      this.$axios({
+        methods: 'get',
+        url: '/students/' + id
+      }).then(res => {
+        const data = res.data.student
+        let _this = this
+        _this.info = data
       })
     },
     backLogin () {

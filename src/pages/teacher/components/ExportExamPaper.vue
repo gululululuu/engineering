@@ -52,12 +52,6 @@ export default {
         var aim1 = []
         aim1.push('', '课程目标' + (i + 1))
         pos.push(aim1)
-        // this.getAim(detail, questions, i).then(res => {
-        //   res.forEach(item => {
-        //     aim1.push(item)
-        //   })
-        //   console.log(aim1)
-        // })
       }
       console.log(pos)
       // 获取每一小题的分数
@@ -94,33 +88,6 @@ export default {
       }
       return tableHeader
     }
-    // async getAim (detail, questions, index) {
-    //   let temp = []
-    //   // 获取目标所在位置
-    //   let pos1 = []
-    //   for (let j = 0; j < detail[0][index].length; j++) {
-    //     pos1.push(detail[0][index][j].split('-'))
-    //   }
-    //   // i 和 j 同时和pos中的每一对元素比较
-    //   for (let i = 0; i < detail[2].number; i++) {
-    //     for (let j = 0; j < questions[1][i].examNum; j++) {
-    //       var flag = await this.findElement(i, j, pos1, temp)
-    //       if (!flag) {
-    //         temp.push('')
-    //       }
-    //     }
-    //   }
-    //   return temp
-    // },
-    // findElement (i, j, pos1, temp) {
-    //   for (let z = 0; z < pos1.length; z++) {
-    //     if ((parseInt(pos1[z][0]) === (i + 1)) && (parseInt(pos1[z][1]) === (j + 1))) {
-    //       temp.push('√')
-    //       return true
-    //     }
-    //   }
-    //   return false
-    // }
   }
 }
 </script>

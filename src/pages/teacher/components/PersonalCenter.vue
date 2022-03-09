@@ -17,16 +17,13 @@
     <div class='Right'>
       <div v-if='isMyInfo' class='MyInfo'>
         <div class='basicInfo'>
-          <div class='basicHead'>
-            <p class='info'>基本信息</p>
-          </div>
           <div class='content'>
             <el-descriptions direction="vertical" :column="3" border>
               <el-descriptions-item>
                 <template slot="label">
                   <i class="el-icon-user"></i>
                   姓名
-                </template>{{ info.name }}</el-descriptions-item>
+                </template>{{ info.teaName }}</el-descriptions-item>
               <el-descriptions-item>
                 <template slot="label">
                   <i class="el-icon-postcard"></i>
@@ -34,29 +31,9 @@
                 </template>{{ info.id }}</el-descriptions-item>
               <el-descriptions-item>
                 <template slot="label">
-                  <i class="el-icon-mobile-phone"></i>
-                  手机号
-                </template>{{ info.phone }}</el-descriptions-item>
-              <el-descriptions-item :span="2">
-                <template slot="label">
-                  <i class="el-icon-location-outline"></i>
-                  居住地
-                </template>{{ info.addr }}</el-descriptions-item>
-              <el-descriptions-item>
-                <template slot="label">
-                  <i class="el-icon-male"></i>
-                  性别
-                </template>{{ info.sex }}</el-descriptions-item>
-              <el-descriptions-item>
-                <template slot="label">
-                  <i class="el-icon-medal"></i>
-                  职称
-                </template>{{ info.title }}</el-descriptions-item>
-              <el-descriptions-item :span="2">
-                <template slot="label">
-                  <i class="el-icon-date"></i>
-                  出生年月
-                </template>{{ info.birth }}</el-descriptions-item>
+                  <i class="el-icon-postcard"></i>
+                  学院
+                </template>{{ info.department }}</el-descriptions-item>
               <el-descriptions-item>
                 <template slot="label">
                   <i class="el-icon-tickets"></i>
@@ -66,15 +43,26 @@
               </el-descriptions-item>
               <el-descriptions-item>
                 <template slot="label">
-                  <i class="el-icon-office-building"></i>
-                  联系地址
-                </template>{{ info.contactAddr }}</el-descriptions-item>
+                  <i class="el-icon-male"></i>
+                  性别
+                </template>{{ info.sex }}</el-descriptions-item>
+              <el-descriptions-item :span="2">
+                <template slot="label">
+                  <i class="el-icon-date"></i>
+                  年龄
+                </template>{{ info.age }}</el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-medal"></i>
+                  职称
+                </template>{{ info.title }}</el-descriptions-item>
+              <el-descriptions-item :span="2">
+                <template slot="label">
+                  <i class="el-icon-location-outline"></i>
+                  居住地
+                </template>{{ info.address }}</el-descriptions-item>
             </el-descriptions>
           </div>
-        </div>
-        <div class='otherInfo'>
-          <p class='info'>往年教授课程学生人数</p>
-          <div id="myChart" class='otherBox'></div>
         </div>
       </div>
       <p v-else class='rightFonts'>请在左侧选择您要进行的操作~</p>
@@ -84,62 +72,33 @@
 
 <script>
 import { mapMutations } from 'vuex'
-import ExportExcel from './ExportExcel.vue'
-let echarts = require('echarts/lib/echarts')
-require('echarts/lib/chart/pie')
 export default {
   name: 'TeacherPersonalCenter',
-  components: {
-    ExportExcel
-  },
   data () {
     return {
       isMyInfo: false,
       info: {
-        name: '',
-        phone: '',
-        addr: '',
+        teaName: '',
+        address: '',
+        department: '',
         sex: '',
         title: '',
-        birth: '',
-        contactAddr: ''
-      },
-      MyInfo: {
-        name: '12',
-        sId: '12'
-      },
-      option: {
-        series: [{
-          type: 'pie',
-          data: [{
-            value: 335,
-            name: '计算机组成原理'
-          }, {
-            value: 234,
-            name: '计算机系统结构'
-          }, {
-            value: 1548,
-            name: '计算机网络'
-          }]
-        }]
+        age: ''
       }
     }
   },
   methods: {
     ...mapMutations(['delLogin']),
     getUserInfo () {
-      var _this = this
-      this.$http.get('../../static/mock/teacher.json').then((res) => {
-        res = res.data
-        if (res.data) {
-          const data = res.data
-          data.TeacherList.forEach(function (item, index) {
-            if (item.username === localStorage.username) {
-              _this.info = item
-            }
-          })
-          console.log(this.info)
-        }
+      var id = JSON.parse(localStorage.getItem('userId'))
+      console.log(id)
+      this.$axios({
+        methods: 'get',
+        url: '/users/' + id
+      }).then(res => {
+        const data = res.data.user
+        let _this = this
+        _this.info = data
       })
     },
     backLogin () {
@@ -157,17 +116,6 @@ export default {
     toMyInfo () {
       this.isMyInfo = true
       this.getUserInfo()
-      setTimeout(() => {
-        this.drawEchartData()
-      }, 300)
-    },
-    drawEchartData () {
-      // Object.defineProperty(document.getElementById('myChart'), 'clientWidth', { get: function () { return 300 } })
-      // Object.defineProperty(document.getElementById('myChart'), 'clientHeight', { get: function () { return 300 } })
-      // 基于准备好的dom，初始化echarts实例
-      let myChart = echarts.init(document.getElementById('myChart'))
-      // 绘制图表
-      myChart.setOption(this.option)
     }
   }
 }
@@ -255,11 +203,8 @@ export default {
         width : 100%
         height : 500px
         .basicInfo
-          width : 40%
-          height : 500px
+          width : 100%
           position : absolute
-          left : 100px
-          top : 5%
           .basicHead
             width : 100%
             height : 30px
