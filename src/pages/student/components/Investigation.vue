@@ -2,7 +2,7 @@
   <div class='Center'>
     <div class='head'>
       <p class='headFonts'>成绩专区</p>
-      <p class="headOut" @click="backLogin()">注销</p>
+      <p class='headOut' @click='backLogin()'>注销</p>
       <p class='headMe' @click='backStu()'>我的</p>
     </div>
     <div class='Left'>
@@ -17,49 +17,38 @@
     <div class='Right'>
       <div v-show='isMyInfo' class='MyInfo'>
         <div class='rightForm'>
-          <div class="half">
-            <el-form :label-position='labelPosition' label-width='80px' :rules='rules' :model='formData' size='mini'>
-              <el-form-item label='教学学期' prop='term'>
-                <el-select v-model='formData.term' placeholder='请选择教学学期'>
-                  <el-option label='2020-2021 年度 第 一 学期' value='2020-2021 年度 第 一 学期'></el-option>
-                  <el-option label='2020-2021 年度 第 二 学期' value='2020-2021 年度 第 二 学期'></el-option>
-                  <el-option label='2019-2020 年度 第 一 学期' value='2019-2020 年度 第 一 学期'></el-option>
-                  <el-option label='2019-2020 年度 第 二 学期' value='2019-2020 年度 第 二 学期'></el-option>
-                  <el-option label='2018-2019 年度 第 一 学期' value='2018-2019 年度 第 一 学期'></el-option>
-                  <el-option label='2018-2019 年度 第 二 学期' value='2018-2019 年度 第 二 学期'></el-option>
+          <div class='half'>
+            <el-form :label-position='labelPosition' label-width='80px' :rules='rules' :model='stuData' size='mini'>
+              <el-form-item label='课程名称' prop='name'>
+                <el-select v-model='stuData.name' placeholder='请选择填写问卷调查的科目'>
+                  <el-option
+                    v-for='item in courses'
+                    :key='item.courseId'
+                    :value='item.courseName'
+                  ></el-option>
                 </el-select>
               </el-form-item>
-            </el-form>
-            <el-form :label-position='labelPosition' label-width='80px' :rules='rules' :model='stuData' size='mini'>
               <el-form-item label='学生姓名' prop='stuName'>
                 <el-input v-model='stuData.stuName' placeholder='请输入您的姓名'></el-input>
               </el-form-item>
-              <el-form-item label='目标一' prop='one'>
-                <el-input v-model='stuData.one' placeholder='请输入自己的目标一达成度'></el-input>
-              </el-form-item>
-              <el-form-item label='目标三' prop='three'>
-                <el-input v-model='stuData.three' placeholder='请输入自己的目标三达成度'></el-input>
-              </el-form-item>
-            </el-form>
-          </div>
-          <div class="anotherHalf">
-            <el-form :label-position='labelPosition' label-width='80px' :rules='rules' :model='formData' size='mini'>
-              <el-form-item label='课程名称' prop='name'>
-                <el-input v-model='formData.name' placeholder='请输入课程名称'></el-input>
-              </el-form-item>
-            </el-form>
-            <el-form :label-position='labelPosition' label-width='80px' :rules='rules' :model='stuData' size='mini'>
               <el-form-item label='学号' prop='credit'>
                 <el-input v-model='stuData.credit' placeholder='请输入您的学号'></el-input>
               </el-form-item>
-              <el-form-item label='目标二' prop='two'>
-                <el-input v-model='stuData.two' placeholder='请输入自己的目标二达成度'></el-input>
-              </el-form-item>
-              <el-form-item label='目标四' prop='four'>
-                <el-input v-model='stuData.four' placeholder='请输入自己的目标四达成度'></el-input>
+            </el-form>
+          </div>
+          <div class='anotherHalf'>
+            <el-form :label-position='labelPosition' label-width='80px' :rules='rules' size='mini'>
+              <el-form-item
+                v-for='item in aims'
+                :key='item.value'
+                :value='item.aimValue'
+                :label='item.aimName'
+              >
+                <el-input v-model='item.aimValue' placeholder='请输入自己的目标达成度'></el-input>
               </el-form-item>
               <el-form-item>
-                <el-button size='mini' @click='submit()'>提交</el-button>
+                <el-button size='mini' @click='query()' style="width: 91px;">查询</el-button>
+                <el-button size='mini' @click='submit()' style="width: 91px;">提交</el-button>
               </el-form-item>
             </el-form>
           </div>
@@ -80,9 +69,6 @@ export default {
       isMyInfo: false,
       labelPosition: 'right',
       rules: {
-        term: [
-          { required: true, message: '请选择教学学期', trigger: 'blur' }
-        ],
         name: [
           { required: true, message: '请输入课程名称', trigger: 'blur' }
         ],
@@ -91,33 +77,38 @@ export default {
         ],
         credit: [
           { required: true, message: '请输入您的学号', trigger: 'blur' }
-        ],
-        one: [
-          { required: true, message: '请输入您的目标一的达成度', trigger: 'blur' }
-        ],
-        two: [
-          { required: true, message: '请输入您的目标二的达成度', trigger: 'blur' }
-        ],
-        three: [
-          { required: true, message: '请输入您的目标三的达成度', trigger: 'blur' }
-        ],
-        four: [
-          { required: true, message: '请输入您的目标四的达成度', trigger: 'blur' }
         ]
       },
-      formData: {
-        term: '',
-        name: ''
-      },
       stuData: {
+        name: '',
         stuName: '',
         credit: '',
         one: '',
         two: '',
         three: '',
         four: ''
-      }
+      },
+      courses: [],
+      aims: []
     }
+  },
+  created () {
+    var id = JSON.parse(localStorage.getItem('userId'))
+    this.$axios({
+      methods: 'get',
+      url: '/stu_course',
+      params: {stuId: id}
+    }).then(res => {
+      const data = res.data.courses
+      let _this = this
+      data.forEach(item => {
+        let course = {
+          courseName: item.Course.courseName,
+          courseId: item.Course.id
+        }
+        _this.courses.push(course)
+      })
+    })
   },
   methods: {
     ...mapMutations(['delLogin']),
@@ -146,19 +137,49 @@ export default {
         }, 2000)
       }
     },
+    query () {
+      let _this = this
+      _this.aims = []
+      this.$axios({
+        method: 'get',
+        url: '/aims'
+      }).then(res => {
+        console.log(res)
+        const data = res.data.aims
+        data.forEach(item => {
+          if (item.courseName === this.stuData.name) {
+            let aimNum = item.aimNumber
+            for (let i = 1; i <= aimNum; i++) {
+              _this.aims.push({ aimName: '目标' + i, aimValue: '' })
+            }
+          }
+        })
+      })
+    },
     submit () {
       if (localStorage.getItem('students') === null) {
         this.$message.warning('暂未开放学生问卷调查填写权限，请耐心等待~')
       } else {
         try {
+          console.log(this.aims)
+          // let data = {
+          //   stuName: this.stuData.stuName,
+          //   stuId: this.stuData.credit,
+          //   one: this.aims[0],
+          //   two: this.aims[1],
+          //   three: this.aims[2],
+          //   four: this.aims[3],
+          //   five: this.aims[4],
+          //   six: this.aims[5]
+          // }
           let data = {
             stuName: this.stuData.stuName,
-            credit: this.stuData.credit,
-            one: this.stuData.one,
-            two: this.stuData.two,
-            three: this.stuData.three,
-            four: this.stuData.four
+            stuId: this.stuData.credit
           }
+          for (let i = 1; i <= this.aims.length; i++) {
+            data[i] = this.aims[i - 1].aimValue
+          }
+          console.log(data)
           Object.getOwnPropertyNames(data).forEach((item) => {
             if (data[item] === '') {
               const error = {message: '未全部填写完成'}
@@ -182,7 +203,7 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
+<style lang='stylus' scoped>
   .Center
     width : 100%
     height : 580px

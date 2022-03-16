@@ -13,6 +13,7 @@
         </div>
         <div class='inputBox'>
           <button class='investigation' @click='toMyInfo()'><p class='invesFonts'>成绩百分比</p></button>
+          <button class='investigation' @click='toRelation()'><p class='invesFonts'>毕业要求支撑</p></button>
         </div>
       </div>
       <div class='Right'>
@@ -37,27 +38,28 @@
               </el-form-item>
             </el-form>
           </div>
-          <div v-show="isOne" class="allInfo">
+          <div v-if="isOne" class="allInfo">
             <div class="backLastest">
               <img src='../../../assets/img/back.png' class='backImg' @click='back()'/>
               <p class='backFonts' @click='back()'>返回上一层</p>
               <el-button size='mini' class="addButton" @click='addCourse()'>添加课程</el-button>
             </div>
             <el-table :data="tableData" border max-height="500" class="infoTable">
-              <el-table-column prop="courseName" label="名称" width="120" align="center"></el-table-column>
-              <el-table-column prop="courseId" label="课程编号" width="120" align="center"></el-table-column>
-              <el-table-column prop="courseCredit" label="学分" width="120" align="center"></el-table-column>
-              <el-table-column prop="courseHour" label="学时" width="120" align="center"></el-table-column>
+              <el-table-column prop="courseName" label="课程名称" align="center"></el-table-column>
+              <el-table-column prop="courseId" label="课程编号" align="center"></el-table-column>
+              <el-table-column prop="courseCredit" label="学分" align="center"></el-table-column>
+              <el-table-column prop="courseHour" label="学时" align="center"></el-table-column>
               <el-table-column prop="address" label="成绩组成"  align="center">
                 <el-table-column prop="quantity" label="定量"  align="center">
-                  <el-table-column prop="exam" label="试卷" width="120" align="center"></el-table-column>
-                  <el-table-column prop="work" label="作业" width="120" align="center"></el-table-column>
-                  <el-table-column prop="experiment" label="实验" width="120" align="center"></el-table-column>
-                  <el-table-column prop="test" label="随堂检验" width="120" align="center"></el-table-column>
+                  <el-table-column prop="midTerm" label="期中试卷" align="center"></el-table-column>
+                  <el-table-column prop="finalExam" label="期末试卷" align="center"></el-table-column>
+                  <el-table-column prop="work" label="作业" align="center"></el-table-column>
+                  <el-table-column prop="experiment" label="实验" align="center"></el-table-column>
+                  <el-table-column prop="test" label="随堂检验" align="center"></el-table-column>
                 </el-table-column>
                 <el-table-column prop="quality" label="定性"  align="center">
-                  <el-table-column prop="teaEvaluate" label="教师评价" width="120" align="center"></el-table-column>
-                  <el-table-column prop="stuEvaluate" label="学生自我评价" width="120" align="center"></el-table-column>
+                  <el-table-column prop="teaEvaluate" label="教师评价" align="center"></el-table-column>
+                  <el-table-column prop="stuEvaluate" label="学生自我评价" align="center"></el-table-column>
                 </el-table-column>
               </el-table-column>
               <el-table-column fixed="right" label="操作" width="100" align='center'>
@@ -68,7 +70,7 @@
               </el-table-column>
             </el-table>
           </div>
-          <div v-show='isAdd' class="allInfo">
+          <div v-if='isAdd' class="allInfo">
             <div class="backLastest">
               <img src='../../../assets/img/back.png' class='backImg' @click='back()'/>
               <p class='backFonts' @click='back()'>返回上一层</p>
@@ -96,8 +98,8 @@
                   <el-form-item label='学分' prop='courseCredit'>
                     <el-input v-model='courseData.courseCredit' placeholder='请输入新的课程学分'></el-input>
                   </el-form-item>
-                  <el-form-item label='考试占比' prop='exam'>
-                    <el-input v-model='courseData.exam' placeholder='请输入考试占比'></el-input>
+                  <el-form-item label='期中考试占比' prop='midTerm'>
+                    <el-input v-model='courseData.midTerm' placeholder='请输入期中考试占比'></el-input>
                   </el-form-item>
                   <el-form-item label='作业占比' prop='work'>
                     <el-input v-model='courseData.work' placeholder='请输入作业占比'></el-input>
@@ -118,6 +120,9 @@
                   <el-form-item label='实验占比' prop='experiment'>
                     <el-input v-model='courseData.experiment' placeholder='请输入实验占比'></el-input>
                   </el-form-item>
+                  <el-form-item label='期末考试占比' prop='finalExam'>
+                    <el-input v-model='courseData.finalExam' placeholder='请输入期末考试占比'></el-input>
+                  </el-form-item>
                   <el-form-item label='随堂检测占比' prop='test'>
                     <el-input v-model='courseData.test' placeholder='请输入随堂检测占比'></el-input>
                   </el-form-item>
@@ -131,7 +136,7 @@
               </div>
             </div>
           </div>
-          <div v-show='isAlter' class="allInfo">
+          <div v-if='isAlter' class="allInfo">
             <div class="backLastest">
               <img src='../../../assets/img/back.png' class='backImg' @click='back()'/>
               <p class='backFonts' @click='back()'>返回上一层</p>
@@ -156,8 +161,8 @@
                   <el-form-item label='课程名称' prop='courseName'>
                     <el-input v-model='courseData.courseName' placeholder='请输入新的课程名称'></el-input>
                   </el-form-item>
-                  <el-form-item label='考试占比' prop='exam'>
-                    <el-input v-model='courseData.exam' placeholder='请输入考试占比'></el-input>
+                  <el-form-item label='期中考试占比' prop='midTerm'>
+                    <el-input v-model='courseData.midTerm' placeholder='请输入期中考试占比'></el-input>
                   </el-form-item>
                   <el-form-item label='作业占比' prop='work'>
                     <el-input v-model='courseData.work' placeholder='请输入作业占比'></el-input>
@@ -177,6 +182,9 @@
                   <el-form-item label='实验占比' prop='experiment'>
                     <el-input v-model='courseData.experiment' placeholder='请输入实验占比'></el-input>
                   </el-form-item>
+                  <el-form-item label='期末考试占比' prop='finalExam'>
+                    <el-input v-model='courseData.finalExam' placeholder='请输入期末考试占比'></el-input>
+                  </el-form-item>
                   <el-form-item label='随堂检测占比' prop='test'>
                     <el-input v-model='courseData.test' placeholder='请输入随堂检测占比'></el-input>
                   </el-form-item>
@@ -190,7 +198,7 @@
               </div>
             </div>
           </div>
-          <div v-show='isAll' class="allInfo">
+          <div v-if='isAll' class="allInfo">
             <div class="backLastest">
               <img src='../../../assets/img/back.png' class='backImg' @click='back()'/>
               <p class='backFonts' @click='back()'>返回上一层</p>
@@ -201,23 +209,61 @@
               element-loading-text="拼命加载中"
               element-loading-spinner="el-icon-loading"
               element-loading-background="rgba(0, 0, 0, 0.8)" :data="tableData" border max-height="420" class="infoTable">
-              <el-table-column prop="courseName" label="名称" width="120" align="center"></el-table-column>
-              <el-table-column prop="courseId" label="课程编号" width="120" align="center"></el-table-column>
-              <el-table-column prop="courseCredit" label="学分" width="120" align="center"></el-table-column>
-              <el-table-column prop="courseHour" label="学时" width="120" align="center"></el-table-column>
+              <el-table-column prop="courseName" label="课程名称" align="center"></el-table-column>
+              <el-table-column prop="courseId" label="课程编号" align="center"></el-table-column>
+              <el-table-column prop="courseCredit" label="学分" align="center"></el-table-column>
+              <el-table-column prop="courseHour" label="学时" align="center"></el-table-column>
               <el-table-column prop="address" label="成绩组成"  align="center">
                 <el-table-column prop="quantity" label="定量"  align="center">
-                  <el-table-column prop="exam" label="试卷" width="120" align="center"></el-table-column>
-                  <el-table-column prop="work" label="作业" width="120" align="center"></el-table-column>
-                  <el-table-column prop="experiment" label="实验" width="120" align="center"></el-table-column>
-                  <el-table-column prop="test" label="随堂检验" width="120" align="center"></el-table-column>
+                  <el-table-column prop="midTerm" label="期中试卷" align="center"></el-table-column>
+                  <el-table-column prop="finalExam" label="期末试卷" align="center"></el-table-column>
+                  <el-table-column prop="work" label="作业" align="center"></el-table-column>
+                  <el-table-column prop="experiment" label="实验" align="center"></el-table-column>
+                  <el-table-column prop="test" label="随堂检验" align="center"></el-table-column>
                 </el-table-column>
                 <el-table-column prop="quality" label="定性" align="center">
-                  <el-table-column prop="teaEvaluate" label="教师评价" width="120" align="center"></el-table-column>
-                  <el-table-column prop="stuEvaluate" label="学生自我评价" width="120" align="center"></el-table-column>
+                  <el-table-column prop="teaEvaluate" label="教师评价" align="center"></el-table-column>
+                  <el-table-column prop="stuEvaluate" label="学生自我评价" align="center"></el-table-column>
                 </el-table-column>
               </el-table-column>
               <el-table-column fixed="right" label="操作" width="100" align="center">
+                <template slot-scope="scope">
+                  <el-button @click="alter(scope.row)" type="text" size="small">编辑</el-button>
+                  <el-button @click="deleteInfo(scope.row)" type="text" size="small">删除</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </div>
+        </div>
+        <div v-show='isRelation' class='MyInfo'>
+          <div v-show='isRSelect' class='basicInfo'>
+            <el-form :label-position='labelPosition' label-width='80px' :rules='rules' size='mini'>
+              <el-form-item label='课程名称'>
+                <el-select v-model='selectedCourseName' placeholder='请选择课程名称'>
+                  <el-option
+                    v-for="item in relationData"
+                    :key="item.value"
+                    :label="item.courseName"
+                    :value="item.courseName"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label-position='right' label-width='80px'>
+                <el-button size='mini' @click='getCourseInfo()' style="width: 192px;">查询</el-button>
+              </el-form-item>
+            </el-form>
+          </div>
+          <div v-if='isRInfo'  class="allInfo">
+            <div class="backLastest">
+              <img src='../../../assets/img/back.png' class='backImg' @click='back()'/>
+              <p class='backFonts' @click='back()'>返回上一层</p>
+            </div>
+            <el-table :data="tableData" border max-height="500" class="infoTable">
+              <el-table-column prop="courseName" label="课程名称" align="center"></el-table-column>
+              <el-table-column prop="graduRequirement" label="毕业要求" align="center"></el-table-column>
+              <el-table-column prop="graduationPoint" label="毕业要求指标点" align="center"></el-table-column>
+              <el-table-column prop="aim" label="课程目标" align="center"></el-table-column>
+              <el-table-column fixed="right" label="操作" width="100" align='center'>
                 <template slot-scope="scope">
                   <el-button @click="alter(scope.row)" type="text" size="small">编辑</el-button>
                   <el-button @click="deleteInfo(scope.row)" type="text" size="small">删除</el-button>
@@ -240,6 +286,9 @@ export default {
     return {
       isActive: true,
       isMyInfo: false,
+      isRelation: false,
+      isRSelect: false,
+      isRInfo: false,
       isSelect: true,
       isOne: false,
       isAdd: false,
@@ -269,8 +318,11 @@ export default {
         courseHour: [
           { required: true, message: '请输入课程学时', trigger: 'blur' }
         ],
-        exam: [
-          { required: true, message: '请输入考试评价占比', trigger: 'blur' }
+        midTerm: [
+          { required: true, message: '请输入期中考试评价占比', trigger: 'blur' }
+        ],
+        finalExam: [
+          { required: true, message: '请输入期末考试评价占比', trigger: 'blur' }
         ],
         work: [
           { required: true, message: '请输入作业评价占比', trigger: 'blur' }
@@ -294,7 +346,8 @@ export default {
         courseCredit: '',
         courseHour: '',
         teaId: '',
-        exam: '',
+        midTerm: '',
+        finalExam: '',
         work: '',
         test: '',
         experiment: '',
@@ -302,9 +355,28 @@ export default {
         stuEvaluate: ''
       },
       tableData: [],
-      professionData: [],
-      alterInfo: []
+      relationData: [],
+      relationInfo: [],
+      alterInfo: [],
+      selectedCourseName: ''
     }
+  },
+  created () {
+    let _this = this
+    this.$axios({
+      method: 'get', url: '/relations'
+    }).then(res => {
+      console.log(res)
+      const data = res.data.relations
+      _this.relationInfo = data
+      var obj = {}
+      data.forEach(item => {
+        if (!obj[item.courseName]) {
+          obj[item.courseName] = 1
+          _this.relationData.push({courseName: item.courseName})
+        }
+      })
+    })
   },
   methods: {
     ...mapMutations(['delLogin']),
@@ -322,19 +394,34 @@ export default {
     toMyInfo () {
       this.isMyInfo = true
       this.isActive = false
-      this.formData.term = ''
+      this.isRelation = false
+      this.clear()
+    },
+    toRelation () {
+      this.isRelation = true
+      this.isRSelect = true
+      this.isRInfo = false
+      this.isMyInfo = false
+      this.isActive = false
+      this.clear()
     },
     back () {
-      this.isSelect = true
-      this.isOne = false
-      this.isAll = false
-      this.isAdd = false
-      this.isAlter = false
+      if (this.isMyInfo) {
+        this.isSelect = true
+        this.isOne = false
+        this.isAll = false
+        this.isAdd = false
+        this.isAlter = false
+      } else if (this.isRelation) {
+        this.isRSelect = true
+        this.isRInfo = false
+      }
       this.clear()
-      this.tableData = []
     },
     clear () {
       let _this = this
+      _this.tableData = []
+      _this.formData.term = ''
       Object.getOwnPropertyNames(this.courseData).forEach((item) => {
         _this.courseData[item] = ''
       })
@@ -353,7 +440,8 @@ export default {
           term: this.formData.term,
           courseName: this.courseData.courseName,
           courseId: this.courseData.courseId,
-          exam: this.courseData.exam,
+          midTerm: this.courseData.midTerm,
+          finalExam: this.courseData.finalExam,
           work: this.courseData.work,
           experiment: this.courseData.experiment,
           test: this.courseData.test,
@@ -375,7 +463,8 @@ export default {
             courseId: this.courseData.courseId,
             courseCredit: this.courseData.courseCredit,
             courseHour: this.courseData.courseHour,
-            exam: this.courseData.exam,
+            midTerm: this.courseData.midTerm,
+            finalExam: this.courseData.finalExam,
             work: this.courseData.work,
             experiment: this.courseData.experiment,
             test: this.courseData.test,
@@ -398,7 +487,8 @@ export default {
           courseId: this.courseData.courseId,
           courseCredit: this.courseData.courseCredit,
           courseHour: this.courseData.courseHour,
-          exam: this.courseData.exam,
+          midTerm: this.courseData.midTerm,
+          finalExam: this.courseData.finalExam,
           work: this.courseData.work,
           experiment: this.courseData.experiment,
           test: this.courseData.test,
@@ -420,7 +510,8 @@ export default {
             courseId: this.courseData.courseId,
             courseCredit: this.courseData.courseCredit,
             courseHour: this.courseData.courseHour,
-            exam: this.courseData.exam,
+            midTerm: this.courseData.midTerm,
+            finalExam: this.courseData.finalExam,
             work: this.courseData.work,
             experiment: this.courseData.experiment,
             test: this.courseData.test,
@@ -468,6 +559,17 @@ export default {
         })
       })
     },
+    getCourseInfo () {
+      this.clear()
+      this.isRInfo = true
+      this.isRSelect = false
+      let _this = this
+      this.relationInfo.forEach(item => {
+        if (item.courseName === this.selectedCourseName) {
+          _this.tableData.push(item)
+        }
+      })
+    },
     query () {
       this.isOne = true
       this.isAll = false
@@ -491,7 +593,8 @@ export default {
               courseId: item.id,
               courseCredit: item.courseCredit,
               courseHour: item.courseHour,
-              exam: item.exam,
+              midTerm: item.midTerm,
+              finalExam: item.finalExam,
               work: item.work,
               experiment: item.experiment,
               test: item.test,
@@ -521,7 +624,8 @@ export default {
               courseId: item.id,
               courseCredit: item.courseCredit,
               courseHour: item.courseHour,
-              exam: item.exam,
+              midTerm: item.midTerm,
+              finalExam: item.finalExam,
               work: item.work,
               experiment: item.experiment,
               test: item.test,

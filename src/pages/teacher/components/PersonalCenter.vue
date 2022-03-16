@@ -93,7 +93,7 @@ export default {
       var id = JSON.parse(localStorage.getItem('userId'))
       console.log(id)
       this.$axios({
-        methods: 'get',
+        method: 'get',
         url: '/users/' + id
       }).then(res => {
         const data = res.data.user

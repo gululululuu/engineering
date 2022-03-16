@@ -10,7 +10,10 @@ module.exports = {
       courseName: {
         type: Sequelize.STRING
       },
-      exam: {
+      midTerm: {
+        type: Sequelize.FLOAT
+      },
+      finalExam: {
         type: Sequelize.FLOAT
       },
       work: {

@@ -1,66 +1,59 @@
 <template>
-  <div class="analysisLeft">
-    <div class='basicHead'>
-      <p class='info'>请填写对评估课程达成情况的分析</p>
+  <div>
+    <div class="analysisLeft">
+      <div class='basicHead'>
+        <p class='info'>请填写对评估课程达成情况的分析</p>
+      </div>
+      <div class="half">
+        <el-form :label-position='labelPosition' label-width='80px' :rules='rules' :model='courseInfo' size='mini'>
+          <el-form-item label='课程名称' prop='courseName'>
+            <el-select v-model='courseInfo.courseName' placeholder='请选择要上传的科目'>
+              <el-option
+                v-for="item in courses"
+                :key='item.courseId'
+                :value="item.courseName"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label-position='right'>
+            <el-button size='mini' @click='query()' style="width: 192px;">查询</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+      <div class="anotherHalf">
+        <el-form :label-position='labelPosition' label-width='80px' :rules='rules' :model='courseInfo' size='mini'>
+          <el-form-item
+            v-for="item in analysis"
+            :key="item.value"
+            :label="item.aimName"
+          >
+            <el-input type="textarea" maxLength="70" v-model="item.aimValue" placeholder='请输入内容'></el-input>
+          </el-form-item>
+        </el-form>
+      </div>
     </div>
-    <div class="half">
-      <el-form :label-position='labelPosition' label-width='80px' :rules='rules' :model='CourseInfo' size='mini'>
-        <el-form-item label='教学学期' prop='courseTerm'>
-          <el-select v-model='CourseInfo.courseTerm' placeholder='请选择教学学期'>
-            <el-option label='2020-2021 年度 第 一 学期' value='2020-2021 年度 第 一 学期'></el-option>
-            <el-option label='2020-2021 年度 第 二 学期' value='2020-2021 年度 第 二 学期'></el-option>
-            <el-option label='2019-2020 年度 第 一 学期' value='2019-2020 年度 第 一 学期'></el-option>
-            <el-option label='2019-2020 年度 第 二 学期' value='2019-2020 年度 第 二 学期'></el-option>
-            <el-option label='2018-2019 年度 第 一 学期' value='2018-2019 年度 第 一 学期'></el-option>
-            <el-option label='2018-2019 年度 第 二 学期' value='2018-2019 年度 第 二 学期'></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label='目标一' prop='one'>
-          <el-input type="textarea" v-model='CourseInfo.one' placeholder='请输入内容' maxlength="70" show-word-limit></el-input>
-        </el-form-item>
-        <el-form-item label='目标三' prop='three'>
-          <el-input type="textarea" v-model='CourseInfo.three' placeholder='请输入内容' maxlength="70" show-word-limit></el-input>
-        </el-form-item>
-      </el-form>
-    </div>
-    <div class="anotherHalf">
-      <el-form :label-position='labelPosition' label-width='80px' :rules='rules' :model='CourseInfo' size='mini'>
-        <el-form-item label='课程名称' prop='courseName'>
-          <el-input v-model='CourseInfo.courseName' placeholder='请输入课程名称'></el-input>
-        </el-form-item>
-        <el-form-item label='目标二' prop='two'>
-          <el-input type="textarea" v-model='CourseInfo.two' placeholder='请输入内容' maxlength="70" show-word-limit></el-input>
-        </el-form-item>
-        <el-form-item label='目标四' prop='four'>
-          <el-input type="textarea" v-model='CourseInfo.four' placeholder='请输入内容' maxlength="70" show-word-limit></el-input>
-        </el-form-item>
-      </el-form>
-    </div>
-    <div class='basicHead' style="margin-top: 200px;">
-      <p class='info'>请填写对课程目标持续改进的措施</p>
-    </div>
-    <div class="half">
-      <el-form :label-position='labelPosition' label-width='80px' :rules='rules' :model='CourseInfo' size='mini'>
-        <el-form-item label='目标一' prop='forOne'>
-          <el-input type="textarea" v-model='CourseInfo.forOne' placeholder='请输入内容' maxlength="70" show-word-limit style="width: 193px;"></el-input>
-        </el-form-item>
-        <el-form-item label='目标三' prop='forThree'>
-          <el-input type="textarea" v-model='CourseInfo.forThree' placeholder='请输入内容' maxlength="70" show-word-limit></el-input>
-        </el-form-item>
-      </el-form>
-    </div>
-    <div class="anotherHalf">
-      <el-form :label-position='labelPosition' label-width='80px' :rules='rules' :model='CourseInfo' size='mini'>
-        <el-form-item label='目标二' prop='forTwo'>
-          <el-input type="textarea" v-model='CourseInfo.forTwo' placeholder='请输入内容' maxlength="70" show-word-limit></el-input>
-        </el-form-item>
-        <el-form-item label='目标四' prop='forFour'>
-          <el-input type="textarea" v-model='CourseInfo.forFour' placeholder='请输入内容' maxlength="70" show-word-limit></el-input>
-        </el-form-item>
-        <el-form-item label-position='right' label-width='199px'>
-          <el-button size='mini' @click='submit()'>提交</el-button>
-        </el-form-item>
-      </el-form>
+    <div class="analysisRight">
+      <div class='basicHead'>
+        <p class='info'>请填写对课程目标持续改进的措施</p>
+      </div>
+      <div class="half">
+        <el-form :label-position='labelPosition' label-width='80px' :rules='rules' :model='courseInfo' size='mini'>
+          <el-form-item
+            v-for="item in methods"
+            :key="item.value"
+            :label="item.aimName"
+          >
+            <el-input type="textarea" maxLength="70"  v-model="item.aimValue" placeholder='请输入内容'></el-input>
+          </el-form-item>
+        </el-form>
+      </div>
+      <div class="anotherHalf">
+        <el-form :label-position='labelPosition' label-width='80px' :rules='rules' :model='courseInfo' size='mini'>
+          <el-form-item label-position='right'>
+            <el-button size='mini' @click='submit()' style="width : 180px">提交</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
     </div>
   </div>
 </template>
@@ -103,7 +96,7 @@ export default {
           { required: true, message: '请输入针对目标四的持续改进措施', trigger: 'blur' }
         ]
       },
-      CourseInfo: {
+      courseInfo: {
         courseTerm: '',
         courseName: '',
         one: '',
@@ -114,11 +107,31 @@ export default {
         forTwo: '',
         forThree: '',
         forFour: ''
-      }
+      },
+      courses: [],
+      analysis: [],
+      methods: []
     }
   },
+  // 在数据库中查找当前教师教授的所有课程
   created () {
     this.initCourseAnalysis()
+    var id = JSON.parse(localStorage.getItem('userId'))
+    this.$axios({
+      methods: 'get',
+      url: '/courses',
+      params: {id: id}
+    }).then(res => {
+      const data = res.data.courses
+      let _this = this
+      data.forEach(item => {
+        let course = {
+          courseName: item.courseName,
+          courseId: item.id
+        }
+        _this.courses.push(course)
+      })
+    })
   },
   methods: {
     initCourseAnalysis () {
@@ -126,40 +139,51 @@ export default {
       localStorage.setItem('courseAnalysis', JSON.stringify(analysis))
     },
     submit () {
+      console.log(this.analysis)
+      console.log(this.methods)
       try {
         let data = {
-          courseTerm: this.CourseInfo.courseTerm,
-          courseName: this.CourseInfo.courseName,
-          one: this.CourseInfo.one,
-          two: this.CourseInfo.two,
-          three: this.CourseInfo.three,
-          four: this.CourseInfo.four,
-          forOne: this.CourseInfo.forOne,
-          forTwo: this.CourseInfo.forTwo,
-          forThree: this.CourseInfo.forThree,
-          forFour: this.CourseInfo.forFour
+          courseName: this.courseInfo.courseName
         }
-        let analysis = JSON.parse(localStorage.getItem('courseAnalysis'))
-        analysis.push(data)
-        localStorage.setItem('courseAnalysis', JSON.stringify(analysis))
+        let len = this.analysis.length
+        for (let i = 0; i < (len * 2); i++) {
+          if (i < len) {
+            data[i] = this.analysis[i].aimValue
+          } else {
+            data[i] = this.methods[i - 3].aimValue
+          }
+        }
+        let courseAnalysis = JSON.parse(localStorage.getItem('courseAnalysis'))
+        courseAnalysis.push(data)
+        localStorage.setItem('courseAnalysis', JSON.stringify(courseAnalysis))
         console.log(JSON.parse(localStorage.getItem('courseAnalysis')))
         this.$message.success('提交成功')
         this.clear()
       } catch (e) {
+        console.log(e)
         this.$message.error('提交失败，请联系管理员校验')
       }
     },
+    query () {
+      this.analysis = []
+      this.methods = []
+      this.$axios({
+        method: 'get', url: '/aims', params: {courseName: this.courseInfo.courseName}
+      }).then(res => {
+        console.log(res)
+        const data = res.data.aim
+        let _this = this
+        for (let i = 1; i <= data.aimNumber; i++) {
+          _this.analysis.push({aimName: '目标' + i, aimValue: ''})
+          _this.methods.push({aimName: '目标' + i, aimValue: ''})
+        }
+      })
+    },
     clear () {
-      this.CourseInfo.courseTerm = ''
-      this.CourseInfo.courseName = ''
-      this.CourseInfo.one = ''
-      this.CourseInfo.two = ''
-      this.CourseInfo.three = ''
-      this.CourseInfo.four = ''
-      this.CourseInfo.forOne = ''
-      this.CourseInfo.forTwo = ''
-      this.CourseInfo.forThree = ''
-      this.CourseInfo.forFour = ''
+      let _this = this
+      Object.getOwnPropertyNames(this.courseInfo).forEach((item) => {
+        _this.courseInfo[item] = ''
+      })
     }
   }
 }
@@ -168,9 +192,33 @@ export default {
 <style lang="stylus" scoped>
   .analysisLeft
     position : absolute
-    left : 22%
-    top : 10%
-    width : 550px
+    left : 2%
+    top : 5%
+    width : 500px
+    height : 300px
+    .half
+      position : absolute
+      left : 0
+    .anotherHalf
+      position : absolute
+      right : 0
+    .basicHead
+      width : 100%
+      height : 30px
+      .info
+        width : 100%
+        position : absolute
+        height : 30px
+        margin : 0
+        display : inline
+        text-align : center
+        font-family : '宋体'
+        font-size : 16px
+  .analysisRight
+    position : absolute
+    right : 2%
+    top : 5%
+    width : 500px
     height : 300px
     .half
       position : absolute

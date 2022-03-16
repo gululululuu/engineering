@@ -63,10 +63,27 @@
               element-loading-background="rgba(0, 0, 0, 0.8)"
               :data="tableData"
               style="width: 100%">
-              <el-table-column prop="term" label="教学学期"></el-table-column>
-              <el-table-column prop="courseName" label="课程名称" width="180"></el-table-column>
-              <el-table-column prop="teacherName" label="授课教师" width="180"></el-table-column>
-              <el-table-column prop="info" label="课程评估信息"></el-table-column>
+              <el-table-column prop="courseName" label="课程名称"></el-table-column>
+              <el-table-column prop="courseCredit" label="学分" align="center"></el-table-column>
+              <el-table-column prop="courseHour" label="学时" align="center"></el-table-column>
+              <el-table-column prop="form" label="成绩组成"  align="center">
+                <el-table-column prop="quantity" label="定量"  align="center">
+                  <el-table-column prop="midTerm" label="期中试卷" align="center"></el-table-column>
+                  <el-table-column prop="finalExam" label="期末试卷" align="center"></el-table-column>
+                  <el-table-column prop="work" label="作业" align="center"></el-table-column>
+                  <el-table-column prop="experiment" label="实验" align="center"></el-table-column>
+                  <el-table-column prop="test" label="随堂检验" align="center"></el-table-column>
+                </el-table-column>
+                <el-table-column prop="quality" label="定性"  align="center">
+                  <el-table-column prop="teaEvaluate" label="教师评价" align="center"></el-table-column>
+                  <el-table-column prop="stuEvaluate" label="学生自我评价" align="center"></el-table-column>
+                </el-table-column>
+              </el-table-column>
+              <el-table-column prop="info" label="课程评估情况" align="center">
+                <template slot-scope="scope">
+                  <el-button @click="getCourseInfo(scope.row)" type="text" size="small">查看</el-button>
+                </template>
+              </el-table-column>
             </el-table>
           </div>
         </div>
@@ -278,6 +295,9 @@ export default {
       localStorage.setItem('courseNotReached', JSON.stringify(data))
       console.log(JSON.parse(localStorage.getItem('courseNotReached')))
     },
+    getCourseInfo (row) {
+      console.log(row)
+    },
     checkCourseName () {
       let _this = this
       this.$http.get('../../../../static/mock/course.json').then((res) => {
@@ -311,21 +331,26 @@ export default {
       this.isAll = true
       this.isSelect = false
       let _this = this
-      this.$http.get('../../../../static/mock/course.json').then((res) => {
-        res = res.data
-        if (res.data) {
-          const data = res.data
-          data.CourseList.forEach(function (item) {
-            let data = {
-              term: item.courseTerm,
-              courseName: item.courseName,
-              teacherName: item.teacherName,
-              info: item.info
-            }
-            _this.tableData.push(data)
-          })
-          this.loading = false
-        }
+      this.$axios({
+        method: 'get', url: '/courses'
+      }).then(res => {
+        const datas = res.data.courses
+        datas.forEach(item => {
+          let data = {
+            courseName: item.courseName,
+            courseCredit: item.courseCredit,
+            courseHour: item.courseHour,
+            midTerm: item.midTerm,
+            finalExam: item.finalExam,
+            work: item.work,
+            experiment: item.experiment,
+            test: item.test,
+            teaEvaluate: item.teaEvaluate,
+            stuEvaluate: item.stuEvaluate
+          }
+          _this.tableData.push(data)
+        })
+        this.loading = false
       })
     }
   }

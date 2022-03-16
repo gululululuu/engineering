@@ -30,7 +30,7 @@
             <Upload></Upload>
           </div>
         </div>
-        <div v-show="isDiagram" class="rightInfo">
+        <div v-if="isDiagram" class="rightInfo">
           <ScatterDiagram></ScatterDiagram>
         </div>
       </div>
@@ -51,14 +51,8 @@
                   <el-option label='2018-2019 年度 第 二 学期' value='2018-2019 年度 第 二 学期'></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label='课程名称' prop='name'>
-                <el-input v-model='formData.name' placeholder='请输入课程名称'></el-input>
-              </el-form-item>
               <el-form-item label='课程编码' prop='id'>
                 <el-input v-model='formData.id' placeholder='请输入课程编码'></el-input>
-              </el-form-item>
-              <el-form-item label='学分' prop='credit'>
-                <el-input v-model='formData.credit' placeholder='请输入课程学分'></el-input>
               </el-form-item>
               <el-form-item label='学生班级' prop='class'>
                 <el-input v-model='formData.class' placeholder='请输入学生班级'></el-input>
@@ -67,24 +61,20 @@
           </div>
           <div class="anotherHalf">
             <el-form :label-position='labelPosition' label-width='80px' :rules='rules' :model='formData' size='mini'>
-              <el-form-item label='课程平台' prop='platform'>
-                <el-input v-model='formData.platform' placeholder='请输入课程平台'></el-input>
-              </el-form-item>
-              <el-form-item label='课程属性' prop='attribute'>
-                <el-select v-model='formData.attribute' placeholder='请选择课程属性'>
-                  <el-option label='必修' value='必修'></el-option>
-                  <el-option label='选修' value='选修'></el-option>
+              <el-form-item label='课程名称' prop='courseName'>
+                <el-select v-model='formData.courseName' placeholder='请选择要上传的科目'>
+                  <el-option
+                    v-for="item in courses"
+                    :key='item.courseId'
+                    :value="item.courseName"
+                  ></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label='学时' prop='period'>
                 <el-input v-model='formData.period' placeholder='请输入课程学时'></el-input>
               </el-form-item>
-              <el-form-item label='考核方式' prop='examination'>
-                <el-select v-model='formData.examination' placeholder='请选择考核方式'>
-                  <el-option label='开卷' value='开卷'></el-option>
-                  <el-option label='闭卷' value='闭卷'></el-option>
-                  <el-option label='半开卷' value='半开卷'></el-option>
-                </el-select>
+              <el-form-item label='学分' prop='credit'>
+                <el-input v-model='formData.credit' placeholder='请输入课程学分'></el-input>
               </el-form-item>
               <el-form-item label-position='right' label-width='80px'>
                 <el-button size='mini' @click='submit()'>提交</el-button>
@@ -127,7 +117,7 @@ export default {
         term: [
           { required: true, message: '请选择上课日期', trigger: 'blur' }
         ],
-        name: [
+        courseName: [
           { required: true, message: '请输入课程名称', trigger: 'blur' }
         ],
         id: [
@@ -139,30 +129,21 @@ export default {
         class: [
           { required: true, message: '请输入授课班级', trigger: 'blur' }
         ],
-        platform: [
-          { required: true, message: '请输入课程平台', trigger: 'blur' }
-        ],
-        attribute: [
-          { required: true, message: '请选择课程属性', trigger: 'blur' }
-        ],
         period: [
           { required: true, message: '请输入课程学时', trigger: 'blur' }
-        ],
-        examination: [
-          { required: true, message: '请选择考核方式', trigger: 'blur' }
         ]
       },
       formData: {
         term: '',
-        name: '',
+        courseName: '',
         id: '',
         credit: '',
         class: '',
-        platform: '',
-        attribute: '',
         period: '',
-        examination: ''
-      }
+        aimNum: 0,
+        teaName: ''
+      },
+      courses: []
     }
   },
   components: {
@@ -172,10 +153,43 @@ export default {
     ExportExcel,
     Analysis
   },
+  // 在数据库中查找当前教师教授的所有课程
+  created () {
+    var id = JSON.parse(localStorage.getItem('userId'))
+    this.$axios({
+      methods: 'get',
+      url: '/courses',
+      params: {id: id}
+    }).then(res => {
+      const data = res.data.courses
+      let _this = this
+      data.forEach(item => {
+        let course = {
+          courseName: item.courseName,
+          courseId: item.id
+        }
+        _this.courses.push(course)
+      })
+    })
+  },
   methods: {
     ...mapMutations(['delLogin']),
     submit () {
       try {
+        let _this = this
+        this.$axios({
+          method: 'get', url: '/aims', params: {courseName: this.formData.courseName}
+        }).then(res => {
+          const data = res.data.aim
+          _this.formData.aimNum = data.aimNumber
+        })
+        this.$axios({
+          method: 'get', url: '/courses', params: {courseName: this.formData.courseName}
+        }).then(res => {
+          console.log(res)
+          const data = res.data.courses[0]
+          _this.formData.teaName = data.Teacher.teaName
+        })
         this.$message.success('上传成功！')
       } catch (e) {
         this.$message.warning('上传错误，请联系管理员！')
@@ -207,12 +221,14 @@ export default {
       this.isMyAnalysis = true
       this.isMyInfo = false
       this.isActive = false
+      this.isDiagram = false
       this.isToAdd = false
       this.isMyReport = false
     },
     toMyReport () {
       this.isMyReport = true
       this.isActive = false
+      this.isDiagram = false
       this.isMyAnalysis = false
       this.isMyInfo = false
       this.isToAdd = false
@@ -220,6 +236,7 @@ export default {
     toAdd () {
       this.isToAdd = true
       this.isActive = false
+      this.isDiagram = false
       this.isMyAnalysis = false
       this.isMyInfo = false
       this.isMyReport = false

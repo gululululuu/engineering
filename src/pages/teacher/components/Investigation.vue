@@ -12,73 +12,83 @@
       </div>
       <div class='inputBox'>
         <button class='investigation' @click='toMyInfo()'><p class='invesFonts'>填写问卷</p></button>
-        <button class='investigation' @click='toMyResult()'><p class='invesFonts'>导出结果</p></button>
       </div>
     </div>
     <div class='Right'>
       <div v-show='isMyInfo'>
-        <div class='rightForm'>
-          <div class='half'>
-            <el-form :label-position='labelPosition' label-width='80px' :rules='rules' :model='formData' size='mini'>
-              <el-form-item label='教学学期' prop='term'>
-                <el-select v-model='formData.term' placeholder='请选择教学学期'>
-                  <el-option label='2020-2021 年度 第 一 学期' value='2020-2021 年度 第 一 学期'></el-option>
-                  <el-option label='2020-2021 年度 第 二 学期' value='2020-2021 年度 第 二 学期'></el-option>
-                  <el-option label='2019-2020 年度 第 一 学期' value='2019-2020 年度 第 一 学期'></el-option>
-                  <el-option label='2019-2020 年度 第 二 学期' value='2019-2020 年度 第 二 学期'></el-option>
-                  <el-option label='2018-2019 年度 第 一 学期' value='2018-2019 年度 第 一 学期'></el-option>
-                  <el-option label='2018-2019 年度 第 二 学期' value='2018-2019 年度 第 二 学期'></el-option>
-                </el-select>
-              </el-form-item>
-            </el-form>
-            <el-form :label-position='labelPosition' label-width='80px' :rules='rules' :model='stuData' size='mini'>
-              <el-form-item label='学生姓名' prop='stuName'>
-                <el-input v-model='stuData.stuName' placeholder='请输入该学生的姓名'></el-input>
-              </el-form-item>
-              <el-form-item label='目标一' prop='one'>
-                <el-input v-model='stuData.one' placeholder='请输入该学生目标一的达成度'></el-input>
-              </el-form-item>
-              <el-form-item label='目标三' prop='three'>
-                <el-input v-model='stuData.three' placeholder='请输入该学生目标三的达成度'></el-input>
-              </el-form-item>
-              <el-form-item>
-                <el-button size='mini' @click='initStudents()' style="width: 200px;">开放学生问卷调查权限</el-button>
-              </el-form-item>
-            </el-form>
-          </div>
-          <div class='anotherHalf'>
-            <el-form :label-position='labelPosition' label-width='80px' :rules='rules' :model='formData' size='mini'>
-              <el-form-item label='课程名称' prop='name'>
-                <el-input v-model='formData.name' placeholder='请输入课程名称'></el-input>
-              </el-form-item>
-            </el-form>
-            <el-form :label-position='labelPosition' label-width='80px' :rules='rules' :model='stuData' size='mini'>
-              <el-form-item label='学号' prop='credit'>
-                <el-input v-model='stuData.credit' placeholder='请输入该学生的学号'></el-input>
-              </el-form-item>
-              <el-form-item label='目标二' prop='two'>
-                <el-input v-model='stuData.two' placeholder='请输入该学生目标二的达成度'></el-input>
-              </el-form-item>
-              <el-form-item label='目标四' prop='four'>
-                <el-input v-model='stuData.four' placeholder='请输入该学生目标四的达成度'></el-input>
-              </el-form-item>
-              <el-form-item>
-                <el-button size='mini' @click='submit()'>提交</el-button>
-                <el-button size='mini' @click='clear()'>下一个</el-button>
-                <ExportInvestigation v-bind:students='students'></ExportInvestigation>
-              </el-form-item>
-            </el-form>
+        <div v-show="isSelect">
+          <div class='rightForm'>
+            <div class='half'>
+              <el-form :label-position='labelPosition' label-width='80px' :rules='rules' :model='formData' size='mini'>
+                <el-form-item label='教学学期' prop='term'>
+                  <el-select v-model='formData.term' placeholder='请选择教学学期'>
+                    <el-option label='2020-2021 年度 第 一 学期' value='2020-2021 年度 第 一 学期'></el-option>
+                    <el-option label='2020-2021 年度 第 二 学期' value='2020-2021 年度 第 二 学期'></el-option>
+                    <el-option label='2019-2020 年度 第 一 学期' value='2019-2020 年度 第 一 学期'></el-option>
+                    <el-option label='2019-2020 年度 第 二 学期' value='2019-2020 年度 第 二 学期'></el-option>
+                    <el-option label='2018-2019 年度 第 一 学期' value='2018-2019 年度 第 一 学期'></el-option>
+                    <el-option label='2018-2019 年度 第 二 学期' value='2018-2019 年度 第 二 学期'></el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item>
+                  <el-button size='mini' @click='initStudents()' style="width: 192px;">开放学生问卷调查权限</el-button>
+                </el-form-item>
+              </el-form>
+            </div>
+            <div class='anotherHalf'>
+              <el-form :label-position='labelPosition' label-width='80px' :rules='rules' :model='formData' size='mini'>
+                <el-form-item label='课程名称' prop='name'>
+                  <el-select v-model='formData.name' placeholder='请选择要上传的科目'>
+                    <el-option
+                      v-for="item in courses"
+                      :key='item.courseId'
+                      :value="item.courseName"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item>
+                  <el-button size='mini' @click='submit()' style="width: 192px;">查询</el-button>
+                </el-form-item>
+              </el-form>
+            </div>
           </div>
         </div>
-      </div>
-      <div v-show='isMyResult' class='MyResult'>
-        <el-steps :active="active" finish-status="success" process-status="wait" space="400px">
-          <el-step title="步骤 1" description="请确认您是否完成问卷调查"></el-step>
-          <el-step title="步骤 2" description="请确认学生们是否完成问卷调查"></el-step>
-          <el-step title="步骤 3" description="请确认您是否要导出学生评价"></el-step>
-        </el-steps>
-        <el-button size='mini' @click="next()" style="margin-top: 22px;">下一步</el-button>
-        <ExportStudentInvestigation v-if='isDone'></ExportStudentInvestigation>
+        <div v-show="isStuInfo">
+          <div class='upInfo'>
+            <el-form>
+              <el-form-item label="课程名" prop='name'>
+                <el-tag type="info">{{this.formData.name}}</el-tag>
+                <el-button @click='upload()' size='small' style="float: right; margin-top: 10px;">提交</el-button>
+              </el-form-item>
+            </el-form>
+            <el-table
+              v-loading="loading"
+              element-loading-text="拼命加载中"
+              element-loading-spinner="el-icon-loading"
+              element-loading-background="rgba(0, 0, 0, 0.8)" :data="tableData" border max-height="420" class="infoTable">
+              <el-table-column prop="stuName" label="学生姓名" align="center"></el-table-column>
+              <el-table-column prop="stuId" label="学号" align="center"></el-table-column>
+              <el-table-column
+                v-for='item in aims'
+                :key='item.value'
+                :value='item.aimValue'
+                :label='item.aimName'
+                align="center"
+              >
+                <template slot-scope="scope">
+                  <el-input placeholder="请输入对该学生该目标下的评分" v-if="scope.row.isClick" v-model="tableData[scope.$index][item.index]"></el-input>
+                  <span v-else>{{ tableData[scope.$index][item.index] }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="操作" align="center">
+                <template slot-scope="scope">
+                  <el-button @click="change(scope)" size='small' type='text'>编辑</el-button>
+                  <el-button @click="save(scope)" size='small' type='text'>保存</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </div>
+        </div>
       </div>
       <p v-show='isActive' class='rightFonts'>请在左侧选择您要进行的操作~</p>
     </div>
@@ -87,21 +97,16 @@
 
 <script>
 import { mapMutations } from 'vuex'
-import ExportInvestigation from './ExportInvestigation.vue'
-import ExportStudentInvestigation from './ExportStudentInvestigation.vue'
 export default {
   name: 'ScoreManage',
-  components: {
-    ExportInvestigation,
-    ExportStudentInvestigation
-  },
   data () {
     return {
       isActive: true,
       isMyInfo: false,
-      isMyResult: false,
-      isDone: false,
+      isSelect: false,
+      isStuInfo: false,
       labelPosition: 'right',
+      loading: true,
       active: 0,
       rules: {
         term: [
@@ -109,40 +114,46 @@ export default {
         ],
         name: [
           { required: true, message: '请输入课程名称', trigger: 'blur' }
-        ],
-        stuName: [
-          { required: true, message: '请输入学生姓名', trigger: 'blur' }
-        ],
-        credit: [
-          { required: true, message: '请输入学生学号', trigger: 'blur' }
-        ],
-        one: [
-          { required: true, message: '请输入该学生目标一的达成度', trigger: 'blur' }
-        ],
-        two: [
-          { required: true, message: '请输入该学生目标二的达成度', trigger: 'blur' }
-        ],
-        three: [
-          { required: true, message: '请输入该学生目标三的达成度', trigger: 'blur' }
-        ],
-        four: [
-          { required: true, message: '请输入该学生目标四的达成度', trigger: 'blur' }
         ]
       },
       formData: {
         term: '',
         name: ''
       },
-      stuData: {
-        stuName: '',
-        credit: '',
-        one: '',
-        two: '',
-        three: '',
-        four: ''
-      },
-      students: []
+      lastClick: null,
+      teaName: '',
+      aimNumber: 0,
+      aims: [],
+      students: [],
+      courses: [],
+      tableData: []
     }
+  },
+  created () {
+    var teaId = JSON.parse(localStorage.getItem('userId'))
+    this.$axios({
+      method: 'get',
+      url: '/users' + '/' + teaId
+    }).then(res => {
+      const data = res.data.user
+      let _this = this
+      _this.teaName = data.teaName
+    })
+    this.$axios({
+      method: 'get',
+      url: '/courses',
+      params: {id: teaId}
+    }).then(res => {
+      const data = res.data.courses
+      let _this = this
+      data.forEach(item => {
+        let course = {
+          courseName: item.courseName,
+          courseId: item.id
+        }
+        _this.courses.push(course)
+      })
+    })
   },
   methods: {
     ...mapMutations(['delLogin']),
@@ -157,45 +168,103 @@ export default {
     backStu () {
       this.$router.push('/teacher')
     },
-    next () {
-      if (this.active++ > 1) {
-        this.isDone = true
-      }
-    },
     toMyInfo () {
       this.isMyInfo = true
+      this.isSelect = true
+      this.isStuInfo = false
       this.isActive = false
-      this.isMyResult = false
-    },
-    toMyResult () {
-      this.isMyResult = true
-      this.isMyInfo = false
-      this.isActive = false
-      this.active = 0
-      this.isDone = false
+      this.clear()
     },
     initStudents () {
       let students = []
       localStorage.setItem('students', JSON.stringify(students))
       this.$message.success('开放成功')
     },
-    submit () {
-      let data = {
-        stuName: this.stuData.stuName,
-        credit: this.stuData.credit,
-        one: this.stuData.one,
-        two: this.stuData.two,
-        three: this.stuData.three,
-        four: this.stuData.four
+    // 编辑学生成绩信息
+    change (scope) {
+      // 再次点击则还原其他行
+      if (this.lastClick) {
+        this.$set(this.lastClick.row, 'isClick', false)
       }
+      // 第一次点击，变成显示
+      this.lastClick = scope
+      this.$set(scope.row, 'isClick', true)
+    },
+    // 保存学生成绩信息
+    save (scope) {
+      // 再次点击则还原其他行
+      if (this.lastClick) {
+        this.$set(this.lastClick.row, 'isClick', false)
+      }
+      // 第一次点击，变成隐藏
+      this.lastClick = scope
+      this.$set(scope.row, 'isClick', false)
+      console.log(this.tableData)
+    },
+    upload () {
+      console.log(this.teaName)
+      localStorage.setItem('teaEvaluation', JSON.stringify(this.tableData))
+      this.$axios({
+        method: 'post',
+        url: '/teaEvaluation',
+        params: {
+          teaName: this.teaName,
+          tableData: JSON.stringify(this.tableData)
+        }
+      }).then(res => {
+        this.$message.success('上传成功')
+      }).catch(e => { this.$message.warning('上传失败，请检查是否全部输入') })
+    },
+    submit () {
+      this.isStuInfo = true
+      this.isSelect = false
+      let courseId = ''
       let _this = this
-      _this.students.push(data)
-      this.$message.success('提交成功，可点击下一个继续提交')
+      this.courses.forEach(item => {
+        if (item.courseName === this.formData.name) {
+          courseId = item.courseId
+        }
+      })
+      this.$axios({
+        method: 'get',
+        url: '/aims',
+        params: {courseName: this.formData.name}
+      }).then(res => {
+        const data = res.data.aim
+        console.log(data)
+        let _this = this
+        // 如果存在同名课程，此处查询的课程下目标数量可能会不精准
+        _this.aimNumber = data.aimNumber
+      })
+      this.$axios({
+        method: 'get',
+        url: '/stu_course',
+        params: {courseId: courseId}
+      }).then(res => {
+        const data = res.data.students
+        data.forEach(item => {
+          let stu = {
+            stuName: item.Student.stuName,
+            stuId: item.Student.id
+          }
+          console.log(this.aimNumber)
+          for (let i = 1; i <= this.aimNumber; i++) {
+            stu[i] = ''
+          }
+          _this.tableData.push(stu)
+        })
+        for (let i = 1; i <= this.aimNumber; i++) {
+          _this.aims.push({aimName: '目标' + i, aimValue: '', index: i})
+        }
+        this.loading = false
+      })
     },
     clear () {
       let _this = this
-      Object.getOwnPropertyNames(this.courseData).forEach((item) => {
-        _this.courseData[item] = ''
+      _this.tableData = []
+      _this.aims = []
+      Object.getOwnPropertyNames(this.formData).forEach((item) => {
+        _this.formData[item] = ''
       })
     }
   }
@@ -280,6 +349,11 @@ export default {
       width : 88%
       height : 500px
       background-color : #F0F7FF
+      .upInfo
+        width : 900px
+        position : absolute
+        left : 10%
+        top : 3%
       .MyResult
         position : absolute
         top : 10%

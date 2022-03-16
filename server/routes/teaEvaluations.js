@@ -7,29 +7,26 @@ var Op = models.Sequelize.Op
 router.get('/', async function(req, res, next) {
   if (req.query.term) {
     var term = req.query.term
-    var courses = await models.Course.findAll({
+    var courses = await models.teaEvaluation.findAll({
       where: { [Op.and]: [{term: `${term}`}] }
     })
     res.json({courses: courses})
   } else if (req.query.id) {
-    var teacherId = req.query.id
-    var courses = await models.Course.findAll({
-      where: { [Op.and]: [{teacherId: `${teacherId}`}] },
+    var teaId = req.query.id
+    var courses = await models.teaEvaluation.findAll({
+      where: { [Op.and]: [{teaId: `${teaId}`}] },
       order: [['id', 'ASC']]
     })
     res.json({courses: courses})
   } else if (req.query.courseName) {
     var courseName = req.query.courseName
-    var courses = await models.Course.findAll({
+    var courses = await models.teaEvaluation.findAll({
       where: { [Op.and]: [{courseName: `${courseName}`}] },
-      order: [['id', 'ASC']],
-      include: {
-        model: models.Teacher
-      }
+      order: [['id', 'ASC']]
     })
     res.json({courses: courses})
   } else {
-    var courses = await models.Course.findAll({
+    var courses = await models.teaEvaluation.findAll({
       order: [['id', 'ASC']]
     })
     res.json({courses: courses})
@@ -40,7 +37,7 @@ router.get('/', async function(req, res, next) {
 router.put('/', async function (req, res, next) {
   const data = req.query
   console.log(data)
-  var courses = await models.Course.update({
+  var courses = await models.teaEvaluation.update({
     term: `${data.term}`,
     courseId: `${data.courseId}`,
     midTerm: `${data.midTerm}`,
@@ -59,7 +56,7 @@ router.put('/', async function (req, res, next) {
 router.delete('/', async function (req, res, next) {
   const data = req.query
   console.log(data)
-  var course = await models.Course.findByPk(data.courseId)
+  var course = await models.teaEvaluation.findByPk(data.courseId)
   if (course) {
     course.destroy()
     res.json({msg: '删除成功'})
@@ -72,17 +69,24 @@ router.delete('/', async function (req, res, next) {
 router.post('/', async function (req, res, next) {
   const data = req.query
   console.log(data)
-  var course = await models.Course.create({
-    term: `${data.term}`,
-    id: `${data.courseId}`,
-    exam: `${data.exam}`,
-    work: `${data.work}`,
-    test: `${data.test}`,
-    courseName: `${data.courseName}`,
-    experiment: `${data.experiment}`,
-    teaEvaluate: `${data.teaEvaluate}`,
-    stuEvaluate: `${data.stuEvaluate}`
+  let tableData = JSON.parse(data.tableData)
+  let arr = []
+  tableData.forEach(item => {
+    let obj = {
+      teaName: `${data.teaName}`,
+      stuName: `${item.stuName}`,
+      stuId: `${item.stuId}`,
+      aimOne: `${item.one}`,
+      aimTwo: `${item.two}`,
+      aimThree: `${item.three}`,
+      aimFour: `${item.four}`,
+      aimFive: `${item.five}`,
+      aimSix: `${item.six}`
+    }
+    arr.push(obj)
   })
-  res.json({course: course})
+  console.log(arr)
+  var evaluations = await models.teaEvaluation.bulkCreate(arr)
+  res.json({evaluations: evaluations})
 })
 module.exports = router

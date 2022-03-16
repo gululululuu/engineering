@@ -5,19 +5,21 @@ const {
 module.exports = (sequelize, DataTypes) => {
   class Course extends Model {
     static associate(models) {
-      // define association here
+      models.Course.hasMany(models.Stu_Course)
+      models.Course.belongsTo(models.Teacher)
     }
   }
   Course.init({
     courseName: DataTypes.STRING,
-    exam: DataTypes.FLOAT,
+    midTerm: DataTypes.FLOAT,
+    finalExam: DataTypes.FLOAT,
     work: DataTypes.FLOAT,
     experiment: DataTypes.FLOAT,
     test: DataTypes.FLOAT,
     teaEvaluate: DataTypes.FLOAT,
     stuEvaluate: DataTypes.FLOAT,
     term: DataTypes.STRING,
-    teaId: DataTypes.STRING,
+    teacherId: DataTypes.STRING,
     courseCredit: DataTypes.INTEGER,
     courseHour: DataTypes.INTEGER
   }, {

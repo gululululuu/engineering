@@ -42,24 +42,12 @@
                     ></el-option>
                   </el-select>
                 </el-form-item>
-                <el-form-item label='题目数量' prop='number'>
-                  <el-input v-model='examData.number' placeholder='请输入试卷的大题总数(>=1)'></el-input>
-                </el-form-item>
               </el-form>
             </div>
             <div class='anotherHalf'>
               <el-form :label-position='labelPosition' label-width='110px' :rules='rules' :model='examData' size='mini'>
-                <el-form-item label='课程编号' prop='courseId'>
-                  <el-input v-model='examData.courseId' placeholder='请输入课程编号'></el-input>
-                </el-form-item>
-                <el-form-item label='课程目标数量' prop='totalAim'>
-                  <el-input v-model='examData.totalAim' placeholder='请输入课程目标的数量(>=1)'></el-input>
-                </el-form-item>
-                <el-form-item label='考核方式' prop='assessment'>
-                  <el-select v-model='examData.assessment' placeholder='请选择考核方式'>
-                    <el-option label='期中 + 期末' value='期中 + 期末'></el-option>
-                    <el-option label='期末' value='期末'></el-option>
-                  </el-select>
+                <el-form-item label='题目数量' prop='number'>
+                  <el-input v-model='examData.number' placeholder='请输入试卷的大题总数(>=1)'></el-input>
                 </el-form-item>
                 <el-form-item>
                   <el-button size='mini' @click='getExamInfo()' style="width: 192px;">提交</el-button>
@@ -144,7 +132,7 @@
                     :key="item.value"
                     :value="item.aimPosition"
                   >
-                    <el-input placeholder='请输入该目标分布在哪' v-model="item.aimPosition"></el-input>
+                    <el-input placeholder='请输入该目标下的考核占比' v-model="item.aimPosition"></el-input>
                   </el-form-item>
                   <el-form-item>
                     <el-button size='mini' @click='getAimInfo()' style="width: 180px;">提交</el-button>
@@ -154,8 +142,11 @@
             </div>
             <div class='rightIntroduce'>
               <p>****注意事项****</p>
-              <p>1. 请将每个大题下的每小题的分数按题号顺序以 '/' 分隔填入~(例如,第一个大题共4个小题共20分：3/5/5/7)</p>
-              <p>2. 请将每个目标分布的位置按题号如第一大题第一小题'1-1'格式输入并将每个位置以 '/' 分隔填入~</p>
+              <p>1. 请将每个大题下的每小题的分数按题号顺序以 '/' 分隔填入~</p>
+              <p>(例如,第一个大题共4个小题共20分：3/5/5/7)</p>
+              <p>2. 请将每个该目标下的考核占比按随堂检测/作业/实验/试卷的顺序填入</p>
+              <p>3. 考核占比格式如：随堂检测(0.1)/作业(0.1)/实验(0.1)/试卷(0.7)以</p>
+              <p>0.1/0.1/0.1/0.7填入~</p>
             </div>
           </div>
         </div>
@@ -556,8 +547,9 @@
         </div>
       </div>
       <div v-show='isMyInfo' class='upload'>
+        <ExportScoreExcelTable></ExportScoreExcelTable>
         <!-- <ExportExamPaper></ExportExamPaper> -->
-        <ExportWork></ExportWork>
+        <!-- <ExportWork></ExportWork> -->
       </div>
       <p v-show='isActive' class='rightFonts'>请在左侧选择您要进行的操作~</p>
     </div>
@@ -566,13 +558,11 @@
 
 <script>
 import { mapMutations } from 'vuex'
-import ExportExamPaper from './ExportExamPaper'
-import ExportWork from './ExportWork'
+import ExportScoreExcelTable from './ExportScoreExcelTable'
 export default {
   name: 'ScoreManage',
   components: {
-    ExportExamPaper,
-    ExportWork
+    ExportScoreExcelTable
   },
   data () {
     return {
@@ -843,11 +833,10 @@ export default {
         }
       })
       this.$axios({
-        methods: 'get',
+        method: 'get',
         url: '/stu_course',
-        params: {id: courseId}
+        params: {courseId: courseId}
       }).then(res => {
-        console.log(res)
         const data = res.data.students
         localStorage.setItem('stuInfo', JSON.stringify(data))
         data.forEach(item => {
@@ -868,12 +857,12 @@ export default {
       this.loading = false
     },
     getExamInfo () {
-      if (this.examData.totalAim < 1 || this.examData.number < 1) {
-        this.$message.error('题目数量和课程目标数量都不能少于1个，请您重新输入')
+      if (this.examData.number < 1) {
+        this.$message.error('题目数量不能少于1个，请您重新输入')
         this.clear()
         return 0
       } else {
-        this.isDetails = true
+        this.isExamDetails = true
         this.isExamInfo = false
         console.log(this.examData)
         if (this.list.length !== 0) {
@@ -885,14 +874,26 @@ export default {
             this.list.push({examName: '第' + i + '大题', examTotal: '', examNum: '', examScore: ''})
           }
         }
-        if (this.aims.length !== 0) {
-          for (let i = 2; i < (parseInt(this.examData.totalAim) + 1); i++) {
-            this.aims.push({aimName: '目标' + i, totalAim: '', aimNum: '', aimPosition: ''})
-          }
-        } else {
-          for (let i = 1; i <= (parseInt(this.examData.totalAim)); i++) {
-            this.aims.push({aimName: '目标' + i, totalAim: '', aimNum: '', aimPosition: ''})
-          }
+        try {
+          this.$axios({
+            method: 'get', url: '/aims', params: { courseName: this.examData.courseName }
+          }).then(res => {
+            const data = res.data.aim
+            let aimNum = parseInt(data.aimNumber)
+            let _this = this
+            _this.examData.totalAim = aimNum
+            if (this.aims.length !== 0) {
+              for (let i = 2; i < (aimNum + 1); i++) {
+                this.aims.push({aimName: '目标' + i, totalAim: '', aimNum: '', aimPosition: ''})
+              }
+            } else {
+              for (let i = 1; i <= aimNum; i++) {
+                this.aims.push({aimName: '目标' + i, totalAim: '', aimNum: '', aimPosition: ''})
+              }
+            }
+          })
+        } catch (e) {
+          this.$message.warning('请确认您输入的信息是否有误')
         }
       }
     },
@@ -969,8 +970,6 @@ export default {
         result.push(num)
         scores.push(score)
       }
-      console.log(result)
-      console.log(this.list)
       var arr = []
       localStorage.setItem('work', JSON.stringify(arr))
       var test = JSON.parse(localStorage.getItem('work'))
@@ -995,8 +994,6 @@ export default {
         result.push(num)
         scores.push(score)
       }
-      console.log(result)
-      console.log(this.list)
       var arr = []
       localStorage.setItem('experiment', JSON.stringify(arr))
       var test = JSON.parse(localStorage.getItem('experiment'))
@@ -1021,8 +1018,6 @@ export default {
         result.push(num)
         scores.push(score)
       }
-      console.log(result)
-      console.log(this.list)
       var arr = []
       localStorage.setItem('test', JSON.stringify(arr))
       var test = JSON.parse(localStorage.getItem('test'))
@@ -1041,11 +1036,8 @@ export default {
       for (let i = 0; i < this.list.length; i++) {
         var s = []
         s = this.list[i].examScore.split('/')
-        console.log(s)
         result.push(s)
       }
-      console.log(result)
-      console.log(this.list)
       var arr = []
       localStorage.setItem('question', JSON.stringify(arr))
       var test = JSON.parse(localStorage.getItem('question'))
@@ -1062,18 +1054,30 @@ export default {
       for (let i = 0; i < this.aims.length; i++) {
         var s = []
         s = this.aims[i].aimPosition.split('/')
-        console.log(s)
         result.push(s)
       }
       console.log(result)
       console.log(this.aims)
       var arr = []
+      let courseName = this.examData.courseName
       localStorage.setItem('aim', JSON.stringify(arr))
       var test = JSON.parse(localStorage.getItem('aim'))
       test.push(result)
       test.push(this.aims)
       test.push(this.examData)
       localStorage.setItem('aim', JSON.stringify(test))
+      this.$axios({
+        methods: 'get',
+        url: '/courses',
+        params: {courseName: courseName}
+      }).then(res => {
+        console.log(res)
+        const result = res.data.courses[0]
+        var weight = []
+        weight.push(parseFloat((1 - result.stuEvaluate - result.teaEvaluate).toFixed(1)), result.stuEvaluate, result.teaEvaluate)
+        localStorage.setItem('weight', JSON.stringify(weight))
+        console.log(JSON.parse(localStorage.getItem('weight')))
+      })
       console.log(JSON.parse(localStorage.getItem('aim')))
       this.$message.success('提交成功')
     }

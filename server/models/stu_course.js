@@ -6,6 +6,7 @@ module.exports = (sequelize, DataTypes) => {
   class Stu_Course extends Model {
     static associate(models) {
       models.Stu_Course.belongsTo(models.Student)
+      models.Stu_Course.belongsTo(models.Course)
     }
   }
   Stu_Course.init({

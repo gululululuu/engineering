@@ -5,34 +5,18 @@ var Op = models.Sequelize.Op
 /* GET users listing. */
 // 查找所有课程的信息 或者 查找被选择的学期的课程信息
 router.get('/', async function(req, res, next) {
-  if (req.query.term) {
-    var term = req.query.term
-    var courses = await models.Course.findAll({
-      where: { [Op.and]: [{term: `${term}`}] }
-    })
-    res.json({courses: courses})
-  } else if (req.query.id) {
-    var teacherId = req.query.id
-    var courses = await models.Course.findAll({
-      where: { [Op.and]: [{teacherId: `${teacherId}`}] },
-      order: [['id', 'ASC']]
-    })
-    res.json({courses: courses})
-  } else if (req.query.courseName) {
+  if (req.query.courseName) {
     var courseName = req.query.courseName
-    var courses = await models.Course.findAll({
+    var aim = await models.Aim.findOne({
       where: { [Op.and]: [{courseName: `${courseName}`}] },
-      order: [['id', 'ASC']],
-      include: {
-        model: models.Teacher
-      }
-    })
-    res.json({courses: courses})
-  } else {
-    var courses = await models.Course.findAll({
       order: [['id', 'ASC']]
     })
-    res.json({courses: courses})
+    res.json({aim: aim})
+  } else {
+    var aims = await models.Aim.findAll({
+      order: [['id', 'ASC']]
+    })
+    res.json({aims: aims})
   }
 })
 
@@ -40,7 +24,7 @@ router.get('/', async function(req, res, next) {
 router.put('/', async function (req, res, next) {
   const data = req.query
   console.log(data)
-  var courses = await models.Course.update({
+  var courses = await models.Aim.update({
     term: `${data.term}`,
     courseId: `${data.courseId}`,
     midTerm: `${data.midTerm}`,
@@ -59,30 +43,23 @@ router.put('/', async function (req, res, next) {
 router.delete('/', async function (req, res, next) {
   const data = req.query
   console.log(data)
-  var course = await models.Course.findByPk(data.courseId)
-  if (course) {
-    course.destroy()
+  var aim = await models.Aim.findByPk(data.courseId)
+  if (aim) {
+    aim.destroy()
     res.json({msg: '删除成功'})
   } else {
     res.json({msg: '不存在该数据'})
   }
 })
 
-// 插入新增课程的信息
+// 插入新增目标的信息
 router.post('/', async function (req, res, next) {
   const data = req.query
   console.log(data)
-  var course = await models.Course.create({
-    term: `${data.term}`,
-    id: `${data.courseId}`,
-    exam: `${data.exam}`,
-    work: `${data.work}`,
-    test: `${data.test}`,
+  var aim = await models.Aim.create({
     courseName: `${data.courseName}`,
-    experiment: `${data.experiment}`,
-    teaEvaluate: `${data.teaEvaluate}`,
-    stuEvaluate: `${data.stuEvaluate}`
+    aimNumber: `${data.aimNumber}`
   })
-  res.json({course: course})
+  res.json({aim: aim})
 })
 module.exports = router
