@@ -96,7 +96,6 @@ export default {
           console.log(this.student)
           this.outputs.push(this.getDiagramData())
           var temp = this.outputs[0]
-          localStorage.setItem('num', JSON.stringify(temp[0].length))
           for (let i = 0; i < temp[0].length; i++) {
             var arr = []
             for (let j = 0; j < temp.length; j++) {
@@ -170,6 +169,7 @@ export default {
       let ruleIndex = 4
       const data = JSON.parse(localStorage.getItem('aim'))
       let aimNumber = parseInt(data[2].totalAim)
+      localStorage.setItem('num', JSON.stringify(aimNumber))
       // 将excel表转换为json数据后，学生 1所在位置
       let studentIndex = (4 + aimNumber)
       // var total = this.getExamScore(ws, studentIndex)
@@ -305,10 +305,12 @@ export default {
       let stuNum = 39
       for (var i = 0; i < aimNumber; i++) {
         for (var j = 0; j < stuNum; j++) {
+        // for (var j = 0; j < this.row; j++) {
           temp = temp + score[j][i]
         }
         if (ruleScore[i] !== '' || ruleScore[i] !== null) {
           achievement[i] = parseFloat(((temp / stuNum) / ruleScore[i]).toFixed(3))
+          // achievement[i] = parseFloat(((temp / this.row) / ruleScore[i]).toFixed(3))
           if (isNaN(achievement[i]) || achievement[i] === null) {
             achievement[i] = 0
           }

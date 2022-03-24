@@ -3,7 +3,7 @@
     <div class='head'>
       <p class='headFonts'>个人中心</p>
       <p class="headOut" @click="backLogin()">注销</p>
-      <p class='headMe' @click='backStu()'>我的</p>
+      <p class='headMe' @click='backSecretary()'>我的</p>
     </div>
     <div class='Left'>
       <div class='back'>

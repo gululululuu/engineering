@@ -25,6 +25,9 @@ module.exports = {
       department: {
         type: Sequelize.STRING
       },
+      major: {
+        type: Sequelize.STRING
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

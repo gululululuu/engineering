@@ -70,16 +70,20 @@ router.get('/:id', async function (req, res, next) {
 router.put('/', async function (req, res, next) {
   const data = req.query
   console.log(data)
-  var students = await models.Student.update({
-    stuName: `${data.stuName}`,
-    id: `${data.id}`,
-    age: `${data.age}`,
-    sex: `${data.sex}`,
-    address: `${data.address}`,
-    department: `${data.department}`,
-    class: `${data.class}`
-  }, {where: {id: `${data.id}`}})
-  res.json({students: students})
+  try {
+    var students = await models.Student.update({
+      stuName: `${data.stuName}`,
+      id: `${data.id}`,
+      age: `${data.age}`,
+      sex: `${data.sex}`,
+      address: `${data.address}`,
+      department: `${data.department}`,
+      class: `${data.class}`
+    }, {where: {id: `${data.id}`}})
+    res.json({students: students})
+  } catch (e) {
+    console.log(e)
+  }
 })
 
 // 修改 id 为 /id 的学生信息

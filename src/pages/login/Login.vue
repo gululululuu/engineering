@@ -107,26 +107,29 @@ export default {
           identity: this.loginForm.identity
         }
       }).then(res => {
-        console.log(res)
-        const data = res.data.users[0]
-        console.log(data)
-        if ((this.loginForm.username === data.userName) && (this.loginForm.password === data.password)) {
-          console.log('登录成功')
-          var token = 'Bearer' + data.userName + data.password
-          // 将用户token保存到vuex中
-          this.setToken({Authorization: token})
-          localStorage.setItem('userId', data.userId)
-          localStorage.setItem('identity', data.identity)
-          var identity = data.identity
-          console.log(identity)
-          for (let i = 0; i < this.identityCH.length; i++) {
-            if (identity === this.identityCH[i]) {
-              this.$router.push('/' + this.identityEN[i])
+        const data = res.data.users
+        let errorFlag = true
+        data.forEach(item => {
+          console.log(item)
+          if ((this.loginForm.username === item.userName) && (this.loginForm.password === item.password)) {
+            console.log('登录成功')
+            errorFlag = false
+            var token = 'Bearer' + item.userName + item.password
+            // 将用户token保存到vuex中
+            this.setToken({Authorization: token})
+            localStorage.setItem('userId', item.userId)
+            localStorage.setItem('identity', item.identity)
+            var identity = item.identity
+            console.log(identity)
+            for (let i = 0; i < this.identityCH.length; i++) {
+              if (identity === this.identityCH[i]) {
+                this.$router.push('/' + this.identityEN[i])
+              }
             }
+            return 0
           }
-          return 0
-        } else {
-          console.log('登录失败')
+        })
+        if (errorFlag === true) {
           this.$message.error('用户名或密码错误')
         }
       })

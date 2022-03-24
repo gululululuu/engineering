@@ -118,16 +118,17 @@ export default {
     this.initCourseAnalysis()
     var id = JSON.parse(localStorage.getItem('userId'))
     this.$axios({
-      methods: 'get',
-      url: '/courses',
-      params: {id: id}
+      method: 'get',
+      url: '/tea_course',
+      params: {teacherId: id}
     }).then(res => {
+      console.log(res)
       const data = res.data.courses
       let _this = this
       data.forEach(item => {
         let course = {
-          courseName: item.courseName,
-          courseId: item.id
+          courseName: item.Course.courseName,
+          courseId: item.Course.id
         }
         _this.courses.push(course)
       })
@@ -150,7 +151,7 @@ export default {
           if (i < len) {
             data[i] = this.analysis[i].aimValue
           } else {
-            data[i] = this.methods[i - 3].aimValue
+            data[i] = this.methods[i - len].aimValue
           }
         }
         let courseAnalysis = JSON.parse(localStorage.getItem('courseAnalysis'))

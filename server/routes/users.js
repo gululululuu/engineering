@@ -37,16 +37,42 @@ router.get('/:id', async function (req, res, next) {
 router.post('/', async function (req, res, next) {
   const data = req.query
   console.log(data)
-  var course = await models.Teacher.create({
-    id: `${data.id}`,
-    age: `${data.age}`,
-    sex: `${data.sex}`,
-    teaName: `${data.teaName}`,
-    department: `${data.department}`,
-    address: `${data.address}`,
-    title: `${data.title}`
-  })
-  res.json({course: course})
+  try {
+    var user = await models.Teacher.create({
+      id: `${data.id}`,
+      age: `${data.age}`,
+      sex: `${data.sex}`,
+      teaName: `${data.teaName}`,
+      department: `${data.department}`,
+      major: `${data.major}`,
+      address: `${data.address}`,
+      title: `${data.title}`
+    })
+    res.json({user: user})
+  } catch (e) {
+    console.log(e)
+  }
+})
+
+// 修改教师信息
+router.put('/', async function (req, res, next) {
+  const data = req.query
+  console.log(data)
+  try {
+    var students = await models.Teacher.update({
+      id: `${data.id}`,
+      age: `${data.age}`,
+      sex: `${data.sex}`,
+      teaName: `${data.teaName}`,
+      department: `${data.department}`,
+      major: `${data.major}`,
+      address: `${data.address}`,
+      title: `${data.title}`
+    }, {where: {id: `${data.id}`}})
+    res.json({students: students})
+  } catch (e) {
+    console.log(e)
+  }
 })
 
 // 删除教师信息

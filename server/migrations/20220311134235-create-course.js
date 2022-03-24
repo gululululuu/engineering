@@ -34,7 +34,10 @@ module.exports = {
       term: {
         type: Sequelize.STRING
       },
-      teaId: {
+      department: {
+        type: Sequelize.STRING
+      },
+      major: {
         type: Sequelize.STRING
       },
       courseCredit: {

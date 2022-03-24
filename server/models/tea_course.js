@@ -5,10 +5,13 @@ const {
 module.exports = (sequelize, DataTypes) => {
   class Tea_Course extends Model {
     static associate(models) {
+      models.Tea_Course.belongsTo(models.Teacher)
+      models.Tea_Course.belongsTo(models.Course)
     }
   }
   Tea_Course.init({
-    credit: DataTypes.INTEGER
+    courseId: DataTypes.STRING,
+    teacherId: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Tea_Course',

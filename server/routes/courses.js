@@ -11,21 +11,11 @@ router.get('/', async function(req, res, next) {
       where: { [Op.and]: [{term: `${term}`}] }
     })
     res.json({courses: courses})
-  } else if (req.query.id) {
-    var teacherId = req.query.id
-    var courses = await models.Course.findAll({
-      where: { [Op.and]: [{teacherId: `${teacherId}`}] },
-      order: [['id', 'ASC']]
-    })
-    res.json({courses: courses})
   } else if (req.query.courseName) {
     var courseName = req.query.courseName
     var courses = await models.Course.findAll({
       where: { [Op.and]: [{courseName: `${courseName}`}] },
-      order: [['id', 'ASC']],
-      include: {
-        model: models.Teacher
-      }
+      order: [['id', 'ASC']]
     })
     res.json({courses: courses})
   } else {
@@ -40,19 +30,27 @@ router.get('/', async function(req, res, next) {
 router.put('/', async function (req, res, next) {
   const data = req.query
   console.log(data)
-  var courses = await models.Course.update({
-    term: `${data.term}`,
-    courseId: `${data.courseId}`,
-    midTerm: `${data.midTerm}`,
-    finalExam: `${data.finalExam}`,
-    work: `${data.work}`,
-    test: `${data.test}`,
-    courseName: `${data.courseName}`,
-    experiment: `${data.experiment}`,
-    teaEvaluate: `${data.teaEvaluate}`,
-    stuEvaluate: `${data.stuEvaluate}`
-  }, {where: {id: `${data.courseId}`}})
-  res.json({courses: courses})
+  try {
+    var courses = await models.Course.update({
+      term: `${data.term}`,
+      courseId: `${data.courseId}`,
+      courseCredit: `${data.courseCredit}`,
+      courseHour: `${data.courseHour}`,
+      department: `${data.department}`,
+      major: `${data.major}`,
+      midTerm: `${data.midTerm}`,
+      finalExam: `${data.finalExam}`,
+      work: `${data.work}`,
+      test: `${data.test}`,
+      courseName: `${data.courseName}`,
+      experiment: `${data.experiment}`,
+      teaEvaluate: `${data.teaEvaluate}`,
+      stuEvaluate: `${data.stuEvaluate}`
+    }, {where: {id: `${data.courseId}`}})
+    res.json({courses: courses})
+  } catch (e) {
+    console.log(e)
+  }
 })
 
 // 删除课程信息
@@ -72,17 +70,26 @@ router.delete('/', async function (req, res, next) {
 router.post('/', async function (req, res, next) {
   const data = req.query
   console.log(data)
-  var course = await models.Course.create({
-    term: `${data.term}`,
-    id: `${data.courseId}`,
-    exam: `${data.exam}`,
-    work: `${data.work}`,
-    test: `${data.test}`,
-    courseName: `${data.courseName}`,
-    experiment: `${data.experiment}`,
-    teaEvaluate: `${data.teaEvaluate}`,
-    stuEvaluate: `${data.stuEvaluate}`
-  })
-  res.json({course: course})
+  try {
+    var course = await models.Course.create({
+      term: `${data.term}`,
+      id: `${data.courseId}`,
+      department: `${data.department}`,
+      major: `${data.major}`,
+      courseCredit: `${data.courseCredit}`,
+      courseHour: `${data.courseHour}`,
+      midTerm: `${data.midTerm}`,
+      finalExam: `${data.finalExam}`,
+      work: `${data.work}`,
+      test: `${data.test}`,
+      courseName: `${data.courseName}`,
+      experiment: `${data.experiment}`,
+      teaEvaluate: `${data.teaEvaluate}`,
+      stuEvaluate: `${data.stuEvaluate}`
+    })
+    res.json({course: course})
+  } catch (e) {
+    console.log(e)
+  }
 })
 module.exports = router

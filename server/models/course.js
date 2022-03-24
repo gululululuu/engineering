@@ -6,7 +6,8 @@ module.exports = (sequelize, DataTypes) => {
   class Course extends Model {
     static associate(models) {
       models.Course.hasMany(models.Stu_Course)
-      models.Course.belongsTo(models.Teacher)
+      models.Course.hasMany(models.Tea_Course)
+      models.Course.hasMany(models.Tea_Stu)
     }
   }
   Course.init({
@@ -19,7 +20,8 @@ module.exports = (sequelize, DataTypes) => {
     teaEvaluate: DataTypes.FLOAT,
     stuEvaluate: DataTypes.FLOAT,
     term: DataTypes.STRING,
-    teacherId: DataTypes.STRING,
+    department: DataTypes.STRING,
+    major: DataTypes.STRING,
     courseCredit: DataTypes.INTEGER,
     courseHour: DataTypes.INTEGER
   }, {

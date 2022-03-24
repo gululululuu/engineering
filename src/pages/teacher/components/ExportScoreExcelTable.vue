@@ -14,8 +14,8 @@ export default {
         ['experiment', '实验', '实验成绩']
       ],
       investigationItems: [
-        ['学生评价', 'students'],
-        ['教师评价', 'teaEvaluation']
+        ['教师评价', 'teaEvaluation'],
+        ['学生评价', 'students']
       ]
     }
   },
@@ -44,7 +44,7 @@ export default {
               name: item.stuName
             }
             let index = 1
-            if (i === 0) {
+            if (i === 1) {
               for (let i = 1; i <= (Object.getOwnPropertyNames(item).length - 2); i++) {
                 data[index++] = item[i]
               }

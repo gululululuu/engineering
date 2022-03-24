@@ -3,7 +3,7 @@
     <div class='head'>
       <p class='headFonts'>个人中心</p>
       <p class="headOut" @click="backLogin()">注销</p>
-      <p class='headMe' @click='backStu()'>我的</p>
+      <p class='headMe' @click='backInspector()'>我的</p>
     </div>
     <div class='Left'>
       <div class='back'>
@@ -34,6 +34,11 @@
                   <i class="el-icon-postcard"></i>
                   学院
                 </template>{{ info.department }}</el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-postcard"></i>
+                  专业
+                </template>{{ info.major }}</el-descriptions-item>
               <el-descriptions-item>
                 <template slot="label">
                   <i class="el-icon-tickets"></i>
@@ -81,6 +86,7 @@ export default {
         teaName: '',
         address: '',
         department: '',
+        major: '',
         sex: '',
         title: '',
         age: ''
@@ -96,10 +102,12 @@ export default {
         methods: 'get',
         url: '/users/' + id
       }).then(res => {
+        console.log(res)
         const data = res.data.user
         let _this = this
         _this.info = data
       })
+      this.loading = false
     },
     backLogin () {
       this.$router.push('/login')
@@ -111,7 +119,7 @@ export default {
       this.$router.push('/')
     },
     backInspector () {
-      this.$router.push('/inspector')
+      this.$router.push('/dean')
     },
     toMyInfo () {
       this.isMyInfo = true

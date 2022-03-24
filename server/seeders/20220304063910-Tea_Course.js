@@ -4,15 +4,18 @@ module.exports = {
   async up (queryInterface, Sequelize) {
     await queryInterface.bulkInsert('Tea_Courses', [
       {
-        credit: 4,
+        courseId: 'C1001',
+        teacherId: '190103',
         createdAt: new Date(),
         updatedAt: new Date()
       }, {
-        credit: 4,
+        courseId: 'C1001',
+        teacherId: '190103',
         createdAt: new Date(),
         updatedAt: new Date()
       }, {
-        credit: 2,
+        courseId: 'C1001',
+        teacherId: '190103',
         createdAt: new Date(),
         updatedAt: new Date()
       }

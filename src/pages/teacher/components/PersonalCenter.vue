@@ -36,6 +36,11 @@
                 </template>{{ info.department }}</el-descriptions-item>
               <el-descriptions-item>
                 <template slot="label">
+                  <i class="el-icon-postcard"></i>
+                  专业
+                </template>{{ info.major }}</el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
                   <i class="el-icon-tickets"></i>
                   备注
                 </template>
@@ -81,6 +86,7 @@ export default {
         teaName: '',
         address: '',
         department: '',
+        major: '',
         sex: '',
         title: '',
         age: ''

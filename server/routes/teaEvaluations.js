@@ -86,7 +86,11 @@ router.post('/', async function (req, res, next) {
     arr.push(obj)
   })
   console.log(arr)
-  var evaluations = await models.teaEvaluation.bulkCreate(arr)
-  res.json({evaluations: evaluations})
+  try {
+    var evaluations = await models.teaEvaluation.bulkCreate(arr)
+    res.json({evaluations: evaluations})
+  } catch (e) {
+    console.log(e)
+  }
 })
 module.exports = router

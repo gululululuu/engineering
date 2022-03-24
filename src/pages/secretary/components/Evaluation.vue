@@ -13,7 +13,6 @@
         </div>
         <div class='inputBox'>
           <button class='investigation' @click='toMyInfo()'><p class='invesFonts'>查看评估信息</p></button>
-          <button class='investigation' @click='toExport()'><p class='invesFonts'>打印评估报告</p></button>
         </div>
       </div>
       <div class='Right'>
@@ -22,16 +21,15 @@
             <el-form :label-position='labelPosition' label-width='80px' :rules='rules' :model='formData' size='mini'>
               <el-form-item label='教学学期' prop='term'>
                 <el-select v-model='formData.term' placeholder='请选择教学学期'>
-                  <el-option label='2020-2021 年度 第 一 学期' value='2020-2021 年度 第 一 学期'></el-option>
-                  <el-option label='2020-2021 年度 第 二 学期' value='2020-2021 年度 第 二 学期'></el-option>
-                  <el-option label='2019-2020 年度 第 一 学期' value='2019-2020 年度 第 一 学期'></el-option>
-                  <el-option label='2019-2020 年度 第 二 学期' value='2019-2020 年度 第 二 学期'></el-option>
-                  <el-option label='2018-2019 年度 第 一 学期' value='2018-2019 年度 第 一 学期'></el-option>
-                  <el-option label='2018-2019 年度 第 二 学期' value='2018-2019 年度 第 二 学期'></el-option>
+                  <el-option label='大学一年级 第 一 学期' value='大学一年级 第 一 学期'></el-option>
+                  <el-option label='大学一年级 第 二 学期' value='大学一年级 第 二 学期'></el-option>
+                  <el-option label='大学二年级 第 一 学期' value='大学二年级 第 一 学期'></el-option>
+                  <el-option label='大学二年级 第 二 学期' value='大学二年级 第 二 学期'></el-option>
+                  <el-option label='大学三年级 第 一 学期' value='大学三年级 第 一 学期'></el-option>
+                  <el-option label='大学三年级 第 二 学期' value='大学三年级 第 二 学期'></el-option>
+                  <el-option label='大学四年级 第 一 学期' value='大学四年级 第 一 学期'></el-option>
+                  <el-option label='大学四年级 第 二 学期' value='大学四年级 第 二 学期'></el-option>
                 </el-select>
-              </el-form-item>
-              <el-form-item label='课程名称' prop='name'>
-                <el-input v-model='formData.name' placeholder='请输入课程名称'></el-input>
               </el-form-item>
               <el-form-item label-position='right' label-width='80px'>
                 <el-button size='mini' @click='query()'>查询</el-button>
@@ -42,15 +40,37 @@
           <div v-show="isOne" class="allInfo">
             <div class="backLastest">
               <img src='../../../assets/img/back.png' class='backImg' @click='back()'/>
-              <p class='backFonts' @click='back()'>返回上一层</p>
+                <p class='backFonts' @click='back()'>返回上一层</p>
             </div>
-            <el-descriptions direction="vertical" border>
-              <el-descriptions-item label="教学学期">{{ formData.term }}</el-descriptions-item>
-              <el-descriptions-item label="专业">{{ major }}</el-descriptions-item>
-              <el-descriptions-item label="课程名称">{{ formData.name }}</el-descriptions-item>
-              <el-descriptions-item label="授课教师">{{ teacherName }}</el-descriptions-item>
-              <el-descriptions-item label="课程评估信息" :span="2">{{ info }}</el-descriptions-item>
-            </el-descriptions>
+            <el-table
+              v-loading="loading"
+              element-loading-text="拼命加载中"
+              element-loading-spinner="el-icon-loading"
+              element-loading-background="rgba(0, 0, 0, 0.8)"
+              :data="tableData"
+              style="width: 100%">
+              <el-table-column prop="courseName" label="课程名称"></el-table-column>
+              <el-table-column prop="courseCredit" label="学分" align="center"></el-table-column>
+              <el-table-column prop="courseHour" label="学时" align="center"></el-table-column>
+              <el-table-column prop="form" label="成绩组成"  align="center">
+                <el-table-column prop="quantity" label="定量"  align="center">
+                  <el-table-column prop="midTerm" label="期中试卷" align="center"></el-table-column>
+                  <el-table-column prop="finalExam" label="期末试卷" align="center"></el-table-column>
+                  <el-table-column prop="work" label="作业" align="center"></el-table-column>
+                  <el-table-column prop="experiment" label="实验" align="center"></el-table-column>
+                  <el-table-column prop="test" label="随堂检验" align="center"></el-table-column>
+                </el-table-column>
+                <el-table-column prop="quality" label="定性"  align="center">
+                  <el-table-column prop="teaEvaluate" label="教师评价" align="center"></el-table-column>
+                  <el-table-column prop="stuEvaluate" label="学生自我评价" align="center"></el-table-column>
+                </el-table-column>
+              </el-table-column>
+              <el-table-column prop="info" label="课程评估情况" align="center">
+                <template slot-scope="scope">
+                  <el-button @click="getCourseInfo(scope.row)" type="text" size="small">查看</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
           </div>
           <div v-show='isAll' class="allInfo">
             <div class="backLastest">
@@ -64,66 +84,28 @@
               element-loading-background="rgba(0, 0, 0, 0.8)"
               :data="tableData"
               style="width: 100%">
-              <el-table-column prop="term" label="教学学期"></el-table-column>
-              <el-table-column prop="major" label="专业" width="180"></el-table-column>
-              <el-table-column prop="courseName" label="课程名称" width="180"></el-table-column>
-              <el-table-column prop="teacherName" label="授课教师" width="180"></el-table-column>
-              <el-table-column prop="info" label="课程评估信息"></el-table-column>
+              <el-table-column prop="courseName" label="课程名称"></el-table-column>
+              <el-table-column prop="courseCredit" label="学分" align="center"></el-table-column>
+              <el-table-column prop="courseHour" label="学时" align="center"></el-table-column>
+              <el-table-column prop="form" label="成绩组成"  align="center">
+                <el-table-column prop="quantity" label="定量"  align="center">
+                  <el-table-column prop="midTerm" label="期中试卷" align="center"></el-table-column>
+                  <el-table-column prop="finalExam" label="期末试卷" align="center"></el-table-column>
+                  <el-table-column prop="work" label="作业" align="center"></el-table-column>
+                  <el-table-column prop="experiment" label="实验" align="center"></el-table-column>
+                  <el-table-column prop="test" label="随堂检验" align="center"></el-table-column>
+                </el-table-column>
+                <el-table-column prop="quality" label="定性"  align="center">
+                  <el-table-column prop="teaEvaluate" label="教师评价" align="center"></el-table-column>
+                  <el-table-column prop="stuEvaluate" label="学生自我评价" align="center"></el-table-column>
+                </el-table-column>
+              </el-table-column>
+              <el-table-column prop="info" label="课程评估情况" align="center">
+                <template slot-scope="scope">
+                  <el-button @click="getCourseInfo(scope.row)" type="text" size="small">查看</el-button>
+                </template>
+              </el-table-column>
             </el-table>
-          </div>
-        </div>
-        <div v-show="isExport">
-          <div class='rightForm'>
-            <div v-if="isDone">
-              <div class="half">
-                <el-form :label-position='labelPosition' label-width='80px' :rules='rules' :model='formData' size='mini'>
-                  <el-form-item label='教学学期' prop='term'>
-                    <el-select v-model='formData.term' placeholder='请选择教学学期'>
-                      <el-option label='2020-2021 年度 第 一 学期' value='2020-2021 年度 第 一 学期'></el-option>
-                      <el-option label='2020-2021 年度 第 二 学期' value='2020-2021 年度 第 二 学期'></el-option>
-                      <el-option label='2019-2020 年度 第 一 学期' value='2019-2020 年度 第 一 学期'></el-option>
-                      <el-option label='2019-2020 年度 第 二 学期' value='2019-2020 年度 第 二 学期'></el-option>
-                      <el-option label='2018-2019 年度 第 一 学期' value='2018-2019 年度 第 一 学期'></el-option>
-                      <el-option label='2018-2019 年度 第 二 学期' value='2018-2019 年度 第 二 学期'></el-option>
-                    </el-select>
-                  </el-form-item>
-                  <el-form-item label='课程名称' prop='name'>
-                    <el-input v-model='formData.name' placeholder='请输入课程名称'></el-input>
-                  </el-form-item>
-                  <el-form-item label='课程编码' prop='id'>
-                    <el-input v-model='formData.id' placeholder='请输入课程编码'></el-input>
-                  </el-form-item>
-                  <el-form-item label='任课教师' prop='teacherName'>
-                    <el-input v-model='formData.teacherName' placeholder='请输入课程学分'></el-input>
-                  </el-form-item>
-                </el-form>
-              </div>
-              <div class="anotherHalf">
-                <el-form :label-position='labelPosition' label-width='80px' :rules='rules' :model='formData' size='mini'>
-                  <el-form-item label='学分' prop='credit'>
-                    <el-input v-model='formData.credit' placeholder='请输入课程学分'></el-input>
-                  </el-form-item>
-                  <el-form-item label='学生班级' prop='class'>
-                    <el-input v-model='formData.class' placeholder='请输入学生班级'></el-input>
-                  </el-form-item>
-                  <el-form-item label='学时' prop='period'>
-                    <el-input v-model='formData.period' placeholder='请输入课程学时'></el-input>
-                  </el-form-item>
-                  <el-form-item label-position='right' label-width='80px'>
-                    <el-button size='mini' @click='submit()'>提交</el-button>
-                    <ExportExcel v-bind:formData='formData' style="margin-left: 46px;"></ExportExcel>
-                  </el-form-item>
-                </el-form>
-              </div>
-            </div>
-            <div v-else class="tip">
-              <el-steps :active="active" finish-status="success" process-status="wait" space="400px">
-                <el-step title="步骤 1" description="请确认老师是否完成成绩上传"></el-step>
-                <el-step title="步骤 2" description="请确认老师是否完成课程目标达成情况的分析"></el-step>
-                <el-step title="步骤 3" description="请确认老师是否上传课程目标达成情况的持续改进措施"></el-step>
-              </el-steps>
-              <el-button size='mini' @click="next()" style="margin-top: 22px;">下一步</el-button>
-            </div>
           </div>
         </div>
         <p v-show='isActive' class='rightFonts'>请在左侧选择您要进行的操作~</p>
@@ -133,15 +115,10 @@
 </template>
 
 <script>
-import Upload from '../../../components/Upload.vue'
-import ExportExcel from '../../teacher/components/ExportExcel.vue'
 import { mapMutations } from 'vuex'
+import { dataConversionUtil } from '../../../assets/js/exportToExcel.js'
 export default {
   name: 'Evaluation',
-  components: {
-    Upload,
-    ExportExcel
-  },
   data () {
     return {
       isActive: true,
@@ -149,50 +126,30 @@ export default {
       isSelect: true,
       isOne: false,
       isAll: false,
-      isExport: false,
-      isDone: false,
-      hasChecked: false,
       labelPosition: 'right',
       loading: true,
-      active: 0,
-      teacherName: '',
-      info: '',
-      major: '',
       formData: {
         term: '',
-        name: '',
-        id: '',
-        credit: '',
-        class: '',
-        teacherName: '',
-        period: ''
+        department: ''
       },
       rules: {
         term: [
           { required: true, message: '请选择上课日期', trigger: 'blur' }
-        ],
-        name: [
-          { required: true, message: '请输入课程名称', trigger: 'blur' }
-        ],
-        id: [
-          { required: true, message: '请输入课程编码', trigger: 'blur' }
-        ],
-        credit: [
-          { required: true, message: '请输入课程学分', trigger: 'blur' }
-        ],
-        class: [
-          { required: true, message: '请输入授课班级', trigger: 'blur' }
-        ],
-        teacherName: [
-          { required: true, message: '请输入上课老师姓名', trigger: 'blur' }
-        ],
-        period: [
-          { required: true, message: '请输入课程学时', trigger: 'blur' }
         ]
       },
       tableData: [],
       professionData: []
     }
+  },
+  created () {
+    let _this = this
+    let userId = localStorage.getItem('userId')
+    this.$axios({
+      method: 'get', url: '/users' + '/' + userId
+    }).then(res => {
+      const data = res.data.user
+      _this.formData.department = data.department
+    })
   },
   methods: {
     ...mapMutations(['delLogin']),
@@ -207,24 +164,11 @@ export default {
     backSecretary () {
       this.$router.push('/secretary')
     },
-    next () {
-      if (this.active++ > 1) {
-        this.isDone = true
-      }
-    },
-    submit () {
-      try {
-        this.$message.success('上传成功！')
-      } catch (e) {
-        this.$message.warning('上传错误，请联系管理员！')
-      }
-    },
     toMyInfo () {
       this.isMyInfo = true
       this.isActive = false
       this.isMySituation = false
       this.isExport = false
-      this.formData = {}
     },
     toExport () {
       this.isExport = true
@@ -233,67 +177,89 @@ export default {
       this.isMyInfo = false
       this.isActive = false
       this.isMySituation = false
-      this.formData = {}
     },
     back () {
       this.isSelect = true
       this.isOne = false
       this.isAll = false
-      this.hasChecked = false
-      this.formData = {}
-      this.tableData = []
     },
-    checkCourseName () {
-      let _this = this
-      this.$http.get('../../../../static/mock/course.json').then((res) => {
-        res = res.data
-        if (res.data) {
-          const data = res.data
-          data.CourseList.map(item => {
-            console.log(item)
-            if (this.formData.name === item.courseName) {
-              _this.formData.name = item.courseName
-              _this.teacherName = item.teacherName
-              _this.major = item.major
-              _this.info = item.info
-              this.hasChecked = true
-              this.isOne = true
-              this.isSelect = false
-            }
-          })
-          if (!this.hasChecked) {
-            this.$message.error('您输入的课程暂未查询到，请重新输入')
-          }
+    getCourseInfo (row) {
+      console.log(row)
+      let report = JSON.parse(localStorage.getItem('report'))
+      console.log(report)
+      report.forEach(item => {
+        if (item.courseName === row.courseName) {
+          dataConversionUtil.exportToExcel('课程目标达成情况报告', item.tableHeader)
+          this.$message.success('导出成功，请在浏览器下载处查看')
+          return 0
         }
+      })
+      this.$message.warning('该课程暂未评估完成')
+    },
+    getTermInfo () {
+      this.isOne = true
+      this.isSelect = false
+      let _this = this
+      _this.tableData = []
+      this.$axios({
+        method: 'get', url: '/courses'
+      }).then(res => {
+        const datas = res.data.courses
+        datas.forEach(item => {
+          if (this.formData.term === item.term && this.formData.department === item.department) {
+            let data = {
+              courseName: item.courseName,
+              courseCredit: item.courseCredit,
+              courseHour: item.courseHour,
+              midTerm: item.midTerm,
+              finalExam: item.finalExam,
+              work: item.work,
+              experiment: item.experiment,
+              test: item.test,
+              teaEvaluate: item.teaEvaluate,
+              stuEvaluate: item.stuEvaluate
+            }
+            _this.tableData.push(data)
+          }
+        })
+        this.loading = false
       })
     },
     query () {
-      if (this.formData.term === '' || this.formData.name === '') {
-        this.$message.error('暂无您查询的信息，请重试')
+      if (this.formData.term === '') {
+        this.$message.error('请输入查询条件，请重试')
         return 0
       }
-      this.checkCourseName()
+      this.getTermInfo()
     },
     queryAll () {
       this.isAll = true
       this.isSelect = false
       let _this = this
-      this.$http.get('../../../../static/mock/course.json').then((res) => {
-        res = res.data
-        if (res.data) {
-          const data = res.data
-          data.CourseList.forEach(function (item) {
+      _this.tableData = []
+      this.$axios({
+        method: 'get', url: '/courses'
+      }).then(res => {
+        const datas = res.data.courses
+        console.log(this.formData.department)
+        datas.forEach(item => {
+          if (item.department === _this.formData.department) {
             let data = {
-              term: item.courseTerm,
-              major: item.major,
               courseName: item.courseName,
-              teacherName: item.teacherName,
-              info: item.info
+              courseCredit: item.courseCredit,
+              courseHour: item.courseHour,
+              midTerm: item.midTerm,
+              finalExam: item.finalExam,
+              work: item.work,
+              experiment: item.experiment,
+              test: item.test,
+              teaEvaluate: item.teaEvaluate,
+              stuEvaluate: item.stuEvaluate
             }
             _this.tableData.push(data)
-          })
-          this.loading = false
-        }
+          }
+        })
+        this.loading = false
       })
     }
   }

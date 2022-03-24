@@ -7,26 +7,16 @@ var Op = models.Sequelize.Op
 router.get('/', async function(req, res, next) {
   if (req.query.courseId) {
     var courseId = req.query.courseId
-    var users = await models.Tea_Course.findAll({
+    var students = await models.Tea_Stu.findAll({
       where: { [Op.and]: [{courseId: `${courseId}`}] },
       order: [['id', 'ASC']],
       include: {
-        model: models.Teacher
+        model: models.Student
       }
     })
-    res.json({users: users})
-  } else if (req.query.teacherId) {
-    var teacherId = req.query.teacherId
-    var courses = await models.Tea_Course.findAll({
-      where: { [Op.and]: [{teacherId: `${teacherId}`}] },
-      order: [['id', 'ASC']],
-      include: {
-        model: models.Course
-      }
-    })
-    res.json({courses: courses})
+    res.json({students: students})
   } else {
-    var courses = await models.Tea_Course.findAll({
+    var courses = await models.Tea_Stu.findAll({
       order: [['id', 'ASC']]
     })
     res.json({courses: courses})

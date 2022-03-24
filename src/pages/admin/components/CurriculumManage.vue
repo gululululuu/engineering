@@ -238,7 +238,7 @@
         <div v-show='isRelation' class='MyInfo'>
           <div v-show='isRSelect' class='basicInfo'>
             <el-form :label-position='labelPosition' label-width='80px' :rules='rules' size='mini'>
-              <el-form-item label='课程名称'>
+              <el-form-item label='课程名称' prop="courseName">
                 <el-select v-model='selectedCourseName' placeholder='请选择课程名称'>
                   <el-option
                     v-for="item in relationData"

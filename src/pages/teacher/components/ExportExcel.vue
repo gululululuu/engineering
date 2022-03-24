@@ -11,7 +11,10 @@ export default {
     loadExcel () {
       try {
         console.log(this.formData)
+        let report = JSON.parse(localStorage.getItem('report'))
         var tableHeader = this.getTable()
+        report.push({courseName: this.formData.courseName, tableHeader: tableHeader})
+        localStorage.setItem('report', JSON.stringify(report))
         dataConversionUtil.exportToExcel('课程目标达成情况报告', tableHeader)
         // dataConversionUtil.dataToExcel('试卷分析报告', tableHeader)
         this.$message.success('导出成功！')
@@ -36,7 +39,8 @@ export default {
         weightSum.push('1.000')
       }
       tableHeader.push(form)
-      let coefficients = JSON.parse(localStorage.getItem('coefficients'))
+      let coefficients = JSON.parse(localStorage.getItem('aim'))[0]
+      console.log(coefficients)
       tableHeader.push(['随堂测验', '', coefficients[0][0], coefficients[1][0], coefficients[2][0], coefficients[3][0]])
       tableHeader.push(['作业', '', coefficients[0][1], coefficients[1][1], coefficients[2][1], coefficients[3][1]])
       tableHeader.push(['实验', '', coefficients[0][2], coefficients[1][2], coefficients[2][2], coefficients[3][2]])
@@ -92,9 +96,10 @@ export default {
         let temp = 0
         for (let i = 0; i < 3; i++) {
           if (i === 0) {
-            temp = temp + score[i] * weight[i]
+            temp = temp + score[j] * weight[i]
           } else {
             temp = temp + data[i + 2][j] * weight[i]
+            console.log(temp)
           }
         }
         arr[j] = temp.toFixed(3)
@@ -107,12 +112,12 @@ export default {
         let temp = 0
         for (let i = 0; i < 4; i++) {
           if (i !== 3) {
-            temp = temp + coefficients[i][j] * data[i][j]
+            temp = temp + coefficients[j][i] * data[i][j]
           } else {
-            temp = temp + coefficients[i][j] * data[5][j]
+            temp = temp + coefficients[j][i] * data[5][j]
           }
         }
-        arr[j] = temp
+        arr[j] = temp.toFixed(3)
       }
       return arr
     },

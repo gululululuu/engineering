@@ -391,6 +391,7 @@ export default {
         userTitle: '',
         userClass: '',
         userMajor: '',
+        userDepartment: '',
         userAddress: ''
       },
       tableData: [],
@@ -532,6 +533,7 @@ export default {
           userSex: this.userData.userSex,
           userAddress: this.userData.userAddress,
           userMajor: this.userData.userMajor,
+          userDepartment: this.userData.userDepartment,
           userTitle: this.userData.userTitle
         }
         Object.getOwnPropertyNames(data).forEach((item) => {
@@ -549,7 +551,8 @@ export default {
             age: this.userData.userAge,
             sex: this.userData.userSex,
             address: this.userData.userAddress,
-            department: this.userData.userMajor,
+            department: this.userData.userDepartment,
+            major: this.userData.userMajor,
             title: this.userData.userTitle
           }
         }).then(res => {})
@@ -601,6 +604,7 @@ export default {
       try {
         let data = {
           userMajor: this.userData.userMajor,
+          userDepartment: this.userData.userDepartment,
           userName: this.userData.userName,
           userId: this.userData.userId,
           userAge: this.userData.userAge,
@@ -620,7 +624,8 @@ export default {
           params: {
             id: data.userId,
             teaName: data.userName,
-            department: data.userMajor,
+            department: data.userDepartment,
+            major: data.userMajor,
             age: data.userAge,
             sex: data.userSex,
             address: data.userAddress,
@@ -706,7 +711,8 @@ export default {
                 userAge: item.age,
                 userSex: item.sex,
                 userTitle: item.title,
-                userMajor: item.department,
+                userMajor: item.major,
+                userDepartment: item.department,
                 userAddress: item.address
               }
               _this.tableData.push(teaInfo)
@@ -760,7 +766,8 @@ export default {
                 userAge: item.age,
                 userSex: item.sex,
                 userTitle: item.title,
-                userMajor: item.department,
+                userMajor: item.major,
+                userDepartment: item.department,
                 userAddress: item.address
               }
               _this.tableData.push(teaInfo)
@@ -814,7 +821,8 @@ export default {
               userAge: data.age,
               userSex: data.sex,
               userTitle: data.title,
-              userMajor: data.department,
+              userMajor: data.major,
+              userDepartment: data.department,
               userAddress: data.address
             }
             _this.tableData.push(teaInfo)

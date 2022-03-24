@@ -12,6 +12,7 @@
       </div>
       <div class='inputBox'>
         <button class='investigation' @click='toMyInfo()'><p class='invesFonts'>填写问卷</p></button>
+        <button class='investigation' @click='toRelation()'><p class='invesFonts'>课程目标</p></button>
       </div>
     </div>
     <div class='Right'>
@@ -54,6 +55,37 @@
           </div>
         </div>
       </div>
+      <div v-show='isRelation' class='MyInfo'>
+        <div v-show='isRSelect' class='basicInfo'>
+          <el-form :label-position='labelPosition' label-width='80px' :rules='rules' size='mini'>
+            <el-form-item label='课程名称' prop="name">
+              <el-select v-model='selectedCourseName' placeholder='请选择课程名称'>
+                <el-option
+                  v-for="item in relationData"
+                  :key="item.value"
+                  :label="item.courseName"
+                  :value="item.courseName"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label-position='right' label-width='80px'>
+              <el-button size='mini' @click='getCourseInfo()' style="width: 192px;">查询</el-button>
+            </el-form-item>
+          </el-form>
+        </div>
+        <div v-if='isRInfo'  class="allInfo">
+          <div class="backLastest">
+            <img src='../../../assets/img/back.png' class='backImg' @click='back()'/>
+            <p class='backFonts' @click='back()'>返回上一层</p>
+          </div>
+          <el-table :data="tableData" border max-height="500" class="infoTable">
+            <el-table-column prop="courseName" label="课程名称" align="center"></el-table-column>
+            <el-table-column prop="graduRequirement" label="毕业要求" align="center"></el-table-column>
+            <el-table-column prop="graduationPoint" label="毕业要求指标点" align="center"></el-table-column>
+            <el-table-column prop="aim" label="课程目标" align="center"></el-table-column>
+          </el-table>
+        </div>
+      </div>
       <p v-show='isActive' class='rightFonts'>请在左侧选择您要进行的操作~</p>
     </div>
   </div>
@@ -67,6 +99,9 @@ export default {
     return {
       isActive: true,
       isMyInfo: false,
+      isRelation: false,
+      isRSelect: false,
+      isRInfo: false,
       labelPosition: 'right',
       rules: {
         name: [
@@ -89,24 +124,41 @@ export default {
         four: ''
       },
       courses: [],
-      aims: []
+      aims: [],
+      tableData: [],
+      relationData: [],
+      relationInfo: [],
+      selectedCourseName: ''
     }
   },
   created () {
     var id = JSON.parse(localStorage.getItem('userId'))
+    let _this = this
     this.$axios({
       methods: 'get',
       url: '/stu_course',
       params: {stuId: id}
     }).then(res => {
       const data = res.data.courses
-      let _this = this
       data.forEach(item => {
         let course = {
           courseName: item.Course.courseName,
           courseId: item.Course.id
         }
         _this.courses.push(course)
+      })
+    })
+    this.$axios({
+      method: 'get', url: '/relations'
+    }).then(res => {
+      const data = res.data.relations
+      _this.relationInfo = data
+      var obj = {}
+      data.forEach(item => {
+        if (!obj[item.courseName]) {
+          obj[item.courseName] = 1
+          _this.relationData.push({courseName: item.courseName})
+        }
       })
     })
   },
@@ -124,10 +176,51 @@ export default {
     backStu () {
       this.$router.push('/student')
     },
+    back () {
+      if (this.isMyInfo) {
+        this.isSelect = true
+        this.isOne = false
+        this.isAll = false
+        this.isAdd = false
+        this.isAlter = false
+      } else if (this.isRelation) {
+        this.isRSelect = true
+        this.isRInfo = false
+      }
+      this.clear()
+    },
+    clear () {
+      let _this = this
+      _this.tableData = []
+      _this.formData.term = ''
+      Object.getOwnPropertyNames(this.courseData).forEach((item) => {
+        _this.courseData[item] = ''
+      })
+    },
     toMyInfo () {
       this.isMyInfo = true
+      this.isRelation = false
       this.isActive = false
       this.check()
+    },
+    toRelation () {
+      this.isRelation = true
+      this.isRSelect = true
+      this.isRInfo = false
+      this.isMyInfo = false
+      this.isActive = false
+      this.clear()
+    },
+    getCourseInfo () {
+      this.tableData = []
+      this.isRInfo = true
+      this.isRSelect = false
+      let _this = this
+      this.relationInfo.forEach(item => {
+        if (item.courseName === this.selectedCourseName) {
+          _this.tableData.push(item)
+        }
+      })
     },
     check () {
       if (localStorage.getItem('success') === 'done') {
@@ -162,16 +255,6 @@ export default {
       } else {
         try {
           console.log(this.aims)
-          // let data = {
-          //   stuName: this.stuData.stuName,
-          //   stuId: this.stuData.credit,
-          //   one: this.aims[0],
-          //   two: this.aims[1],
-          //   three: this.aims[2],
-          //   four: this.aims[3],
-          //   five: this.aims[4],
-          //   six: this.aims[5]
-          // }
           let data = {
             stuName: this.stuData.stuName,
             stuId: this.stuData.credit
@@ -195,7 +278,7 @@ export default {
           this.$router.push('/student')
         } catch (e) {
           console.log(e)
-          this.$message.error('请确认您是否全部正确填写完成')
+          this.$message.warning('请确认您是否全部正确填写完成')
         }
       }
     }
@@ -281,25 +364,76 @@ export default {
       width : 88%
       height : 500px
       background-color : #F0F7FF
-      .rightUpload
-        text-align : center
-        line-height : 500px
-      .rightForm
+      .MyInfo
         position : absolute
-        top : 10%
-        left : 22%
-        width : 600px
+        width : 100%
         height : 500px
-        margin : 0
-        .half
+        .rightForm
           position : absolute
-          left : 0
-        .anotherHalf
+          top : 10%
+          left : 22%
+          width : 600px
+          height : 500px
+          margin : 0
+          .half
+            position : absolute
+            left : 0
+          .anotherHalf
+            position : absolute
+            right : 0
+        .allInfo
           position : absolute
-          right : 0
-        .pagination
+          left : 5%
+          top : 10%
+          width : 1000px
+          .basicHead
+            width : 100%
+            height : 30px
+            line-height : 30px
+            background-color : #D1DBE5
+            .info
+              width : 100%
+              position : absolute
+              height : 30px
+              margin : 0
+              display : inline
+              text-align : center
+              font-family : '宋体'
+              font-size : 16px
+          .infoTable
+            position : absolute
+            top : 30px
+          .backLastest
+            width : 1000px
+            display : inline
+            height : 30px
+            cursor : pointer
+            border-radius : 10px
+            .backImg
+              position : absolute
+              top : 10%
+              width : 25px
+              height : 25px
+              margin-left : 5px
+            .backFonts
+              position : absolute
+              left : 5%
+              top : 10%
+              font-family : '宋体'
+              font-size : 17px
+              display : inline
+              float : right
+              margin : 3px 15px 0px 0px
+            .addButton
+              position : absolute
+              right : 0
+              top : 10%
+        .basicInfo
+          width : 270px
+          height : 500px
           position : absolute
-          bottom : 0
+          left : 35%
+          top : 10%
       .rightFonts
         text-align : center
         line-height : 500px

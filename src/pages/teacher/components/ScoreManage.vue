@@ -396,9 +396,9 @@
       </div>
       <div v-show='isUpScore' class='MyInfo'>
         <div v-show='isUpSelect' class="basicInfo">
-          <el-form :label-position='labelPosition' label-width='110px' :rules='rules' :model='examData' size='mini'>
+          <el-form :label-position='labelPosition' label-width='110px' :rules='rules' size='mini'>
             <el-form-item label='科目' prop='selectName'>
-              <el-select v-model='examData.selectName' placeholder='请选择要上传的科目'>
+              <el-select v-model='selectName' placeholder='请选择要上传的科目'>
                 <el-option
                   v-for="item in courses"
                   :key='item.courseId'
@@ -406,14 +406,8 @@
                 ></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label='考核方式' prop='assessment'>
-              <el-select v-model='examData.assessment' placeholder='请选择考核方式'>
-                <el-option label='期中 + 期末' value='期中 + 期末'></el-option>
-                <el-option label='期末' value='期末'></el-option>
-              </el-select>
-            </el-form-item>
             <el-form-item>
-              <el-button size='mini' @click='getUserInfo()' style="width: 180px;">提交</el-button>
+              <el-button size='mini' @click='getStudentInfo()' style="width: 180px;">提交</el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -421,15 +415,15 @@
           <div class='upInfo'>
             <el-form>
               <el-form-item label="课程名" prop='selectName'>
-                <el-tag type="info">{{this.examData.selectName}}</el-tag>
-                <el-button @click='upload()' size='small' style="float: right; margin-top: 10px;">提交</el-button>
+                <el-tag type="info">{{selectName}}</el-tag>
+                <el-button @click='submitScore()' size='small' style="float: right; margin-top: 10px;">下一步</el-button>
               </el-form-item>
             </el-form>
             <el-table
               v-loading="loading"
               element-loading-text="拼命加载中"
               element-loading-spinner="el-icon-loading"
-              element-loading-background="rgba(0, 0, 0, 0.8)" :data="tableData" border max-height="420" class="infoTable" v-if="hasMid">
+              element-loading-background="rgba(0, 0, 0, 0.8)" :data="tableData" border max-height="420" class="infoTable">
               <el-table-column prop="stuName" label="学生姓名" align="center"></el-table-column>
               <el-table-column prop="stuId" label="学号" align="center"></el-table-column>
               <el-table-column prop="midExam" label="期中成绩" align="center">
@@ -474,68 +468,6 @@
                   <span v-else>{{ tableData[scope.$index].attach2 }}</span>
                 </template>
               </el-table-column>
-              <el-table-column prop="totalScore" label="总成绩" align="center">
-                <template slot-scope="scope">
-                  <el-input placeholder="请输入总成绩" v-if="scope.row.isClick" v-model="tableData[scope.$index].total"></el-input>
-                  <span v-else>{{ tableData[scope.$index].total }}</span>
-                </template>
-              </el-table-column>
-              <el-table-column label="操作" align="center">
-                <template slot-scope="scope">
-                  <el-button @click="change(scope)" size='small' type='text'>编辑</el-button>
-                  <el-button @click="save(scope)" size='small' type='text'>保存</el-button>
-                </template>
-              </el-table-column>
-            </el-table>
-            <el-table
-              v-loading="loading"
-              element-loading-text="拼命加载中"
-              element-loading-spinner="el-icon-loading"
-              element-loading-background="rgba(0, 0, 0, 0.8)" :data="tableData" border max-height="420" class="infoTable" v-else>
-              <el-table-column prop="stuName" label="学生姓名" align="center"></el-table-column>
-              <el-table-column prop="stuId" label="学号" align="center"></el-table-column>
-              <el-table-column prop="exam" label="试卷成绩" align="center">
-                <template slot-scope="scope">
-                  <el-input placeholder="请输入试卷成绩" v-if="scope.row.isClick" v-model="tableData[scope.$index].exam"></el-input>
-                  <span v-else>{{ tableData[scope.$index].exam }}</span>
-                </template>
-              </el-table-column>
-              <el-table-column prop="experiment" label="实验成绩" align="center">
-                <template slot-scope="scope">
-                  <el-input placeholder="请输入实验成绩" v-if="scope.row.isClick" v-model="tableData[scope.$index].experiment"></el-input>
-                  <span v-else>{{ tableData[scope.$index].experiment }}</span>
-                </template>
-              </el-table-column>
-              <el-table-column prop="test" label="随堂检测成绩" align="center">
-                <template slot-scope="scope">
-                  <el-input placeholder="请输入随堂检测成绩" v-if="scope.row.isClick" v-model="tableData[scope.$index].test"></el-input>
-                  <span v-else>{{ tableData[scope.$index].test }}</span>
-                </template>
-              </el-table-column>
-              <el-table-column prop="work" label="作业成绩" align="center">
-                <template slot-scope="scope">
-                  <el-input placeholder="请输入作业成绩" v-if="scope.row.isClick" v-model="tableData[scope.$index].work"></el-input>
-                  <span v-else>{{ tableData[scope.$index].work }}</span>
-                </template>
-              </el-table-column>
-              <el-table-column prop="attach1" label="附加成绩1" align="center">
-                <template slot-scope="scope">
-                  <el-input placeholder="请输入随堂检测成绩" v-if="scope.row.isClick" v-model="tableData[scope.$index].attach1"></el-input>
-                  <span v-else>{{ tableData[scope.$index].attach1 }}</span>
-                </template>
-              </el-table-column>
-              <el-table-column prop="attach2" label="附加成绩2" align="center">
-                <template slot-scope="scope">
-                  <el-input placeholder="请输入作业成绩" v-if="scope.row.isClick" v-model="tableData[scope.$index].attach2"></el-input>
-                  <span v-else>{{ tableData[scope.$index].attach2 }}</span>
-                </template>
-              </el-table-column>
-              <el-table-column prop="totalScore" label="总成绩" align="center">
-                <template slot-scope="scope">
-                  <el-input placeholder="请输入总成绩" v-if="scope.row.isClick" v-model="tableData[scope.$index].total"></el-input>
-                  <span v-else>{{ tableData[scope.$index].total }}</span>
-                </template>
-              </el-table-column>
               <el-table-column label="操作" align="center">
                 <template slot-scope="scope">
                   <el-button @click="change(scope)" size='small' type='text'>编辑</el-button>
@@ -545,11 +477,45 @@
             </el-table>
           </div>
         </div>
+        <div v-show="isUpPercentage">
+          <div class='rightForm'>
+            <div class='half'>
+              <el-form :label-position='labelPosition' label-width='110px' :rules='rules' size='mini'>
+                <el-form-item label='期中考试'>
+                  <el-input v-model='percentageData.midExam' placeholder='请输入期中考试占比'></el-input>
+                </el-form-item>
+                <el-form-item label='期末考试'>
+                  <el-input v-model='percentageData.exam' placeholder='请输入期末考试占比'></el-input>
+                </el-form-item>
+                <el-form-item label='附加成绩1'>
+                  <el-input v-model='percentageData.attach1' placeholder='请输入附加成绩1占比'></el-input>
+                </el-form-item>
+                <el-form-item label='附加成绩2'>
+                  <el-input v-model='percentageData.attach2' placeholder='请输入附加成绩2占比'></el-input>
+                </el-form-item>
+              </el-form>
+            </div>
+            <div class='anotherHalf'>
+              <el-form :label-position='labelPosition' label-width='110px' size='mini'>
+                <el-form-item label='随堂测验'>
+                  <el-input v-model='percentageData.test' placeholder='请输入随堂测验占比'></el-input>
+                </el-form-item>
+                <el-form-item label='作业'>
+                  <el-input v-model='percentageData.work' placeholder='请输入作业占比'></el-input>
+                </el-form-item>
+                <el-form-item label='实验'>
+                  <el-input v-model='percentageData.exp' placeholder='请输入实验占比'></el-input>
+                </el-form-item>
+                <el-form-item>
+                  <el-button size='mini' @click='upload()' style="width: 180px;">提交</el-button>
+                </el-form-item>
+              </el-form>
+            </div>
+          </div>
+        </div>
       </div>
       <div v-show='isMyInfo' class='upload'>
         <ExportScoreExcelTable></ExportScoreExcelTable>
-        <!-- <ExportExamPaper></ExportExamPaper> -->
-        <!-- <ExportWork></ExportWork> -->
       </div>
       <p v-show='isActive' class='rightFonts'>请在左侧选择您要进行的操作~</p>
     </div>
@@ -570,8 +536,9 @@ export default {
       isMyInfo: false,
       isUpExam: false,
       isUpScore: false,
-      isUpSelect: false,
       isUpInfo: false,
+      isUpPercentage: false,
+      isUpSelect: false,
       isExamInfo: false,
       isUpWork: false,
       isWorkInfo: false,
@@ -583,9 +550,7 @@ export default {
       isExpDetails: false,
       isWorkDetails: false,
       isTestDetails: false,
-      hasMid: false,
       loading: true,
-      isShow: false,
       labelPosition: 'right',
       examData: {
         term: '',
@@ -610,6 +575,15 @@ export default {
         term: '',
         courseName: '',
         number: ''
+      },
+      percentageData: {
+        exam: '',
+        midExam: '',
+        test: '',
+        work: '',
+        exp: '',
+        attach1: '',
+        attach2: ''
       },
       rules: {
         term: [
@@ -638,7 +612,8 @@ export default {
       aims: [{aimName: '目标1', totalAim: '', aimNum: '', aimPosition: ''}],
       courses: [],
       tableData: [],
-      lastClick: null
+      lastClick: null,
+      selectName: ''
     }
   },
   // 在数据库中查找当前教师教授的所有课程
@@ -646,15 +621,15 @@ export default {
     var id = JSON.parse(localStorage.getItem('userId'))
     this.$axios({
       methods: 'get',
-      url: '/courses',
-      params: {id: id}
+      url: '/tea_course',
+      params: {teacherId: id}
     }).then(res => {
       const data = res.data.courses
       let _this = this
       data.forEach(item => {
         let course = {
-          courseName: item.courseName,
-          courseId: item.id
+          courseName: item.Course.courseName,
+          courseId: item.Course.id
         }
         _this.courses.push(course)
       })
@@ -704,7 +679,6 @@ export default {
       this.isExamDetails = false
       this.isMyInfo = false
       this.isActive = false
-      this.clear()
     },
     toUpWork () {
       this.isUpWork = true
@@ -746,6 +720,7 @@ export default {
       this.isUpScore = true
       this.isUpSelect = true
       this.isUpInfo = false
+      this.isUpPercentage = false
       this.isMyInfo = false
       this.isUpExam = false
       this.isUpTest = false
@@ -753,6 +728,10 @@ export default {
       this.isUpWork = false
       this.isActive = false
       this.clear()
+    },
+    submitScore () {
+      this.isUpPercentage = true
+      this.isUpInfo = false
     },
     toMyInfo () {
       this.isMyInfo = true
@@ -762,15 +741,14 @@ export default {
       this.isUpExp = false
       this.isUpWork = false
       this.isActive = false
-      this.clear()
     },
     clear () {
       this.list = []
       this.aims = []
       this.tableData = []
       let _this = this
-      Object.getOwnPropertyNames(this.examData).forEach((item) => {
-        _this.examData[item] = ''
+      Object.getOwnPropertyNames(this.workData).forEach((item) => {
+        _this.workData[item] = ''
       })
       Object.getOwnPropertyNames(this.workData).forEach((item) => {
         _this.workData[item] = ''
@@ -804,31 +782,113 @@ export default {
       console.log(this.tableData)
     },
     // 上传学生成绩
-    upload () {
-      var table = []
-      var uploadCourseName = this.examData.selectName
-      localStorage.setItem(uploadCourseName + '成绩单', JSON.stringify(table))
-      var arr = JSON.parse(localStorage.getItem(uploadCourseName + '成绩单'))
-      this.tableData.push(this.examData.selectName)
-      arr.push(this.tableData)
-      localStorage.setItem(uploadCourseName + '成绩单', JSON.stringify(arr))
-      console.log(JSON.parse(localStorage.getItem(uploadCourseName + '成绩单')))
+    async upload () {
+      let mid = this.percentageData.midExam
+      let final = this.percentageData.exam
+      let work = this.percentageData.work
+      let exp = this.percentageData.exp
+      let test = this.percentageData.test
+      let attach1 = this.percentageData.attach1
+      let attach2 = this.percentageData.attach2
+      this.tableData.forEach(item => {
+        let score = 0
+        console.log(item.hasOwnProperty('midExam'))
+        if (item.hasOwnProperty('midExam')) {
+          score = score + mid * parseInt(item.midExam)
+        }
+        if (item.hasOwnProperty('exam')) {
+          score = score + final * parseInt(item.exam)
+        }
+        if (item.hasOwnProperty('work')) {
+          score = score + work * parseInt(item.work)
+        }
+        if (item.hasOwnProperty('experiment')) {
+          score = score + exp * parseInt(item.experiment)
+        }
+        if (item.hasOwnProperty('test')) {
+          score = score + test * parseInt(item.test)
+        }
+        if (item.hasOwnProperty('attach1')) {
+          score = score + attach1 * parseInt(item.attach1)
+        }
+        if (item.hasOwnProperty('attach2')) {
+          score = score + attach2 * parseInt(item.attach2)
+        }
+        item.score = score
+      })
+      await this.addStuCourseInfo()
+      console.log(this.tableData)
+    },
+    addStuCourseInfo () {
+      let courseId = ''
+      this.courses.forEach(item => {
+        if (item.courseName === this.selectName) {
+          courseId = item.courseId
+        }
+      })
+      try {
+        this.$confirm('您确认要上传成绩？', '确认信息', {
+          distinguishCancelAndClose: true,
+          confirmButtonText: '确定',
+          cancelButtonText: '取消'
+        }).then(() => {
+          this.$axios({
+            method: 'delete',
+            url: '/stu_course',
+            params: {
+              courseId: courseId
+            }
+          }).then(res => { console.log(res) })
+          this.$axios({
+            method: 'post',
+            url: '/stu_course',
+            params: {
+              courseId: courseId,
+              tableData: JSON.stringify(this.tableData)
+            }
+          })
+          this.$message.success('上传成功')
+        }).catch(action => {
+          this.$message({
+            type: 'info',
+            message: action === 'cancel' ? '放弃删除' : '停留在当前页面'
+          })
+        })
+      } catch (e) {
+        this.$message.error('提交出错，请联系管理员处理')
+      }
+    },
+    getStudentInfo () {
+      this.isUpInfo = true
+      this.isUpSelect = false
+      let courseId = ''
+      this.courses.forEach(item => {
+        if (item.courseName === this.selectName) {
+          courseId = item.courseId
+        }
+      })
+      this.$axios({
+        method: 'get',
+        url: '/tea_stu',
+        params: {courseId: courseId}
+      }).then(res => {
+        const data = res.data.students
+        let _this = this
+        data.forEach(item => {
+          let obj = {
+            stuName: item.Student.stuName,
+            stuId: item.Student.id
+          }
+          _this.tableData.push(obj)
+        })
+        this.loading = false
+      })
     },
     // 获取教师选择的课程下的学生名单
     getUserInfo () {
-      this.isUpInfo = true
-      this.isUpSelect = false
-      console.log(this.courses)
-      console.log(this.examData.assessment)
-      if (this.examData.assessment !== '期末') {
-        this.hasMid = true
-      } else {
-        this.hasMid = false
-      }
       let courseId = ''
-      let _this = this
       this.courses.forEach(item => {
-        if (item.courseName === this.examData.selectName) {
+        if (item.courseName === this.examData.courseName) {
           courseId = item.courseId
         }
       })
@@ -838,23 +898,9 @@ export default {
         params: {courseId: courseId}
       }).then(res => {
         const data = res.data.students
+        console.log(data)
         localStorage.setItem('stuInfo', JSON.stringify(data))
-        data.forEach(item => {
-          let stu = {
-            stuName: item.Student.stuName,
-            stuId: item.Student.id,
-            exam: '',
-            experiment: '',
-            test: '',
-            work: '',
-            attach1: '',
-            attach2: '',
-            total: ''
-          }
-          _this.tableData.push(stu)
-        })
       })
-      this.loading = false
     },
     getExamInfo () {
       if (this.examData.number < 1) {
@@ -864,6 +910,7 @@ export default {
       } else {
         this.isExamDetails = true
         this.isExamInfo = false
+        this.list = []
         console.log(this.examData)
         if (this.list.length !== 0) {
           for (let i = 2; i < (parseInt(this.examData.number) + 1); i++) {
@@ -892,6 +939,7 @@ export default {
               }
             }
           })
+          this.getUserInfo()
         } catch (e) {
           this.$message.warning('请确认您输入的信息是否有误')
         }

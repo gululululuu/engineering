@@ -33,4 +33,43 @@ router.get('/', async function(req, res, next) {
   }
 })
 
+// 将学生的成绩信息插入
+router.post('/', async function (req, res, next) {
+  const data = req.query
+  console.log(data)
+  let tableData = JSON.parse(data.tableData)
+  let arr = []
+  tableData.forEach(item => {
+    let obj = {
+      courseId:  `${data.courseId}`,
+      studentId: `${item.stuId}`,
+      score: `${item.score}`
+    }
+    arr.push(obj)
+  })
+  console.log(arr)
+  try {
+    var course = await models.Stu_Course.bulkCreate(arr)
+    res.json({course: course})
+  } catch (e) {
+    console.log(e)
+  }
+})
+
+// 删除学生成绩信息
+router.delete('/', async function (req, res, next) {
+  const data = req.query
+  console.log(data)
+  if (data.courseId) {
+    let courseId = data.courseId
+    var course = await models.Stu_Course.destroy({
+      where: {
+        courseId: `${data.courseId}`
+      }
+    })
+    res.json({msg: '删除成功'})
+  } else {
+    res.json({msg: '不存在该数据'})
+  }
+})
 module.exports = router

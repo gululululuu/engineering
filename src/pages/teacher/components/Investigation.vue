@@ -20,16 +20,6 @@
           <div class='rightForm'>
             <div class='half'>
               <el-form :label-position='labelPosition' label-width='80px' :rules='rules' :model='formData' size='mini'>
-                <el-form-item label='教学学期' prop='term'>
-                  <el-select v-model='formData.term' placeholder='请选择教学学期'>
-                    <el-option label='2020-2021 年度 第 一 学期' value='2020-2021 年度 第 一 学期'></el-option>
-                    <el-option label='2020-2021 年度 第 二 学期' value='2020-2021 年度 第 二 学期'></el-option>
-                    <el-option label='2019-2020 年度 第 一 学期' value='2019-2020 年度 第 一 学期'></el-option>
-                    <el-option label='2019-2020 年度 第 二 学期' value='2019-2020 年度 第 二 学期'></el-option>
-                    <el-option label='2018-2019 年度 第 一 学期' value='2018-2019 年度 第 一 学期'></el-option>
-                    <el-option label='2018-2019 年度 第 二 学期' value='2018-2019 年度 第 二 学期'></el-option>
-                  </el-select>
-                </el-form-item>
                 <el-form-item>
                   <el-button size='mini' @click='initStudents()' style="width: 192px;">开放学生问卷调查权限</el-button>
                 </el-form-item>
@@ -141,15 +131,16 @@ export default {
     })
     this.$axios({
       method: 'get',
-      url: '/courses',
-      params: {id: teaId}
+      url: '/tea_course',
+      params: {teacherId: teaId}
     }).then(res => {
+      console.log(res)
       const data = res.data.courses
       let _this = this
       data.forEach(item => {
         let course = {
-          courseName: item.courseName,
-          courseId: item.id
+          courseName: item.Course.courseName,
+          courseId: item.Course.id
         }
         _this.courses.push(course)
       })
