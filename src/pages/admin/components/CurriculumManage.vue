@@ -14,9 +14,11 @@
         <div class='inputBox'>
           <button class='investigation' @click='toMyInfo()'><p class='invesFonts'>成绩百分比</p></button>
           <button class='investigation' @click='toRelation()'><p class='invesFonts'>毕业要求支撑</p></button>
+          <button class='investigation' @click='toAims()'><p class='invesFonts'>课程目标</p></button>
         </div>
       </div>
       <div class='Right'>
+        <div v-show="isAims"><AimsManage></AimsManage></div>
         <div v-show='isMyInfo' class='MyInfo'>
           <div v-show='isSelect' class='basicInfo'>
             <el-form :label-position='labelPosition' label-width='80px' :rules='rules' :model='formData' size='mini'>
@@ -95,11 +97,11 @@
                   <el-form-item label='课程名称' prop='courseName'>
                     <el-input v-model='courseData.courseName' placeholder='请输入新的课程名称'></el-input>
                   </el-form-item>
-                  <el-form-item label='学分' prop='courseCredit'>
-                    <el-input v-model='courseData.courseCredit' placeholder='请输入新的课程学分'></el-input>
+                  <el-form-item label='课程编号' prop='courseId'>
+                    <el-input v-model='courseData.courseId' placeholder='请输入课程编号'></el-input>
                   </el-form-item>
-                  <el-form-item label='期中考试占比' prop='midTerm'>
-                    <el-input v-model='courseData.midTerm' placeholder='请输入期中考试占比'></el-input>
+                  <el-form-item label='实验占比' prop='experiment'>
+                    <el-input v-model='courseData.experiment' placeholder='请输入实验占比'></el-input>
                   </el-form-item>
                   <el-form-item label='作业占比' prop='work'>
                     <el-input v-model='courseData.work' placeholder='请输入作业占比'></el-input>
@@ -111,20 +113,20 @@
               </div>
               <div class='anotherHalf'>
                 <el-form :label-position='labelPosition' label-width='110px' :rules='rules' :model='courseData' size='mini'>
-                  <el-form-item label='课程编号' prop='courseId'>
-                    <el-input v-model='courseData.courseId' placeholder='请输入课程编号'></el-input>
+                  <el-form-item label='学分' prop='courseCredit'>
+                    <el-input v-model='courseData.courseCredit' placeholder='请输入新的课程学分'></el-input>
                   </el-form-item>
                   <el-form-item label='学时' prop='courseHour'>
                     <el-input v-model='courseData.courseHour' placeholder='请输入课程学时'></el-input>
                   </el-form-item>
-                  <el-form-item label='实验占比' prop='experiment'>
-                    <el-input v-model='courseData.experiment' placeholder='请输入实验占比'></el-input>
+                  <el-form-item label='随堂检测占比' prop='test'>
+                    <el-input v-model='courseData.test' placeholder='请输入随堂检测占比'></el-input>
+                  </el-form-item>
+                  <el-form-item label='期中考试占比' prop='midTerm'>
+                    <el-input v-model='courseData.midTerm' placeholder='请输入期中考试占比'></el-input>
                   </el-form-item>
                   <el-form-item label='期末考试占比' prop='finalExam'>
                     <el-input v-model='courseData.finalExam' placeholder='请输入期末考试占比'></el-input>
-                  </el-form-item>
-                  <el-form-item label='随堂检测占比' prop='test'>
-                    <el-input v-model='courseData.test' placeholder='请输入随堂检测占比'></el-input>
                   </el-form-item>
                   <el-form-item label='学生评价占比' prop='stuEvaluate'>
                     <el-input v-model='courseData.stuEvaluate' placeholder='请输入学生评价占比'></el-input>
@@ -143,7 +145,10 @@
             </div>
             <div class='rightForm'>
               <div class='half'>
-                <el-form :label-position='labelPosition' label-width='110px' :rules='rules' :model='formData' size='mini'>
+                <el-form :label-position='labelPosition' label-width='110px' :rules='rules' size='mini'>
+                  <el-form-item label='课程名称'>
+                    <el-tag class="tag">{{ courseData.courseName }}</el-tag>
+                  </el-form-item>
                   <el-form-item label='教学学期' prop='term'>
                     <el-select v-model='formData.term' placeholder='请选择教学学期'>
                       <el-option label='大学一年级 第 一 学期' value='大学一年级 第 一 学期'></el-option>
@@ -156,13 +161,11 @@
                       <el-option label='大学四年级 第 二 学期' value='大学四年级 第 二 学期'></el-option>
                     </el-select>
                   </el-form-item>
-                </el-form>
-                <el-form :label-position='labelPosition' label-width='110px' :rules='rules' :model='courseData' size='mini'>
-                  <el-form-item label='课程名称' prop='courseName'>
-                    <el-input v-model='courseData.courseName' placeholder='请输入新的课程名称'></el-input>
+                  <el-form-item label='随堂检测占比' prop='test'>
+                    <el-input v-model='courseData.test' placeholder='请输入随堂检测占比'></el-input>
                   </el-form-item>
-                  <el-form-item label='期中考试占比' prop='midTerm'>
-                    <el-input v-model='courseData.midTerm' placeholder='请输入期中考试占比'></el-input>
+                  <el-form-item label='实验占比' prop='experiment'>
+                    <el-input v-model='courseData.experiment' placeholder='请输入实验占比'></el-input>
                   </el-form-item>
                   <el-form-item label='作业占比' prop='work'>
                     <el-input v-model='courseData.work' placeholder='请输入作业占比'></el-input>
@@ -174,25 +177,26 @@
               </div>
               <div class='anotherHalf'>
                 <el-form :label-position='labelPosition' label-width='110px' :rules='rules' :model='courseData' size='mini'>
-                  <el-form-item label='课程编号' prop='courseId'>
-                    <el-input v-model='courseData.courseId' placeholder='请输入课程编号'></el-input>
+                  <el-form-item label='课程编号'>
+                    <el-tag class="tag">{{ courseData.courseId }}</el-tag>
                   </el-form-item>
-                </el-form>
-                <el-form :label-position='labelPosition' label-width='110px' :rules='rules' :model='courseData' size='mini'>
-                  <el-form-item label='实验占比' prop='experiment'>
-                    <el-input v-model='courseData.experiment' placeholder='请输入实验占比'></el-input>
+                  <el-form-item label='学分' prop='teaEvaluate'>
+                    <el-input v-model='courseData.courseCredit' placeholder='请输入课程学分'></el-input>
+                  </el-form-item>
+                  <el-form-item label='学时' prop='teaEvaluate'>
+                    <el-input v-model='courseData.courseHour' placeholder='请输入课程学时'></el-input>
+                  </el-form-item>
+                  <el-form-item label='期中考试占比' prop='midTerm'>
+                    <el-input v-model='courseData.midTerm' placeholder='请输入期中考试占比'></el-input>
                   </el-form-item>
                   <el-form-item label='期末考试占比' prop='finalExam'>
                     <el-input v-model='courseData.finalExam' placeholder='请输入期末考试占比'></el-input>
-                  </el-form-item>
-                  <el-form-item label='随堂检测占比' prop='test'>
-                    <el-input v-model='courseData.test' placeholder='请输入随堂检测占比'></el-input>
                   </el-form-item>
                   <el-form-item label='学生评价占比' prop='stuEvaluate'>
                     <el-input v-model='courseData.stuEvaluate' placeholder='请输入学生评价占比'></el-input>
                   </el-form-item>
                   <el-form-item>
-                    <el-button size='mini' @click='submit()' style="width: 180px;">提交</el-button>
+                    <el-button size='mini' @click='submit()' style="width: 192px;">提交</el-button>
                   </el-form-item>
                 </el-form>
               </div>
@@ -238,7 +242,7 @@
         <div v-show='isRelation' class='MyInfo'>
           <div v-show='isRSelect' class='basicInfo'>
             <el-form :label-position='labelPosition' label-width='80px' :rules='rules' size='mini'>
-              <el-form-item label='课程名称' prop="courseName">
+              <el-form-item label='课程名称'>
                 <el-select v-model='selectedCourseName' placeholder='请选择课程名称'>
                   <el-option
                     v-for="item in relationData"
@@ -249,27 +253,81 @@
                 </el-select>
               </el-form-item>
               <el-form-item label-position='right' label-width='80px'>
-                <el-button size='mini' @click='getCourseInfo()' style="width: 192px;">查询</el-button>
+                <el-button size='mini' @click='getCourseInfo()'>查询</el-button>
+                <el-button size='mini' @click='getAllRelation()' style="margin-left: 49px;">查询所有</el-button>
               </el-form-item>
             </el-form>
           </div>
-          <div v-if='isRInfo'  class="allInfo">
+          <div v-show='isRInfo' class="allInfo">
+            <div class="backLastest">
+              <img src='../../../assets/img/back.png' class='backImg' @click='back()'/>
+              <p class='backFonts' @click='back()'>返回上一层</p>
+              <el-button size='mini' class="addButton" @click='addRelation()'>添加支撑</el-button>
+            </div>
+            <el-table :data="tableData" border max-height="420" class="infoTable">
+              <el-table-column label="课程名称" align="center" width="170px">
+                <template slot-scope="scope">
+                  <el-input placeholder="请输入课程名称" v-if="scope.row.isClick" v-model="tableData[scope.$index].courseName"></el-input>
+                  <span v-else>{{ tableData[scope.$index].courseName }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="毕业要求" align="center" width="150px">
+                <template slot-scope="scope">
+                  <el-input placeholder="请输入毕业要求" v-if="scope.row.isClick" v-model="tableData[scope.$index].graduRequirement"></el-input>
+                  <span v-else>{{ tableData[scope.$index].graduRequirement }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="毕业要求指标点" align="center" width="360px">
+                <template slot-scope="scope">
+                  <el-input placeholder="请输入毕业要求指标点" v-if="scope.row.isClick" v-model="tableData[scope.$index].graduationPoint"></el-input>
+                  <span v-else>{{ tableData[scope.$index].graduationPoint }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="课程目标" align="center" width="140px">
+                <template slot-scope="scope">
+                  <el-input placeholder="请输入课程目标" v-if="scope.row.isClick" v-model="tableData[scope.$index].aim"></el-input>
+                  <span v-else>{{ tableData[scope.$index].aim }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column fixed="right" label="操作" width="160px" align='center'>
+                <template slot-scope="scope">
+                  <el-button @click="change(scope)" type="text" size="small">编辑</el-button>
+                  <el-button @click="save(scope)" size='small' type='text'><p>保存</p></el-button>
+                  <el-button @click="deleteRInfo(scope.row)" type="text" size="small">删除</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </div>
+          <div v-show="isRAdd" class="allInfo">
             <div class="backLastest">
               <img src='../../../assets/img/back.png' class='backImg' @click='back()'/>
               <p class='backFonts' @click='back()'>返回上一层</p>
             </div>
-            <el-table :data="tableData" border max-height="500" class="infoTable">
-              <el-table-column prop="courseName" label="课程名称" align="center"></el-table-column>
-              <el-table-column prop="graduRequirement" label="毕业要求" align="center"></el-table-column>
-              <el-table-column prop="graduationPoint" label="毕业要求指标点" align="center"></el-table-column>
-              <el-table-column prop="aim" label="课程目标" align="center"></el-table-column>
-              <el-table-column fixed="right" label="操作" width="100" align='center'>
-                <template slot-scope="scope">
-                  <el-button @click="alter(scope.row)" type="text" size="small">编辑</el-button>
-                  <el-button @click="deleteInfo(scope.row)" type="text" size="small">删除</el-button>
-                </template>
-              </el-table-column>
-            </el-table>
+            <div class='rightForm'>
+              <div class='half'>
+                <el-form :label-position='labelPosition' label-width='110px' :rules='rules' :model='courseData' size='mini'>
+                  <el-form-item label='课程名称' prop='courseName'>
+                    <el-input v-model='courseData.courseName' placeholder='请输入新的课程名称'></el-input>
+                  </el-form-item>
+                  <el-form-item label='毕业要求' prop='graduRequirement'>
+                    <el-input v-model='courseData.graduRequirement' placeholder='请输入毕业要求'></el-input>
+                  </el-form-item>
+                </el-form>
+              </div>
+              <div class='anotherHalf'>
+                <el-form :label-position='labelPosition' label-width='130px' :rules='rules' :model='courseData' size='mini'>
+                  <el-form-item label='毕业要求指标点' prop='graduationPoint'>
+                    <el-input v-model='courseData.graduationPoint' placeholder='请输入毕业要求指标点'></el-input>
+                  </el-form-item>
+                  <el-form-item label='课程目标' prop='aim'>
+                    <el-input v-model='courseData.aim' placeholder='请输入课程目标'></el-input>
+                  </el-form-item>
+                  <el-form-item>
+                    <el-button size='mini' @click='submitRAddInfo()' style="width: 180px;">提交</el-button>
+                  </el-form-item>
+                </el-form>
+              </div>
+            </div>
           </div>
         </div>
         <p v-show='isActive' class='rightFonts'>请在左侧选择您要进行的操作~</p>
@@ -280,15 +338,22 @@
 
 <script>
 import { mapMutations } from 'vuex'
+import AimsManage from './AimsManage'
 export default {
   name: 'CurriculumManage',
+  inject: ['reload'],
+  components: {
+    AimsManage
+  },
   data () {
     return {
       isActive: true,
+      isAims: false,
       isMyInfo: false,
       isRelation: false,
       isRSelect: false,
       isRInfo: false,
+      isRAdd: false,
       isSelect: true,
       isOne: false,
       isAdd: false,
@@ -300,6 +365,15 @@ export default {
         term: ''
       },
       rules: {
+        graduationPoint: [
+          { required: true, message: '请输入毕业指标点', trigger: 'blur' }
+        ],
+        graduRequirement: [
+          { required: true, message: '请输入毕业要求', trigger: 'blur' }
+        ],
+        aim: [
+          { required: true, message: '请输入课程目标', trigger: 'blur' }
+        ],
         term: [
           { required: true, message: '请选择课程学期', trigger: 'blur' }
         ],
@@ -352,13 +426,17 @@ export default {
         test: '',
         experiment: '',
         teaEvaluate: '',
-        stuEvaluate: ''
+        stuEvaluate: '',
+        graduationPoint: '',
+        graduRequirement: '',
+        aim: ''
       },
       tableData: [],
       relationData: [],
       relationInfo: [],
       alterInfo: [],
-      selectedCourseName: ''
+      selectedCourseName: '',
+      lastClick: null
     }
   },
   created () {
@@ -366,7 +444,6 @@ export default {
     this.$axios({
       method: 'get', url: '/relations'
     }).then(res => {
-      console.log(res)
       const data = res.data.relations
       _this.relationInfo = data
       var obj = {}
@@ -391,17 +468,45 @@ export default {
     backCollege () {
       this.$router.push('/admin')
     },
+    toAims () {
+      this.isAims = true
+      this.offInfos()
+      this.offRelations()
+      this.isActive = false
+    },
+    offInfos () {
+      this.isMyInfo = false
+      this.isSelect = false
+      this.isAdd = false
+      this.isAlter = false
+      this.isOne = false
+      this.isAll = false
+    },
+    offRelations () {
+      this.isRelation = false
+      this.isRSelect = false
+      this.isRInfo = false
+      this.isRAdd = false
+    },
     toMyInfo () {
       this.isMyInfo = true
+      this.isSelect = true
+      this.isAdd = false
+      this.isAlter = false
+      this.isAll = false
+      this.isOne = false
       this.isActive = false
-      this.isRelation = false
+      this.offRelations()
+      this.isAims = false
       this.clear()
     },
     toRelation () {
       this.isRelation = true
       this.isRSelect = true
       this.isRInfo = false
-      this.isMyInfo = false
+      this.isRAdd = false
+      this.offInfos()
+      this.isAims = false
       this.isActive = false
       this.clear()
     },
@@ -415,6 +520,7 @@ export default {
       } else if (this.isRelation) {
         this.isRSelect = true
         this.isRInfo = false
+        this.isRAdd = false
       }
       this.clear()
     },
@@ -426,7 +532,39 @@ export default {
         _this.courseData[item] = ''
       })
     },
-    // 添加课程信息
+    change (scope) {
+      // 再次点击则还原其他行
+      if (this.lastClick) {
+        this.$set(this.lastClick.row, 'isClick', false)
+      }
+      // 第一次点击，变成显示
+      this.lastClick = scope
+      this.$set(scope.row, 'isClick', true)
+    },
+    // 保存学生成绩信息
+    save (scope) {
+      // 再次点击则还原其他行
+      if (this.lastClick) {
+        this.$set(this.lastClick.row, 'isClick', false)
+      }
+      // 第一次点击，变成隐藏
+      this.lastClick = scope
+      this.$set(scope.row, 'isClick', false)
+      this.setRelationInfo(scope)
+    },
+    // 修改联系信息
+    setRelationInfo (scope) {
+      let data = scope.row
+      this.$axios({
+        method: 'put', url: '/relations', params: { data: JSON.stringify(data) }
+      })
+    },
+    // 打开添加支撑页面
+    addRelation () {
+      this.isRAdd = true
+      this.isRInfo = false
+    },
+    // 打开添加课程信息页面
     addCourse () {
       this.isAdd = true
       this.isAlter = false
@@ -434,6 +572,7 @@ export default {
       this.isAll = false
       this.isSelect = false
     },
+    // 添加课程信息
     submitAddInfo () {
       try {
         let data = {
@@ -478,7 +617,7 @@ export default {
         this.$message.error('请确认您是否全部正确填写完成')
       }
     },
-    // 修改成绩组成占比
+    // 修改课程信息
     submit () {
       try {
         let data = {
@@ -525,12 +664,15 @@ export default {
         this.$message.error('请确认您是否全部正确填写完成')
       }
     },
+    // 打开修改课程信息界面
     alter (row) {
       this.isAlter = true
       this.isAdd = false
       this.isOne = false
       this.isAll = false
       this.isSelect = false
+      this.courseData.courseName = row.courseName
+      this.courseData.courseId = row.courseId
     },
     // 删除课程信息
     deleteInfo (row) {
@@ -547,7 +689,8 @@ export default {
           }
         }).then(res => {
           if (res.data.msg === '删除成功') {
-            this.$message.success('删除成功，请重新刷新页面来查看')
+            this.$message.success('删除成功')
+            this.reload()
           } else {
             this.$message.warning('不存在该数据，请重新刷新页面来查看')
           }
@@ -559,17 +702,74 @@ export default {
         })
       })
     },
-    getCourseInfo () {
+    // 删除联系信息
+    deleteRInfo (row) {
+      this.$confirm('您确认将要删除此条课程信息？', '确认信息', {
+        distinguishCancelAndClose: true,
+        confirmButtonText: '确定',
+        cancelButtonText: '取消'
+      }).then(() => {
+        this.$axios({
+          method: 'delete',
+          url: '/relations',
+          params: {
+            id: row.id
+          }
+        }).then(res => {
+          if (res.data.msg === '删除成功') {
+            this.$message.success('删除成功')
+            this.reload()
+          } else {
+            this.$message.warning('不存在该数据，请重新刷新页面来查看')
+          }
+        }).catch(e => { console.log(e) })
+      }).catch(action => {
+        this.$message({
+          type: 'info',
+          message: action === 'cancel' ? '放弃删除' : '停留在当前页面'
+        })
+      })
+    },
+    // 添加毕业要求联系信息
+    submitRAddInfo () {
+      console.log(this.courseData)
+      try {
+        this.$axios({
+          method: 'post', url: '/relations', params: { data: JSON.stringify(this.courseData) }
+        }).then(res => {
+          this.$message.success('添加成功！')
+        })
+      } catch (e) {
+        console.log(e)
+      }
+    },
+    // 查询所有联系信息
+    getAllRelation () {
       this.clear()
       this.isRInfo = true
       this.isRSelect = false
       let _this = this
       this.relationInfo.forEach(item => {
-        if (item.courseName === this.selectedCourseName) {
-          _this.tableData.push(item)
-        }
+        _this.tableData.push(item)
       })
     },
+    // 查询某课程的联系信息
+    getCourseInfo () {
+      this.clear()
+      this.isRInfo = true
+      this.isRSelect = false
+      if (this.courseData.courseName === '') {
+        this.$message.warning('请选择课程名称')
+      } else {
+        let _this = this
+        this.relationInfo.forEach(item => {
+          if (item.courseName === this.selectedCourseName) {
+            _this.tableData.push(item)
+          }
+        })
+      }
+    },
+    // 查询某学期的课程信息
     query () {
       this.isOne = true
       this.isAll = false
@@ -577,7 +777,7 @@ export default {
       this.isAlter = false
       this.isSelect = false
       if (this.formData.term === '') {
-        this.$message.error('暂无您查询的信息，请重试')
+        this.$message.warning('请选择学期后重试')
         return 0
       }
       this.$axios({
@@ -606,6 +806,7 @@ export default {
         }
       })
     },
+    // 查询所有学期的课程信息
     queryAll () {
       this.isAll = true
       this.isOne = false
@@ -615,7 +816,6 @@ export default {
       this.$axios.get('/courses').then(res => {
         if (res.data) {
           let data = res.data.courses
-          console.log(data)
           let _this = this
           data.forEach((item) => {
             let course = {
@@ -733,9 +933,19 @@ export default {
           .half
             position : absolute
             left : 0
+            .tag
+              background-color : dodgerblue
+              color : white
+              width : 192px
+              text-align : center
           .anotherHalf
             position : absolute
             right : 0
+            .tag
+              background-color : dodgerblue
+              color : white
+              width : 192px
+              text-align : center
         .allInfo
           position : absolute
           left : 5%
@@ -783,11 +993,6 @@ export default {
               position : absolute
               right : 0
               top : 10%
-          .el-table
-            .warning-row
-              background: oldlace
-            .success-row
-              background: #f0f9eb
         .basicInfo
           width : 270px
           height : 500px

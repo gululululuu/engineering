@@ -11,10 +11,10 @@
         <p class='backFonts' @click='backHome()'>返回首页</p>
       </div>
       <div class='inputBox'>
-        <button class='leftButton' @click='toMyInfo()'><p class='buttonFonts'>课程评估</p></button>
+        <button class='leftButton' @click='toMyInfo()'><p class='buttonFonts'>达成度计算</p></button>
         <button class='leftButton' @click='toMyAnalysis()'><p class='buttonFonts'>达成分析</p></button>
         <button class='leftButton' @click='toMyReport()'><p class='buttonFonts'>生成报告</p></button>
-        <button class='leftButton' @click='toAdd()'><p class='buttonFonts'>添加课程</p></button>
+        <!-- <button class='leftButton' @click='toAdd()'><p class='buttonFonts'>添加课程</p></button> -->
       </div>
     </div>
     <div class='Right'>
@@ -27,7 +27,7 @@
           </el-steps>
           <el-button size='mini' @click="next()" style="margin-top: 22px;">下一步</el-button>
           <div v-show='isUpload' @click='toUpload()' class='upload'>
-            <Upload></Upload>
+            <Upload v-bind:aimsInfo='aimsInfo'></Upload>
           </div>
         </div>
         <div v-if="isDiagram" class="rightInfo">
@@ -86,9 +86,9 @@
           </div>
         </div>
       </div>
-      <div v-show='isToAdd'>
+      <!-- <div v-show='isToAdd'>
         <AddCourse></AddCourse>
-      </div>
+      </div> -->
       <p v-show='isActive' class='rightFonts'>请在左侧选择您要进行的操作~</p>
     </div>
   </div>
@@ -145,7 +145,8 @@ export default {
         aimNum: 0,
         teaName: ''
       },
-      courses: []
+      courses: [],
+      aimsInfo: {}
     }
   },
   components: {
@@ -174,13 +175,19 @@ export default {
         _this.courses.push(course)
       })
     })
-    let report = []
-    localStorage.setItem('report', JSON.stringify(report))
+    this.$axios({
+      method: 'get', url: '/aims'
+    }).then(res => {
+      const data = res.data.aims
+      this.aimsInfo = data
+    })
   },
   methods: {
     ...mapMutations(['delLogin']),
     submit () {
       try {
+        let report = []
+        localStorage.setItem('report', JSON.stringify(report))
         let _this = this
         this.$axios({
           method: 'get', url: '/aims', params: {courseName: this.formData.courseName}
@@ -188,12 +195,13 @@ export default {
           const data = res.data.aim
           _this.formData.aimNum = data.aimNumber
         })
+        let id = JSON.parse(localStorage.getItem('userId'))
         this.$axios({
-          method: 'get', url: '/courses', params: {courseName: this.formData.courseName}
+          method: 'get', url: '/users' + '/' + id
         }).then(res => {
           console.log(res)
-          const data = res.data.courses[0]
-          _this.formData.teaName = data.Teacher.teaName
+          const data = res.data.user
+          _this.formData.teaName = data.teaName
         })
         this.$message.success('上传成功！')
       } catch (e) {
@@ -247,8 +255,8 @@ export default {
       this.isMyReport = false
     },
     toUpload () {
-      this.isDiagram = true
       this.isInfo = false
+      this.isDiagram = true
     },
     next () {
       if (this.active++ > 1) {

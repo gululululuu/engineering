@@ -48,7 +48,8 @@ router.post('/', async function (req, res, next) {
     stuName: `${data.stuName}`,
     address: `${data.address}`,
     class: `${data.class}`,
-    department: `${data.department}`
+    department: `${data.department}`,
+    major: `${data.major}`
   })
   res.json({course: course})
 })
@@ -57,14 +58,14 @@ router.get('/:id', async function (req, res, next) {
   var student = await models.Student.findByPk(req.params.id)
   res.json({student: student})
 })
-// 查找 id 为 /id 的学生信息和参与的课程信息
-router.get('/:id', async function (req, res, next) {
-  var student = await models.Student.findOne({
-    where: {id: req.params.id},
-    include: [models.Course]
-  })
-  res.json({student: student})
-})
+// // 查找 id 为 /id 的学生信息和参与的课程信息
+// router.get('/:id', async function (req, res, next) {
+//   var student = await models.Student.findOne({
+//     where: {id: req.params.id},
+//     include: [models.Course]
+//   })
+//   res.json({student: student})
+// })
 
 // 修改学生信息
 router.put('/', async function (req, res, next) {
@@ -78,7 +79,8 @@ router.put('/', async function (req, res, next) {
       sex: `${data.sex}`,
       address: `${data.address}`,
       department: `${data.department}`,
-      class: `${data.class}`
+      class: `${data.class}`,
+      major: `${data.major}`
     }, {where: {id: `${data.id}`}})
     res.json({students: students})
   } catch (e) {

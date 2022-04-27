@@ -13,7 +13,6 @@
         </div>
         <div class='inputBox'>
           <button class='investigation' @click='toMyInfo()'><p class='invesFonts'>添加用户信息</p></button>
-          <button class='investigation' @click='toAlter()'><p class='invesFonts'>修改用户信息</p></button>
           <button class='investigation' @click='toQuery()'><p class='invesFonts'>查询用户信息</p></button>
         </div>
       </div>
@@ -98,8 +97,8 @@
                       <el-option label='女' value='女'></el-option>
                     </el-select>
                   </el-form-item>
-                  <el-form-item label='院系' prop='userMajor'>
-                    <el-input v-model='userData.userMajor' placeholder='请输入新用户的院系'></el-input>
+                  <el-form-item label='院系' prop='userDepartment'>
+                    <el-input v-model='userData.userDepartment' placeholder='请输入新用户的院系'></el-input>
                   </el-form-item>
                 </el-form>
               </div>
@@ -111,7 +110,7 @@
                   <el-form-item label='职称' prop='userTitle'>
                     <el-select v-model='userData.userTitle' placeholder='请选择用户的职称'>
                       <el-option label='院领导' value='院领导'></el-option>
-                      <el-option label='系领导' value='系领导'></el-option>
+                      <el-option label='系主任' value='系主任'></el-option>
                       <el-option label='督学' value='督学'></el-option>
                       <el-option label='教学秘书' value='教学秘书'></el-option>
                       <el-option label='教师' value='教师'></el-option>
@@ -120,118 +119,11 @@
                   <el-form-item label='住址' prop='userAddress'>
                     <el-input v-model='userData.userAddress' placeholder='请输入新用户的住址'></el-input>
                   </el-form-item>
+                  <el-form-item label='专业' prop='userMajor'>
+                    <el-input v-model='userData.userMajor' placeholder='请输入新用户的专业'></el-input>
+                  </el-form-item>
                   <el-form-item>
                     <el-button size='mini' @click='submitUserInfo()' style="width: 192px;">提交</el-button>
-                  </el-form-item>
-                </el-form>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div v-show='isAlter' class='MyInfo'>
-          <div v-show="isAlterSelect" class='basicInfo'>
-            <div class='basicHead'>
-              <p class='info'>修改用户信息前请先选择用户的身份</p>
-            </div>
-            <el-form :label-position='labelPosition' label-width='80px' :rules='rules' :model='userData' size='mini'>
-              <el-form-item label='用户身份' prop='identity'>
-                <el-select v-model='userData.identity' placeholder='请选择新用户的身份'>
-                  <el-option label='教师' value='教师'></el-option>
-                  <el-option label='学生' value='学生'></el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item>
-                <el-button size='mini' @click='getIdentity()' style="width: 190px;">提交</el-button>
-              </el-form-item>
-            </el-form>
-          </div>
-          <div v-show='isAlterStu' class="allInfo">
-            <div class="backLastest">
-              <img src='../../../assets/img/back.png' class='backImg' @click='back()'/>
-              <p class='backFonts' @click='back()'>返回上一层</p>
-            </div>
-            <div class='rightForm'>
-              <div class='half'>
-                <el-form :label-position='labelPosition' label-width='110px' :rules='rules' :model='userData' size='mini'>
-                  <el-form-item label='姓名' prop='userName'>
-                    <el-input v-model='userData.userName' placeholder='请输入用户的新姓名'></el-input>
-                  </el-form-item>
-                  <el-form-item label='年龄' prop='userAge'>
-                    <el-input v-model='userData.userAge' placeholder='请输入用户的新年龄'></el-input>
-                  </el-form-item>
-                  <el-form-item label='性别' prop='userSex'>
-                    <el-select v-model='userData.userSex' placeholder='请选择用户的性别'>
-                      <el-option label='男' value='男'></el-option>
-                      <el-option label='女' value='女'></el-option>
-                    </el-select>
-                  </el-form-item>
-                  <el-form-item label='专业' prop='userMajor'>
-                    <el-input v-model='userData.userMajor' placeholder='请输入用户的新专业'></el-input>
-                  </el-form-item>
-                </el-form>
-              </div>
-              <div class='anotherHalf'>
-                <el-form :label-position='labelPosition' label-width='110px' :rules='rules' :model='userData' size='mini'>
-                  <el-form-item label='学号' prop='userId'>
-                    <el-input v-model='userData.userId' placeholder='请输入用户的新学号'></el-input>
-                  </el-form-item>
-                  <el-form-item label='班级' prop='userClass'>
-                    <el-input v-model='userData.userClass' placeholder='请输入用户的新班级'></el-input>
-                  </el-form-item>
-                  <el-form-item label='住址' prop='userAddress'>
-                    <el-input v-model='userData.userAddress' placeholder='请输入用户的新住址'></el-input>
-                  </el-form-item>
-                  <el-form-item>
-                    <el-button size='mini' @click='updateStuInfo()' style="width: 180px;">提交</el-button>
-                  </el-form-item>
-                </el-form>
-              </div>
-            </div>
-          </div>
-          <div v-show='isAlterUser' class="allInfo">
-            <div class="backLastest">
-              <img src='../../../assets/img/back.png' class='backImg' @click='back()'/>
-              <p class='backFonts' @click='back()'>返回上一层</p>
-            </div>
-            <div class='rightForm'>
-              <div class='half'>
-                <el-form :label-position='labelPosition' label-width='110px' :rules='rules' :model='userData' size='mini'>
-                  <el-form-item label='姓名' prop='userName'>
-                    <el-input v-model='userData.userName' placeholder='请输入用户的新姓名'></el-input>
-                  </el-form-item>
-                  <el-form-item label='年龄' prop='userAge'>
-                    <el-input v-model='userData.userAge' placeholder='请输入用户的新年龄'></el-input>
-                  </el-form-item>
-                  <el-form-item label='性别' prop='userSex'>
-                    <el-select v-model='userData.userSex' placeholder='请选择用户的性别'>
-                      <el-option label='男' value='男'></el-option>
-                      <el-option label='女' value='女'></el-option>
-                    </el-select>
-                  </el-form-item>
-                  <el-form-item label='院系' prop='userMajor'>
-                    <el-input v-model='userData.userMajor' placeholder='请输入用户的新院系'></el-input>
-                  </el-form-item>
-                </el-form>
-              </div>
-              <div class='anotherHalf'>
-                <el-form :label-position='labelPosition' label-width='110px' :rules='rules' :model='userData' size='mini'>
-                  <el-form-item label='工号' prop='userId'>
-                    <el-input v-model='userData.userId' placeholder='请输入用户的新工号'></el-input>
-                  </el-form-item>
-                  <el-form-item label='职称' prop='userTitle'>
-                    <el-select v-model='userData.userTitle' placeholder='请选择用户的职称'>
-                      <el-option label='院领导' value='院领导'></el-option>
-                      <el-option label='系领导' value='系领导'></el-option>
-                      <el-option label='督学' value='督学'></el-option>
-                      <el-option label='教学秘书' value='教学秘书'></el-option>
-                      <el-option label='教师' value='教师'></el-option>
-                    </el-select>
-                  </el-form-item>
-                  <el-form-item label='住址' prop='userAddress'>
-                    <el-input v-model='userData.userAddress' placeholder='请输入用户的新住址'></el-input>
-                  </el-form-item>
-                  <el-form-item>
-                    <el-button size='mini' @click='updateUserInfo()' style="width: 192px;">提交</el-button>
                   </el-form-item>
                 </el-form>
               </div>
@@ -246,7 +138,7 @@
                   <el-form-item label='用户身份' prop='identity'>
                     <el-select v-model='userData.identity' placeholder='请选择用户的身份'>
                       <el-option label='院领导' value='院领导'></el-option>
-                      <el-option label='系领导' value='系领导'></el-option>
+                      <el-option label='系主任' value='系主任'></el-option>
                       <el-option label='督学' value='督学'></el-option>
                       <el-option label='教学秘书' value='教学秘书'></el-option>
                       <el-option label='教师' value='教师'></el-option>
@@ -262,7 +154,7 @@
                 </el-form>
               </div>
               <div class='anotherHalf'>
-                <el-form :label-position='labelPosition' label-width='110px' :rules='rules' :model='userData' size='mini'>
+                <el-form :label-position='labelPosition' label-width='110px' :rules='rules' size='mini'>
                   <el-form-item>
                     <el-button size='mini' @click='getInfoByIdentity()' style="width: 180px;">提交&emsp;&emsp;&emsp;(只按身份查询)</el-button>
                   </el-form-item>
@@ -287,15 +179,58 @@
               element-loading-text="拼命加载中"
               element-loading-spinner="el-icon-loading"
               element-loading-background="rgba(0, 0, 0, 0.8)" :data="tableData" border max-height="420" class="infoTable">
-              <el-table-column prop="userName" label="姓名" align="center"></el-table-column>
-              <el-table-column prop="userId" label="工号" align="center"></el-table-column>
-              <el-table-column prop="userAge" label="年龄" align="center"></el-table-column>
-              <el-table-column prop="userSex" label="性别" align="center"></el-table-column>
-              <el-table-column prop="userAddress" label="住址" align="center"></el-table-column>
-              <el-table-column prop="userMajor" label="院系" align="center"></el-table-column>
-              <el-table-column prop="userTitle" label="职称" align="center"></el-table-column>
-              <el-table-column fixed="right" label="操作" width="100" align='center'>
+              <el-table-column label="姓名" align="center">
                 <template slot-scope="scope">
+                  <el-input placeholder="请输入姓名" v-if="scope.row.isClick" v-model="tableData[scope.$index].userName"></el-input>
+                  <span v-else>{{ tableData[scope.$index].userName }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="工号" align="center" width="100px">
+                <template slot-scope="scope">
+                  <el-input placeholder="请输入工号" v-if="scope.row.isClick" v-model="tableData[scope.$index].userId"></el-input>
+                  <span v-else>{{ tableData[scope.$index].userId }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="年龄" align="center" width="100px">
+                <template slot-scope="scope">
+                  <el-input placeholder="请输入年龄" v-if="scope.row.isClick" v-model="tableData[scope.$index].userAge"></el-input>
+                  <span v-else>{{ tableData[scope.$index].userAge }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="性别" align="center" width="100px">
+                <template slot-scope="scope">
+                  <el-input placeholder="请输入性别" v-if="scope.row.isClick" v-model="tableData[scope.$index].userSex"></el-input>
+                  <span v-else>{{ tableData[scope.$index].userSex }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="院系" align="center">
+                <template slot-scope="scope">
+                  <el-input placeholder="请输入院系" v-if="scope.row.isClick" v-model="tableData[scope.$index].userDepartment"></el-input>
+                  <span v-else>{{ tableData[scope.$index].userDepartment }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="专业" align="center">
+                <template slot-scope="scope">
+                  <el-input placeholder="请输入专业" v-if="scope.row.isClick" v-model="tableData[scope.$index].userMajor"></el-input>
+                  <span v-else>{{ tableData[scope.$index].userMajor }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="职称" align="center">
+                <template slot-scope="scope">
+                  <el-input placeholder="请输入职称" v-if="scope.row.isClick" v-model="tableData[scope.$index].userTitle"></el-input>
+                  <span v-else>{{ tableData[scope.$index].userTitle }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="住址" align="center" width="110px">
+                <template slot-scope="scope">
+                  <el-input placeholder="请输入住址" v-if="scope.row.isClick" v-model="tableData[scope.$index].userAddress"></el-input>
+                  <span v-else>{{ tableData[scope.$index].userAddress }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column fixed="right" label="操作" width="170px" align='center'>
+                <template slot-scope="scope">
+                  <el-button @click="change(scope)" size='small' type='text'><p>编辑</p></el-button>
+                  <el-button @click="save(scope)" size='small' type='text'><p>保存</p></el-button>
                   <el-button @click="deleteUserInfo(scope.row)" type="text" size="small">删除</el-button>
                 </template>
               </el-table-column>
@@ -311,15 +246,52 @@
               element-loading-text="拼命加载中"
               element-loading-spinner="el-icon-loading"
               element-loading-background="rgba(0, 0, 0, 0.8)" :data="tableData" border max-height="420" class="infoTable">
-              <el-table-column prop="userName" label="姓名" align="center"></el-table-column>
-              <el-table-column prop="userId" label="学号" align="center"></el-table-column>
-              <el-table-column prop="userAge" label="年龄" align="center"></el-table-column>
-              <el-table-column prop="userSex" label="性别" align="center"></el-table-column>
-              <el-table-column prop="userClass" label="班级" align="center"></el-table-column>
-              <el-table-column prop="userMajor" label="专业" align="center"></el-table-column>
-              <el-table-column prop="userAddress" label="住址" align="center"></el-table-column>
-              <el-table-column fixed="right" label="操作" width="100" align='center'>
+              <el-table-column label="姓名" align="center">
                 <template slot-scope="scope">
+                  <el-input placeholder="请输入姓名" v-if="scope.row.isClick" v-model="tableData[scope.$index].userName"></el-input>
+                  <span v-else>{{ tableData[scope.$index].userName }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="学号" align="center" width="100px">
+                <template slot-scope="scope">
+                  <el-input placeholder="请输入学号" v-if="scope.row.isClick" v-model="tableData[scope.$index].userId"></el-input>
+                  <span v-else>{{ tableData[scope.$index].userId }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="年龄" align="center" width="100px">
+                <template slot-scope="scope">
+                  <el-input placeholder="请输入年龄" v-if="scope.row.isClick" v-model="tableData[scope.$index].userAge"></el-input>
+                  <span v-else>{{ tableData[scope.$index].userAge }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="性别" align="center" width="100px">
+                <template slot-scope="scope">
+                  <el-input placeholder="请输入性别" v-if="scope.row.isClick" v-model="tableData[scope.$index].userSex"></el-input>
+                  <span v-else>{{ tableData[scope.$index].userSex }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="班级" align="center">
+                <template slot-scope="scope">
+                  <el-input placeholder="请输入班级" v-if="scope.row.isClick" v-model="tableData[scope.$index].userClass"></el-input>
+                  <span v-else>{{ tableData[scope.$index].userClass }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="专业" align="center">
+                <template slot-scope="scope">
+                  <el-input placeholder="请输入专业" v-if="scope.row.isClick" v-model="tableData[scope.$index].userMajor"></el-input>
+                  <span v-else>{{ tableData[scope.$index].userMajor }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="住址" align="center">
+                <template slot-scope="scope">
+                  <el-input placeholder="请输入住址" v-if="scope.row.isClick" v-model="tableData[scope.$index].userAddress"></el-input>
+                  <span v-else>{{ tableData[scope.$index].userAddress }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column fixed="right" label="操作" width="170px" align='center'>
+                <template slot-scope="scope">
+                  <el-button @click="change(scope)" size='small' type='text'><p>编辑</p></el-button>
+                  <el-button @click="save(scope)" size='small' type='text'><p>保存</p></el-button>
                   <el-button @click="deleteStuInfo(scope.row)" type="text" size="small">删除</el-button>
                 </template>
               </el-table-column>
@@ -336,6 +308,7 @@
 import { mapMutations } from 'vuex'
 export default {
   name: 'UserManage',
+  inject: ['reload'],
   data () {
     return {
       isActive: true,
@@ -343,14 +316,11 @@ export default {
       isSelect: false,
       isAddStu: false,
       isAddUser: false,
-      isAlter: false,
-      isAlterSelect: false,
-      isAlterStu: false,
-      isAlterUser: false,
       isAll: false,
       isAllSelect: false,
       isAllUser: false,
       isAllStu: false,
+      lastClick: null,
       labelPosition: 'right',
       loading: true,
       rules: {
@@ -376,10 +346,13 @@ export default {
           { required: true, message: '请输入新用户的职称', trigger: 'blur' }
         ],
         userMajor: [
-          { required: true, message: '请输入新用户所在院系', trigger: 'blur' }
+          { required: true, message: '请输入新用户的专业', trigger: 'blur' }
         ],
         userAddress: [
           { required: true, message: '请输入新用户的住址', trigger: 'blur' }
+        ],
+        userDepartment: [
+          { required: true, message: '请输入新用户所在院系', trigger: 'blur' }
         ]
       },
       userData: {
@@ -394,8 +367,7 @@ export default {
         userDepartment: '',
         userAddress: ''
       },
-      tableData: [],
-      alterInfo: []
+      tableData: []
     }
   },
   methods: {
@@ -415,10 +387,34 @@ export default {
       this.isAdd = true
       this.isSelect = true
       this.isActive = false
-      this.isAlter = false
       this.isAll = false
       this.isAddStu = false
       this.isAddUser = false
+    },
+    // 编辑信息
+    change (scope) {
+      // 再次点击则还原其他行
+      if (this.lastClick) {
+        this.$set(this.lastClick.row, 'isClick', false)
+      }
+      // 第一次点击，变成显示
+      this.lastClick = scope
+      this.$set(scope.row, 'isClick', true)
+    },
+    // 保存信息
+    save (scope) {
+      // 再次点击则还原其他行
+      if (this.lastClick) {
+        this.$set(this.lastClick.row, 'isClick', false)
+      }
+      // 第一次点击，变成隐藏
+      this.lastClick = scope
+      this.$set(scope.row, 'isClick', false)
+      if (this.isAllUser) {
+        this.updateUserInfo(scope)
+      } else if (this.isAllStu) {
+        this.updateStuInfo(scope)
+      }
     },
     getIdentity () {
       if (this.userData.identity !== '学生') {
@@ -426,32 +422,14 @@ export default {
           this.isAddUser = true
           this.isSelect = false
           this.isAddStu = false
-        } else if (this.isAlter === true) {
-          this.isAlterUser = true
-          this.isAlterSelect = false
-          this.isAlterStu = false
         }
       } else {
         if (this.isAdd === true) {
           this.isAddStu = true
           this.isAddUser = false
           this.isSelect = false
-        } else if (this.isAlter === true) {
-          this.isAlterStu = true
-          this.isAlterSelect = false
-          this.isAlterUser = false
         }
       }
-    },
-    toAlter () {
-      this.isAlter = true
-      this.isAlterSelect = true
-      this.isAdd = false
-      this.isAll = false
-      this.isActive = false
-      this.isAlterStu = false
-      this.isAlterUser = false
-      this.clear()
     },
     toQuery () {
       this.isAll = true
@@ -459,7 +437,6 @@ export default {
       this.isAllUser = false
       this.isAllStu = false
       this.isAdd = false
-      this.isAlter = false
       this.isActive = false
       this.clear()
     },
@@ -468,10 +445,6 @@ export default {
         this.isSelect = true
         this.isAddStu = false
         this.isAddUser = false
-      } else if (this.isAlter === true) {
-        this.isAlterSelect = true
-        this.isAlterStu = false
-        this.isAlterUser = false
       } else if (this.isAll === true) {
         this.isAllSelect = true
         this.isAllStu = false
@@ -563,23 +536,9 @@ export default {
       }
     },
     // 修改学生信息
-    updateStuInfo () {
+    updateStuInfo (scope) {
       try {
-        let data = {
-          userMajor: this.userData.userMajor,
-          userName: this.userData.userName,
-          userId: this.userData.userId,
-          userAge: this.userData.userAge,
-          userSex: this.userData.userSex,
-          userClass: this.userData.userClass,
-          userAddress: this.userData.userAddress
-        }
-        Object.getOwnPropertyNames(data).forEach((item) => {
-          if (data[item] === '') {
-            const error = {message: '未全部填写完成'}
-            throw error
-          }
-        })
+        let data = scope.row
         this.$axios({
           method: 'put',
           url: '/students',
@@ -600,24 +559,9 @@ export default {
       }
     },
     // 修改教师信息
-    updateUserInfo () {
+    updateUserInfo (scope) {
+      let data = scope.row
       try {
-        let data = {
-          userMajor: this.userData.userMajor,
-          userDepartment: this.userData.userDepartment,
-          userName: this.userData.userName,
-          userId: this.userData.userId,
-          userAge: this.userData.userAge,
-          userSex: this.userData.userSex,
-          userTitle: this.userData.userTitle,
-          userAddress: this.userData.userAddress
-        }
-        Object.getOwnPropertyNames(data).forEach((item) => {
-          if (data[item] === '') {
-            const error = {message: '未全部填写完成'}
-            throw error
-          }
-        })
         this.$axios({
           method: 'put',
           url: '/users',
@@ -640,7 +584,7 @@ export default {
     },
     // 删除教师信息
     deleteUserInfo (row) {
-      this.$confirm('您确认将要删除此条课程信息？', '确认信息', {
+      this.$confirm('您确认将要删除此条信息？', '确认信息', {
         distinguishCancelAndClose: true,
         confirmButtonText: '确定',
         cancelButtonText: '取消'
@@ -653,7 +597,8 @@ export default {
           }
         }).then(res => {
           if (res.data.msg === '删除成功') {
-            this.$message.success('删除成功，请重新刷新页面来查看')
+            this.$message.success('删除成功')
+            this.reload()
           } else {
             this.$message.warning('不存在该数据，请重新刷新页面来查看')
           }
@@ -667,7 +612,7 @@ export default {
     },
     // 删除学生信息
     deleteStuInfo (row) {
-      this.$confirm('您确认将要删除此条课程信息？', '确认信息', {
+      this.$confirm('您确认将要删除此条信息？', '确认信息', {
         distinguishCancelAndClose: true,
         confirmButtonText: '确定',
         cancelButtonText: '取消'
@@ -680,7 +625,8 @@ export default {
           }
         }).then(res => {
           if (res.data.msg === '删除成功') {
-            this.$message.success('删除成功，请重新刷新页面来查看')
+            this.$message.success('删除成功')
+            this.reload()
           } else {
             this.$message.warning('不存在该数据，请重新刷新页面来查看')
           }
@@ -702,9 +648,12 @@ export default {
         }).then(res => {
           if (res.data) {
             let data = res.data.users
-            console.log(data)
             let _this = this
+            _this.tableData = []
             data.forEach((item) => {
+              if (item.major === 'undefine') {
+                item.major = '无'
+              }
               let teaInfo = {
                 userName: item.teaName,
                 userId: item.id,
@@ -728,8 +677,8 @@ export default {
         }).then(res => {
           if (res.data) {
             let data = res.data.students
-            console.log(data)
             let _this = this
+            _this.tableData = []
             data.forEach((item) => {
               let stuInfo = {
                 userName: item.stuName,
@@ -759,6 +708,7 @@ export default {
             let data = res.data.users
             console.log(data)
             let _this = this
+            _this.tableData = []
             data.forEach((item) => {
               let teaInfo = {
                 userName: item.teaName,
@@ -786,6 +736,7 @@ export default {
             let data = res.data.students
             console.log(data)
             let _this = this
+            _this.tableData = []
             data.forEach((item) => {
               let stuInfo = {
                 userName: item.stuName,
@@ -815,6 +766,7 @@ export default {
             let data = res.data.user
             console.log(data)
             let _this = this
+            _this.tableData = []
             let teaInfo = {
               userName: data.teaName,
               userId: data.id,
@@ -839,6 +791,7 @@ export default {
             let data = res.data.student
             console.log(data)
             let _this = this
+            _this.tableData = []
             let stuInfo = {
               userName: data.stuName,
               userId: data.id,

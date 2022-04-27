@@ -20,26 +20,19 @@ router.get('/', async function(req, res, next) {
   }
 })
 
-// 更新课程信息
+// 更新课程目标信息
 router.put('/', async function (req, res, next) {
   const data = req.query
   console.log(data)
-  var courses = await models.Aim.update({
-    term: `${data.term}`,
-    courseId: `${data.courseId}`,
-    midTerm: `${data.midTerm}`,
-    finalExam: `${data.finalExam}`,
-    work: `${data.work}`,
-    test: `${data.test}`,
+  var aim = await models.Aim.update({
+    id: `${data.courseId}`,
     courseName: `${data.courseName}`,
-    experiment: `${data.experiment}`,
-    teaEvaluate: `${data.teaEvaluate}`,
-    stuEvaluate: `${data.stuEvaluate}`
+    aimNumber: `${data.aimNumber}`
   }, {where: {id: `${data.courseId}`}})
-  res.json({courses: courses})
+  res.json({aim: aim})
 })
 
-// 删除课程信息
+// 删除课程目标信息
 router.delete('/', async function (req, res, next) {
   const data = req.query
   console.log(data)
@@ -57,6 +50,7 @@ router.post('/', async function (req, res, next) {
   const data = req.query
   console.log(data)
   var aim = await models.Aim.create({
+    id: `${data.courseId}`,
     courseName: `${data.courseName}`,
     aimNumber: `${data.aimNumber}`
   })

@@ -65,15 +65,10 @@ export default {
       tableHeader.push(['课程目标达成情况分析与持续改进'])
       tableHeader.push(['评价项', '', '达成情况分析', '', '', '持续改进措施'], [null])
       let courseAnalysis = JSON.parse(localStorage.getItem('courseAnalysis'))
-      courseAnalysis.forEach(item => {
-        if (item.courseName === this.formData.name && item.courseTerm === this.formData.term) {
-          for (let i = 0; i < this.formData.aimNum; i++) {
-            tableHeader.push(['课程目标' + (i + 1), '', courseAnalysis[0][i], '', '', courseAnalysis[0][i + this.formData.aimNum]])
-          }
-        } else {
-          this.$message.error('未查询到课程改进措施，请您输入后再尝试')
-        }
-      })
+      console.log(courseAnalysis)
+      for (let i = 0; i < this.formData.aimNum; i++) {
+        tableHeader.push(['课程目标' + (i + 1), '', courseAnalysis[0][i], '', '', courseAnalysis[0][i + parseInt(this.formData.aimNum)]])
+      }
       console.log(courseAnalysis)
       tableHeader.push(['', '', '', '', '', '', '', '', '', '', '', '审核时间', ''])
       return tableHeader
@@ -99,7 +94,6 @@ export default {
             temp = temp + score[j] * weight[i]
           } else {
             temp = temp + data[i + 2][j] * weight[i]
-            console.log(temp)
           }
         }
         arr[j] = temp.toFixed(3)

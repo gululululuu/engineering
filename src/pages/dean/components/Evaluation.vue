@@ -12,8 +12,8 @@
           <p class='backFonts' @click='backHome()'>返回首页</p>
         </div>
         <div class='inputBox'>
-          <button class='investigation' @click='toMyInfo()'><p class='invesFonts'>查看评估信息</p></button>
-          <button class='investigation' @click='toMySituation()'><p class='invesFonts'>审核评估情况</p></button>
+          <button class='investigation' @click='toMyInfo()'><p class='invesFonts'>查看达成信息</p></button>
+          <button class='investigation' @click='toMySituation()'><p class='invesFonts'>审核达成情况</p></button>
         </div>
       </div>
       <div class='Right'>
@@ -344,10 +344,8 @@ export default {
         if (item.courseName === row.courseName) {
           dataConversionUtil.exportToExcel('课程目标达成情况报告', item.tableHeader)
           this.$message.success('导出成功，请在浏览器下载处查看')
-          return 0
         }
       })
-      this.$message.warning('该课程暂未评估完成')
     },
     getTermInfo () {
       this.isOne = true

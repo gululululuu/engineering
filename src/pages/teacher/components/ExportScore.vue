@@ -1,5 +1,5 @@
 <template>
-  <el-button @click='loadExcel' size='mini'>导出达成度数据表</el-button>
+  <el-button @click='loadExcel' size='mini'>导出成绩组成表</el-button>
 </template>
 
 <script>
@@ -12,10 +12,6 @@ export default {
         ['test', '随堂测验', '随堂测验'],
         ['work', '作业', '作业成绩'],
         ['experiment', '实验', '实验成绩']
-      ],
-      investigationItems: [
-        ['教师评价', 'teaEvaluation'],
-        ['学生评价', 'students']
       ]
     }
   },
@@ -33,52 +29,9 @@ export default {
           var tableHeader = this.getTable(item)
           workTables.push(tableHeader, dataList)
         })
-        // 评价表格
-        let invesTables = []
-        for (let i = 0; i < this.investigationItems.length; i++) {
-          let datas = []
-          let info = JSON.parse(localStorage.getItem(this.investigationItems[i][1]))
-          let courseId = JSON.parse(localStorage.getItem('aim'))[2].courseId
-          info.forEach(item => {
-            let data = {
-              id: item.stuId,
-              name: item.stuName
-            }
-            let index = 1
-            // 学生自我评价
-            if (i === 1) {
-              if (item.courseId === courseId) {
-                for (let i = 1; i <= (Object.getOwnPropertyNames(item).length - 2); i++) {
-                  data[index++] = item[i]
-                }
-                datas.push(data)
-              }
-            } else {
-              // 教师评价
-              for (let i = 1; i <= (Object.getOwnPropertyNames(item).length - 3); i++) {
-                data[index++] = item[i]
-              }
-              datas.push(data)
-            }
-          })
-          console.log(datas)
-          let aimNum = parseInt(JSON.parse(localStorage.getItem('aim'))[2].totalAim)
-          var tableHeader = this.getTableHeader(this.investigationItems[i], aimNum)
-          var invesDataList = []
-          datas.forEach(item => {
-            var arr = []
-            arr.push(item.id, item.name)
-            for (let i = 1; i <= aimNum; i++) {
-              arr.push(item[i])
-            }
-            invesDataList.push(arr)
-          })
-          console.log(invesDataList)
-          invesTables.push(tableHeader, invesDataList)
-        }
         let examHeader = this.getExamTable()
         let examName = '试卷'
-        dataConversionUtil.InvesAndScoreToExcel(this.workItems, workTables, this.investigationItems, invesTables, examHeader, dataList, examName)
+        dataConversionUtil.scoreToExcel(this.workItems, workTables, examHeader, dataList, examName)
         this.$message.success('导出成功！')
       } catch (e) {
         this.$message.warning('导出错误，请联系管理员！')
@@ -187,21 +140,6 @@ export default {
       work.push('')
       tableHeader.push(['《' + courseName + '》' + term + item[2] + '对课程目标的支撑情况'])
       tableHeader.push(work, aims, full)
-      return tableHeader
-    },
-    getTableHeader (item, index) {
-      var tableHeader = []
-      tableHeader.push([item[0]])
-      tableHeader.push(['学生学号', '学生姓名', '课程目标'])
-      var aims = []
-      var full = []
-      aims.push('', '')
-      full.push('', '满分')
-      for (let i = 1; i <= index; i++) {
-        aims.push('目标' + i)
-        full.push('1')
-      }
-      tableHeader.push(aims, full)
       return tableHeader
     }
   }

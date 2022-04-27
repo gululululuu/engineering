@@ -255,7 +255,14 @@ export default {
       } else {
         try {
           console.log(this.aims)
+          let courseId = ''
+          this.courses.forEach(item => {
+            if (item.courseName === this.stuData.name) {
+              courseId = item.courseId
+            }
+          })
           let data = {
+            courseId: courseId,
             stuName: this.stuData.stuName,
             stuId: this.stuData.credit
           }

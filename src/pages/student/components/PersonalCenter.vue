@@ -27,13 +27,28 @@
               <el-descriptions-item>
                 <template slot="label">
                   <i class="el-icon-postcard"></i>
-                  工号
+                  学号
                 </template>{{ info.id }}</el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-male"></i>
+                  性别
+                </template>{{ info.sex }}</el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-date"></i>
+                  年龄
+                </template>{{ info.age }}</el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-postcard"></i>
+                  学院
+                </template>{{ info.department }}</el-descriptions-item>
               <el-descriptions-item>
                 <template slot="label">
                   <i class="el-icon-postcard"></i>
                   专业
-                </template>{{ info.department }}</el-descriptions-item>
+                </template>{{ info.major }}</el-descriptions-item>
               <el-descriptions-item>
                 <template slot="label">
                   <i class="el-icon-tickets"></i>
@@ -41,16 +56,6 @@
                 </template>
                 <el-tag size="small">学校</el-tag>
               </el-descriptions-item>
-              <el-descriptions-item>
-                <template slot="label">
-                  <i class="el-icon-male"></i>
-                  性别
-                </template>{{ info.sex }}</el-descriptions-item>
-              <el-descriptions-item :span="2">
-                <template slot="label">
-                  <i class="el-icon-date"></i>
-                  年龄
-                </template>{{ info.age }}</el-descriptions-item>
               <el-descriptions-item>
                 <template slot="label">
                   <i class="el-icon-medal"></i>
@@ -81,6 +86,7 @@ export default {
         stuName: '',
         address: '',
         department: '',
+        major: '',
         sex: '',
         title: '',
         age: ''

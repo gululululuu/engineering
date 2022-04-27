@@ -514,8 +514,8 @@
           </div>
         </div>
       </div>
-      <div v-show='isMyInfo' class='upload'>
-        <ExportScoreExcelTable></ExportScoreExcelTable>
+      <div v-show='isMyInfo' class='MyInfo'>
+        <ExportInvesAndScore></ExportInvesAndScore>
       </div>
       <p v-show='isActive' class='rightFonts'>请在左侧选择您要进行的操作~</p>
     </div>
@@ -524,11 +524,11 @@
 
 <script>
 import { mapMutations } from 'vuex'
-import ExportScoreExcelTable from './ExportScoreExcelTable'
+import ExportInvesAndScore from './ExportInvesAndScore'
 export default {
   name: 'ScoreManage',
   components: {
-    ExportScoreExcelTable
+    ExportInvesAndScore
   },
   data () {
     return {
@@ -928,6 +928,7 @@ export default {
             const data = res.data.aim
             let aimNum = parseInt(data.aimNumber)
             let _this = this
+            _this.aims = []
             _this.examData.totalAim = aimNum
             if (this.aims.length !== 0) {
               for (let i = 2; i < (aimNum + 1); i++) {
@@ -1077,7 +1078,7 @@ export default {
       console.log(JSON.parse(localStorage.getItem('test')))
       this.$message.success('提交成功')
     },
-    setQuestionInfo () {
+    async setQuestionInfo () {
       console.log(this.examData)
       // 每一小题的分数
       var result = []
@@ -1093,6 +1094,7 @@ export default {
       test.push(this.list)
       localStorage.setItem('question', JSON.stringify(test))
       console.log(JSON.parse(localStorage.getItem('question')))
+      await this.setWeight()
       this.$message.success('提交成功')
     },
     getAimInfo () {
@@ -1104,30 +1106,30 @@ export default {
         s = this.aims[i].aimPosition.split('/')
         result.push(s)
       }
-      console.log(result)
-      console.log(this.aims)
       var arr = []
-      let courseName = this.examData.courseName
       localStorage.setItem('aim', JSON.stringify(arr))
       var test = JSON.parse(localStorage.getItem('aim'))
       test.push(result)
       test.push(this.aims)
       test.push(this.examData)
       localStorage.setItem('aim', JSON.stringify(test))
+      console.log(JSON.parse(localStorage.getItem('aim')))
+      this.$message.success('提交成功')
+    },
+    setWeight () {
       this.$axios({
         methods: 'get',
         url: '/courses',
-        params: {courseName: courseName}
+        params: {courseName: this.examData.courseName}
       }).then(res => {
         console.log(res)
         const result = res.data.courses[0]
+        this.examData.courseId = result.id
+        console.log(this.examData)
         var weight = []
         weight.push(parseFloat((1 - result.stuEvaluate - result.teaEvaluate).toFixed(1)), result.stuEvaluate, result.teaEvaluate)
         localStorage.setItem('weight', JSON.stringify(weight))
-        console.log(JSON.parse(localStorage.getItem('weight')))
       })
-      console.log(JSON.parse(localStorage.getItem('aim')))
-      this.$message.success('提交成功')
     }
   }
 }
@@ -1211,9 +1213,6 @@ export default {
       width : 88%
       height : 500px
       background-color : #F0F7FF
-      .upload
-        text-align : center
-        line-height : 500px
       .MyInfo
         position : absolute
         width : 100%

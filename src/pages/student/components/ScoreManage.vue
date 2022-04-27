@@ -19,7 +19,7 @@
         <div v-show="isSelect" class='MyInfo'>
           <el-form :label-position='labelPosition' label-width='80px' :rules='rules' :model='stuData' size='mini'>
             <el-form-item label='课程名称' prop='name'>
-              <el-select v-model='stuData.name' placeholder='请选择填写问卷调查的科目'>
+              <el-select v-model='stuData.name' placeholder='请选择查询的课程名称'>
                 <el-option
                   v-for='item in courses'
                   :key='item.courseId'
@@ -28,7 +28,8 @@
               </el-select>
             </el-form-item>
             <el-form-item label-position='right' label-width='80px'>
-              <el-button size='mini' @click='getFormDataName()' style="width: 192px;">查询</el-button>
+              <el-button size='mini' @click='getFormDataName()'>查询</el-button>
+              <el-button size='mini' @click='getAllCourses()' style="margin-left: 49px;">查询全部</el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -145,6 +146,27 @@ export default {
           this.loading = false
         })
       }
+    },
+    getAllCourses () {
+      this.isScore = true
+      this.isSelect = false
+      var _this = this
+      _this.tableData = []
+      let stuId = JSON.parse(localStorage.getItem('userId'))
+      this.$axios({
+        method: 'get', url: '/stu_course', params: {stuId: stuId}
+      }).then(res => {
+        const data = res.data.courses
+        data.forEach(item => {
+          let obj = {
+            courseName: item.Course.courseName,
+            courseId: item.courseId,
+            score: item.score
+          }
+          _this.tableData.push(obj)
+        })
+        this.loading = false
+      })
     }
   }
 }

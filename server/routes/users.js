@@ -5,11 +5,10 @@ var Op = models.Sequelize.Op
 
 /* GET users listing. */
 router.get('/', async function(req, res, next) {
-  var where = {}
   if (req.query.userName) {
     var userName = req.query.userName
     var users = await models.Teacher.findAll({
-      where: { [Op.and]: [{userName: `${userName}`}] },
+      where: { [Op.and]: [{teaName: `${userName}`}] },
       order: [['id', 'ASC']]
     })
     res.json({users: users})

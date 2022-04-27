@@ -1,15 +1,17 @@
 <template>
-  <span style='margin-right:10px'>
-    <input
-      class='input-file'
-      type='file'
-      @change='exportData'
-      accept='.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel'
-    />
-    <el-button type='primary' size='mini' icon='el-icon-upload' @click='btnClick'>
-      请上传成绩信息
-    </el-button>
-  </span>
+  <div>
+    <span style='margin-right:10px'>
+      <input
+        class='input-file'
+        type='file'
+        @change='exportData'
+        accept='.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel'
+      />
+      <el-button type='primary' size='mini' icon='el-icon-upload' @click='btnClick'>
+        请上传成绩信息
+      </el-button>
+    </span>
+  </div>
 </template>
 
 <script>
@@ -18,6 +20,7 @@ import XLSX from 'xlsx'
 import bus from '../assets/js/eventBus.js'
 export default {
   name: 'Upload',
+  props: ['aimsInfo'],
   data () {
     return {
       outputs: [],
@@ -47,7 +50,6 @@ export default {
       const fileReader = new FileReader()
       fileReader.onload = (ev) => {
         try {
-          this.$message.success('上传成功！')
           const data = ev.target.result
           const workbook = XLSX.read(data, {
             type: 'binary'
@@ -68,8 +70,7 @@ export default {
           */
           let sheetName = ''
           let content = {}
-          // this.outputs = []
-          // this.initResult()
+          this.getCourseName(workbook)
           this.initAchievement()
           let _this = this
           for (let sheetIndex = 0; sheetIndex < 6; sheetIndex++) {
@@ -77,23 +78,15 @@ export default {
             if (sheetName !== '试卷') {
               content = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName])
               _this.row = content.length - 3
-              console.log(content)
+              // console.log(content)
               this.getInClassOrHomeTest(content, sheetName)
             } else {
               content = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName])
               _this.row = content.length - 8
-              console.log(content)
+              // console.log(content)
               this.getExaminationAchievement(content)
             }
           }
-          // this.uploadScore()
-          console.log(JSON.parse(localStorage.getItem('achievement')))
-          console.log(this.examination)
-          console.log(this.inClass)
-          console.log(this.homework)
-          console.log(this.test)
-          console.log(this.teacher)
-          console.log(this.student)
           this.outputs.push(this.getDiagramData())
           var temp = this.outputs[0]
           for (let i = 0; i < temp[0].length; i++) {
@@ -103,6 +96,8 @@ export default {
             }
             bus.$emit('getResult' + (i + 1), arr)
           }
+          this.$message.success('上传成功！')
+          localStorage.setItem('ready', JSON.stringify(true))
         } catch (e) {
           console.log(e)
           return false
@@ -114,14 +109,12 @@ export default {
     getDiagramData () {
       var result = this.getArray()
       let weight = JSON.parse(localStorage.getItem('weight'))
-      console.log(JSON.parse(localStorage.getItem('aim')))
       let coefficients = JSON.parse(localStorage.getItem('aim'))[0]
       for (var i = 0; i < this.row; i++) {
         for (let j = 0; j < coefficients.length; j++) {
           result[i][j] = parseFloat(((this.inClass[i][j] * coefficients[j][0] + this.homework[i][j] * coefficients[j][1] + this.test[i][j] * coefficients[j][2] + this.examination[i][j] * coefficients[j][3]) * weight[0] + this.teacher[i][j] * weight[1] + this.student[i][j] * weight[2]).toFixed(3))
         }
       }
-      console.log(result)
       return result
     },
     /* 计算随堂测验分数达成度 */
@@ -169,7 +162,6 @@ export default {
       let ruleIndex = 4
       const data = JSON.parse(localStorage.getItem('aim'))
       let aimNumber = parseInt(data[2].totalAim)
-      localStorage.setItem('num', JSON.stringify(aimNumber))
       // 将excel表转换为json数据后，学生 1所在位置
       let studentIndex = (4 + aimNumber)
       // var total = this.getExamScore(ws, studentIndex)
@@ -196,6 +188,31 @@ export default {
     //   }
     //   return total
     // },
+    // 利用正则匹配确定上传的课程名称
+    getCourseName (workbook) {
+      let obj = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]])[0]
+      let reg = RegExp(/《(.*?)》/)
+      let courseName = [] // 存放书名的数组
+      Object.keys(obj).forEach(item => {
+        if (reg.exec(item)) {
+          courseName[courseName.length] = RegExp.$1
+          courseName.join('\n')
+        }
+      })
+      this.aimsInfo.forEach(item => {
+        if (item.courseName === courseName[0]) {
+          this.setAimNum(item)
+        }
+      })
+    },
+    setAimNum (item) {
+      try {
+        localStorage.setItem('AimNum', JSON.stringify(item.aimNumber))
+      } catch (e) {
+        this.$message.error('请先录入课程目标成绩组成参数')
+        throw e
+      }
+    },
     initAchievement () {
       let achievement = []
       localStorage.setItem('achievement', JSON.stringify(achievement))

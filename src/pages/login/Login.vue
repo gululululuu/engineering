@@ -5,19 +5,19 @@
       <div class="loginContent">
         <el-form :model="loginForm" ref="loginForm" :rules="loginRules">
           <div class="loginHead">
-            <p class="loginFont">课程评估系统</p>
+            <p class="loginFont">"一键达成"课程管理系统</p>
             <img src="../../assets/img/login.png" class="loginLogo"/>
           </div>
           <el-form-item prop="identity">
             <el-select v-model="loginForm.identity" placeholder="请选择" class="loginSelect" @change="clear()">
-                <el-option
-                  v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                  >
-                </el-option>
-              </el-select>
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+                >
+              </el-option>
+            </el-select>
           </el-form-item>
           <el-form-item prop="username">
             <el-input v-model="loginForm.username" name="username" placeholder="请输入学号/工号/邮箱/手机号" auto-complete="on"></el-input>
@@ -181,7 +181,7 @@ export default {
           display : inline
           width : 180px
           font-family : '宋体'
-          font-size : 28px
+          font-size : 24px
           margin : 0px
         .loginLogo
           width : 32px

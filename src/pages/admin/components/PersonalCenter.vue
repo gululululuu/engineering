@@ -93,7 +93,6 @@ export default {
   methods: {
     getUserInfo () {
       var id = JSON.parse(localStorage.getItem('userId'))
-      console.log(id)
       this.$axios({
         methods: 'get',
         url: '/users/' + id

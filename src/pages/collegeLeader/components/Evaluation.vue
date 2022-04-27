@@ -12,8 +12,8 @@
           <p class='backFonts' @click='backHome()'>返回首页</p>
         </div>
         <div class='inputBox'>
-          <button class='investigation' @click='toMyInfo()'><p class='invesFonts'>查看评估信息</p></button>
-          <button class='investigation' @click='toMySituation()'><p class='invesFonts'>审核评估情况</p></button>
+          <button class='investigation' @click='toMyInfo()'><p class='invesFonts'>查看达成信息</p></button>
+          <button class='investigation' @click='toMySituation()'><p class='invesFonts'>审核达成情况</p></button>
         </div>
       </div>
       <div class='Right'>
@@ -333,17 +333,21 @@ export default {
       console.log(JSON.parse(localStorage.getItem('courseNotReached')))
     },
     getCourseInfo (row) {
-      console.log(row)
       let report = JSON.parse(localStorage.getItem('report'))
-      console.log(report)
+      let coursesName = []
       report.forEach(item => {
-        if (item.courseName === row.courseName) {
-          dataConversionUtil.exportToExcel('课程目标达成情况报告', item.tableHeader)
-          this.$message.success('导出成功，请在浏览器下载处查看')
-          return 0
-        }
+        coursesName.push(item.courseName)
       })
-      this.$message.warning('该课程暂未评估完成')
+      if (coursesName.includes(row.courseName)) {
+        report.forEach(item => {
+          if (item.courseName === row.courseName) {
+            dataConversionUtil.exportToExcel('课程目标达成情况报告', item.tableHeader)
+            this.$message.success('导出成功，请在浏览器下载处查看')
+          }
+        })
+      } else {
+        this.$message.info('暂无达成情况报告')
+      }
     },
     getTermInfo () {
       this.isOne = true

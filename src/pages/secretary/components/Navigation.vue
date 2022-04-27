@@ -8,7 +8,7 @@
       </router-link>
       <router-link custom v-slot="{ navigate }" to="/evaluationSecretary">
         <li @click="navigate" @keypress.enter="navigate" role="link">
-          <p>课程评估</p>
+          <p>课程体系建设</p>
         </li>
       </router-link>
       <router-link custom v-slot="{ navigate }" to="/personalCenterSecretary">
@@ -41,7 +41,7 @@ export default {
           background-color: #555
         p
           margin : 0
-          width : 80px
+          width : 100px
           height: 50px
           line-height: 50px
           font-size: 16px

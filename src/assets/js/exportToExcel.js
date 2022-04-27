@@ -150,6 +150,144 @@ dataConversionUtil.investigationToExcel = function (items, tables) {
     }), '评价表' + '.xlsx')
 }
 
+dataConversionUtil.scoreToExcel = function (workItems, workTables, examHeader, examDataList, examName) {
+  let num = 0
+  let workBook = XLSX.utils.book_new()
+  // 随堂测验--->作业--->实验--->表格样式
+  workItems.forEach(item => {
+    // excel的表头和数据
+    let aoa = []
+    // aoa的数据格式：[[],[],[],[]]   数组的第一个子数组可以指定为表头  根据情况而定
+    var tableHeader = workTables[num++]
+    var dataList = workTables[num++]
+    aoa = tableHeader.concat(dataList)
+    let workSheet = XLSX.utils.aoa_to_sheet(aoa)
+    var work = JSON.parse(localStorage.getItem(item[0]))
+    var totalRow = 0
+    var workNum = []
+    var workLen = []
+    for (let i = 0; i < work[1].length; i++) {
+      totalRow = totalRow + parseInt(work[0][i].length)
+      workLen[i] = work[0][i].length
+    }
+    var index = 0
+    for (let i = 0; i < work[0].length; i++) {
+      for (let j = 0; j < work[0][i].length; j++) {
+        workNum[index++] = parseInt(work[0][i][j])
+      }
+    }
+    var itemLen = [] // 每一个作业的终点
+    for (let i = 0; i < work[1].length; i++) {
+      if (i === 0) {
+        itemLen[i] = 1
+      } else {
+        itemLen[i] = itemLen[i - 1] + workLen[i - 1]
+      }
+    }
+    itemLen.push((itemLen[workLen.length - 1] + workLen[workLen.length - 1]))
+    var merge = []
+    merge.push({s: {r: 0, c: 0}, e: {r: 0, c: (totalRow + 2)}})
+    merge.push({s: {r: 1, c: 2}, e: {r: 1, c: itemLen[1]}})
+    for (let i = 1; i < itemLen.length; i++) {
+      merge.push({s: {r: 1, c: (itemLen[i] + 1)}, e: {r: 1, c: itemLen[i + 1]}})
+    }
+    workSheet['!merges'] = merge
+    // 单元格宽度
+    let width = []
+    // 单元格高度
+    let height = []
+    // 设置单元格属性
+    Object.keys(workSheet).forEach((key) => {
+      if (key.indexOf('!') < 0) {
+        workSheet[key].s = {
+          font: {
+            name: '宋体',
+            sz: 12
+          },
+          alignment: {
+            horizontal: 'center',
+            vertical: 'center',
+            wrapText: true
+          }
+        }
+      }
+      width.push({ wpx: 90 })
+      height.push({ hpx: 20 })
+    })
+    workSheet['!cols'] = width
+    workSheet['!rows'] = height
+    // 把数据写到工作簿中
+    XLSX.utils.book_append_sheet(workBook, workSheet, item[1])
+  })
+  // 试卷的表格样式
+  let aoa = []
+  aoa = examHeader.concat(examDataList)
+  let workSheet = XLSX.utils.aoa_to_sheet(aoa)
+  var question = JSON.parse(localStorage.getItem('question'))
+  var aim = JSON.parse(localStorage.getItem('aim'))
+  var totalRow = 0
+  var quesNum = []
+  for (let i = 0; i < question[1].length; i++) {
+    quesNum[i] = parseInt(question[1][i].examNum)
+    totalRow = totalRow + parseInt(question[1][i].examNum)
+  }
+  var quesLen = []
+  for (let i = 0; i < quesNum.length; i++) {
+    if (i === 0) {
+      quesLen[i] = 1
+    } else {
+      quesLen[i] = quesLen[i - 1] + quesNum[i - 1]
+    }
+  }
+  quesLen.push((quesLen[quesNum.length - 1] + quesNum[quesNum.length - 1]))
+  var merge = []
+  merge.push({s: {r: 0, c: 0}, e: {r: 0, c: (totalRow + 3)}})
+  merge.push({s: {r: 1, c: 0}, e: {r: 2, c: 0}})
+  merge.push({s: {r: 1, c: 2}, e: {r: 1, c: quesLen[1]}})
+  merge.push({s: {r: 2, c: 2}, e: {r: 2, c: quesLen[1]}})
+  for (let i = 1; i < quesLen.length; i++) {
+    merge.push({s: {r: 1, c: (quesLen[i] + 1)}, e: {r: 1, c: quesLen[i + 1]}})
+    merge.push({s: {r: 2, c: (quesLen[i] + 1)}, e: {r: 2, c: quesLen[i + 1]}})
+  }
+  merge.push({s: {r: 4, c: 0}, e: {r: (4 + aim[1].length), c: 0}})
+  workSheet['!merges'] = merge
+  // 单元格宽度
+  let width = []
+  // 单元格高度
+  let height = []
+  // 设置单元格属性
+  Object.keys(workSheet).forEach((key) => {
+    if (key.indexOf('!') < 0) {
+      workSheet[key].s = {
+        font: {
+          name: '宋体',
+          sz: 12
+        },
+        alignment: {
+          horizontal: 'center',
+          vertical: 'center',
+          wrapText: true
+        }
+      }
+    }
+    width.push({ wpx: 90 })
+    height.push({ hpx: 20 })
+  })
+  workSheet['!cols'] = width
+  workSheet['!rows'] = height
+  console.log(workSheet)
+  // 把数据写到工作簿中
+  XLSX.utils.book_append_sheet(workBook, workSheet, examName)
+  const wbout = xlsxStyle.write(workBook, {
+    type: 'binary',
+    bookType: 'xlsx'
+  })
+  xlsxSave.saveAs(
+    new Blob([s2ab(wbout)], {
+      type: 'application/octet-stream'
+    }), '成绩组成表' + '.xlsx')
+}
+
 dataConversionUtil.exportToExcel = function (fileName, tableHeader, dataList, sheet = fileName) {
   // excel的表头和数据
   let aoa = []
@@ -409,7 +547,7 @@ dataConversionUtil.workToExcel = function (items, tables) {
     }), '成绩表' + '.xlsx')
 }
 
-dataConversionUtil.scoreToExcel = function (workItems, workTables, investigationItems, invesTables, examHeader, examDataList, examName) {
+dataConversionUtil.InvesAndScoreToExcel = function (workItems, workTables, investigationItems, invesTables, examHeader, examDataList, examName) {
   let num = 0
   let workBook = XLSX.utils.book_new()
   // 随堂测验--->作业--->实验--->表格样式
@@ -589,8 +727,9 @@ dataConversionUtil.scoreToExcel = function (workItems, workTables, investigation
   xlsxSave.saveAs(
     new Blob([s2ab(wbout)], {
       type: 'application/octet-stream'
-    }), '成绩表' + '.xlsx')
+    }), '达成度数据表' + '.xlsx')
 }
+
 function s2ab (s) {
   var buf = new ArrayBuffer(s.length)
   var view = new Uint8Array(buf)
